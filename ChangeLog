@@ -1,5 +1,11 @@
 2003-06-13  gunter  <techgunter@yahoo.com>
 
+	* combine.c:
+	Changed the type of hashchar from char to int to avoid
+	data loss with fgetc.
+
+2003-06-12  gunter  <techgunter@yahoo.com>
+
 	* build_rpm.sh.in, gtk-splitter.desktop, gtk-splitter.spec.in,
 	  Makefile.am:
 	Fixed the rpm build script so it wouldn't overwrite a previous
