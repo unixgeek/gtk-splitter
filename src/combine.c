@@ -28,6 +28,7 @@
 #include "globals.h"
 #include "error.h"
 #include "progress.h"
+#include "md5.h"
 
 gboolean combine(GtkWidget *tmp, session_data *data)
 {
@@ -244,7 +245,17 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        g_free( outfile );
        return TRUE;
      }
-
+     
+   /*Verify by md5sum if desired.*/
+   if ( data->verify )
+     {
+       if ( do_progress ) 
+         progress_window_set_status_text( progress->status, "Verifying file..." );
+       
+       if ( verify_file( outfile, data->fp_length ) != 0 )
+          display_error( "\ncombine.c:  File verification failed!\n", FALSE );
+     }
+   
    /*Free the memory we allocated.*/
    g_free( infile );
    g_free( outfile );

@@ -3,7 +3,7 @@ AC_INIT(src/gtk-splitter.c)
 
 dnl -- Package information. --
 PACKAGE=gtk-splitter
-VERSION=1.0
+VERSION=1.1
 
 dnl -- Initialize Automake. --
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)

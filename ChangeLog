@@ -1,3 +1,9 @@
+2002-08-30  gunter  <techgunter@yahoo.com>
+
+	* md5.c (new), md5.h (new), configure.in, src/Makefile.am, combine.c, split.c,
+	  callbacks.c, file_selection.c, globals.h, gtk-splitter.c:
+	Added support for verifying files via md5sum.
+
 2002-08-09  gunter  <techgunter@yahoo.com>
 
 	* Makefile.am, autogen.sh, configure.in, clean.sh, src/Makefile.am, gtk-splitter.spec.in:
@@ -7,38 +13,38 @@
 
 2002-08-06  gunter  <techgunter@yahoo.com>
 
-	* src/Makefile.am
+	* src/Makefile.am:
 	Added '-lglib' flag to fix a compilation error on Solaris 8 (and maybe others).
 	Thanks to Emmanuel Halbwachs for the report.
 
-	* configure.in
+	* configure.in:
 	Removed an unnecessary check.
 
 2002-04-16  gunter  <techgunter@yahoo.com>
 
-	* gtk-splitter.{png/xpm}
+	* gtk-splitter.{png/xpm}:
 	Replaced the old icon (in xpm format) with a new icon (in png format).
 
-	* progress.c
+	* progress.c:
 	The percentage inside the progress bar is no longer displayed.
 
 2002-04-10  gunter  <techgunter@yahoo.com>
 
-	* gtk-splitter.c
+	* gtk-splitter.c:
 	Enhanced the GUI a little bit:  Made 'Open' and 'Output' buttons the same size and added space
 	between the buttons and their respective text entry boxes. 
 
-	* dostextfile.c
+	* dostextfile.c:
 	Added more characters to filter out when dosifying a file name.
 
 2002-04-08  gunter  <techgunter@yahoo.com>
 
-	* dostextfile.c
+	* dostextfile.c:
 	'+' is now converted to underscore when dosifying a file name.
 
 2002-04-06  gunter  <techgunter@yahoo.com>
 
-	* file_selection.c
+	* file_selection.c:
 	Disabled the ability to choose a file when selecting the output directory.
 
 2002-03-11  gunter  <techgunter@yahoo.com>
@@ -46,7 +52,7 @@
 	* AUTHORS, configure.in, Makefile.am, README, src/Makefile.am, TODO:
         Modified the GNU distribution files.
 
-        * src/split.c:
+        * split.c:
 	When combining files using a batchfile, the original file name is now outputted.  
         The user doesn't have to remember what the file name was before it got changed to be DOS
         compatible.
@@ -146,7 +152,7 @@
 2002-02-11  gunter  <techgunter@yahoo.com>
 
 	* Makefile: 
-          Replaced cp with install.
+        Replaced cp with install.
 
 	* todo:
 	Renamed the todo file to the GNU standard :).

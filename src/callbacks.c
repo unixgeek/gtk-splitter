@@ -66,6 +66,12 @@ void initialize_session_data(session_data *data)
    /*Set the default chunk_size. (1.44MB)*/
    data->entry = 1457664;
    data->chunk_size = 1457664;
+   
+   /*Don't create a dos batch file by default.*/
+   data->create_batchfile = FALSE;
+
+   /*Verify file by default.*/
+   data->verify = TRUE;
 }
 
 /*Initial settings for the main window.*/
@@ -77,8 +83,10 @@ void initialize_splitter_window(gtk_splitter_window *gsw)
 
    /*Don't create a dos batch file by default.*/
    gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( gsw->batch_file_button ), FALSE );
-   gsw->sdata->create_batchfile = FALSE;
 
+   /*Verify file by default.*/
+   gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( gsw->verify_button ), TRUE );
+   
    /*Disable all buttons, except for the open button.
      This is so that nothing is done until a file is selected.*/
    gtk_widget_set_sensitive( gsw->split_button, FALSE );
@@ -87,6 +95,8 @@ void initialize_splitter_window(gtk_splitter_window *gsw)
    gtk_widget_set_sensitive( gsw->size_input, FALSE );
    gtk_widget_set_sensitive( gsw->chunk_size_units, FALSE );
    gtk_widget_set_sensitive( gsw->start_button, FALSE );
+   gtk_widget_set_sensitive( gsw->verify_button, FALSE );
+
 
    /*Clear the filename in the entry box.*/
    gtk_entry_set_text( GTK_ENTRY( gsw->filename_box), "" );
@@ -118,6 +128,12 @@ void toggle_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
 void toggle_batch(GtkWidget *tmp, session_data *data)
 {
    data->create_batchfile = !data->create_batchfile;
+}
+
+/*Set the md5 option.*/
+void toggle_verify(GtkWidget *tmp, session_data *data)
+{
+   data->verify = !data->create_batchfile;
 }
 
 /*Start either the split or combine process.*/

@@ -29,6 +29,7 @@
 #include "globals.h"
 #include "error.h"
 #include "progress.h"
+#include "md5.h"
 
 gboolean split(GtkWidget *tmp, session_data *data)
 {
@@ -196,7 +197,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
        strcpy( batchname_and_path, data->output_dir );
        strcat( batchname_and_path, data->filename_only );
-       strcat( batchname_and_path, ".bat");
+       strcat( batchname_and_path, ".bat" );
 
        batch = fopen( batchname_and_path, "wb+" );
        if ( batch == NULL )
@@ -217,7 +218,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        write_dostextfile( batch, "Echo " );
        writeln_dostextfile( batch, GTK_SPLITTER_VERSION );
        writeln_dostextfile( batch, "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
-       write_dostextfile( batch, "Echo Original File Name:  ");
+       write_dostextfile( batch, "Echo Original File Name:  " );
        writeln_dostextfile( batch, original_name );
        write_dostextfile( batch, "Echo Creating " );
        writeln_dostextfile( batch, data->filename_only );
@@ -235,7 +236,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    outfile = g_malloc( outfile_length * sizeof( char ) );
    if ( outfile == NULL )
      {
-       display_error( "\nsplit.c:: Could not allocate memory for outfile string.\n", TRUE );
+       display_error( "\nsplit.c: Could not allocate memory for outfile string.\n", TRUE );
        if ( data->create_batchfile )
          {
            fclose( batch );
@@ -256,6 +257,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
    strcat( outfile, ext );
    /*outfile is setup.*/
 
+   /*Create an md5sum of the selected file, if desired.*/
+   if ( data->verify )
+     {
+       if (do_progress )
+         progress_window_set_status_text( progress->status, "Generating MD5 checksum.." );
+       
+       create_sum( data->filename_and_path, data->fp_length, data->output_dir );
+     } 
+     
    /*Open the selected file.*/
    in = fopen( infile, "rb" );
    if ( in == NULL )

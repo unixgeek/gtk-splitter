@@ -44,6 +44,7 @@ typedef struct
     gboolean create_batchfile;
     gchar *home_dir;
     gchar *output_dir;
+    gboolean verify;
   } session_data;
 
 /*gtk_splitter_window is a struct for storing widgets related to the main
@@ -56,13 +57,14 @@ typedef struct
     GtkWidget *box2;
     GtkWidget *box3;
     GtkWidget *box4;
-    GtkWidget *box5;
+    GtkWidget *box5; 
     GtkWidget *open_button;
     GtkWidget *output_button;
     GtkWidget *batch_file_button;
     GtkWidget *split_button;
     GtkWidget *combine_button;
     GtkWidget *start_button;
+    GtkWidget *verify_button;
     GtkWidget *chunk_size_units;
     GtkWidget *units_menu;
     GtkWidget *bytesopt;

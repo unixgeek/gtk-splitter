@@ -112,6 +112,9 @@ int main(int argc, char *argv[])
    /*Toggle button to create a DOS batch file.*/
    gtk_s_window->batch_file_button = gtk_check_button_new_with_label(" Create DOS batch file." );
 
+   /*Toggle button to verfiy a file.*/
+   gtk_s_window->verify_button = gtk_check_button_new_with_label(" Verify (md5sum)" );
+
    /*1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4
     (or so they say--depends on the FS) so (1.39 * 1048576) = 1457664. */
    gtk_s_window->size_input_adj = GTK_ADJUSTMENT( gtk_adjustment_new( 1457664, 1, G_MAXFLOAT, 1, 5, 5 ) );
@@ -142,6 +145,7 @@ int main(int argc, char *argv[])
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->box5, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->box2, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->box3, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->verify_button, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->batch_file_button, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->box4, TRUE, TRUE, 0 );
 

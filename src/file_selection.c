@@ -126,6 +126,8 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_widget_set_sensitive( gsw->size_input, TRUE );
    gtk_widget_set_sensitive( gsw->chunk_size_units, TRUE );
    gtk_widget_set_sensitive( gsw->start_button, TRUE );
+   gtk_widget_set_sensitive( gsw->verify_button, TRUE );
+
 }
 
 /*A dialog for getting the output directory from the user.*/
