@@ -32,7 +32,7 @@
 void get_file_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    /* Set up a simple gtk file selection dialog. */
-   gsw->file_selection_dialog = gtk_file_selection_new( "Choose a file." );
+   gsw->file_selection_dialog = gtk_file_selection_new( "Select a file." );
    
    /* Default the dialog to the user's home directory. */
    gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
@@ -117,7 +117,7 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
 void get_directory_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    /* Set up a simple gtk file selection dialog. */
-   gsw->file_selection_dialog = gtk_file_selection_new( "Choose the output directory." );
+   gsw->file_selection_dialog = gtk_file_selection_new( "Select the output directory." );
    
    /* Default the dialog to the last chosen output directory.
       (On first run, output_directory is set to the user's home directory.) */
