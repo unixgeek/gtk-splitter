@@ -204,9 +204,24 @@ gboolean split(GtkWidget *tmp, session_data *data)
          {
            switch ( md5_return )
              {
+               case GENERATE_MD5_OVERFLOW_ERROR:
+                  
+                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_OVERFLOW_ERROR)" );
+                  break;
+               
                case GENERATE_MD5_STAT_FAILED:
                   
                   display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_STAT_FAILED)" );
+                  break;
+               
+               case GENERATE_MD5_NOT_A_REGULAR_FILE:
+                  
+                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_NOT_A_REGULAR_FILE)" );
+                  break;
+   
+               case GENERATE_MD5_NOT_A_DIRECTORY:
+                  
+                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_NOT_A_DIRECTORY)" );
                   break;
                
                case GENERATE_MD5_CHDIR_FAILED:

@@ -40,12 +40,22 @@ generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const 
    generate_md5_exit_status exit_status;
    
    
+   if ( ( strlen( file_name_and_path ) > ( PATH_MAX + 1 ) ) ||
+        ( strlen( output_directory ) > ( PATH_MAX + 1) ) )
+      return GENERATE_MD5_OVERFLOW_ERROR;
+   
    if ( stat( file_name_and_path, &file_info ) == -1 )
       return GENERATE_MD5_STAT_FAILED;
+   
+   if ( S_ISREG( file_info.st_mode ) == 0 )
+      return GENERATE_MD5_NOT_A_REGULAR_FILE;
    
    if ( stat( output_directory, &file_info ) == -1 )
       return GENERATE_MD5_STAT_FAILED;
    
+   if ( S_ISDIR( file_info.st_mode ) == 0 )
+      return GENERATE_MD5_NOT_A_DIRECTORY;
+
    strcpy( file_path, file_name_and_path );
    
    length = strlen( file_path );
@@ -118,11 +128,21 @@ verify_file_exit_status verify_file(const char *file_name_and_path, const char *
    verify_file_exit_status exit_status;
 
    
+   if ( ( strlen( file_name_and_path ) > ( PATH_MAX + 1 ) ) ||
+        ( strlen( md5sum_and_path ) > ( PATH_MAX + 1) ) )
+      return GENERATE_MD5_OVERFLOW_ERROR;
+   
    if ( stat( file_name_and_path, &file_info ) == -1 )
       return VERIFY_FILE_STAT_FAILED;
+
+   if ( S_ISREG( file_info.st_mode ) == 0 )
+      return VERIFY_FILE_NOT_A_REGULAR_FILE;
    
    if ( stat( md5sum_and_path, &file_info ) == -1 )
       return VERIFY_FILE_STAT_FAILED;
+   
+   if ( S_ISREG( file_info.st_mode ) == 0 )
+      return VERIFY_FILE_NOT_A_REGULAR_FILE;
    
    strcpy( file_path, file_name_and_path );
    

@@ -148,7 +148,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    for ( file_count = 0; file_count != files_to_combine; file_count++ )
      {
        if ( do_progress )
-         progress_window_set_message_text( progress.message, outfile );
+         progress_window_set_message_text( progress.message, infile );
        in = fopen( infile, "rb" );
        if ( in == NULL )
          {
@@ -218,14 +218,25 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Verify if desired. */
    if ( data->verify )
      {
+       progress_window_set_message_text( progress.message, "Verifying file." );
        infile[strlen( infile ) - 4] = '\0';
        strcat( infile, ".md5" );
        md5_return = verify_file( outfile, infile );
        switch ( md5_return )
        {
+          case VERIFY_FILE_OVERFLOW_ERROR:
+             
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_OVERFLOW_ERROR)" );
+             break;
+          
           case VERIFY_FILE_STAT_FAILED:
              
              display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_STAT_FAILED)" );
+             break;
+          
+          case VERIFY_FILE_NOT_A_REGULAR_FILE:
+             
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_NOT_A_REGULAR_FILE)" );
              break;
           
           case VERIFY_FILE_CHDIR_FAILED:

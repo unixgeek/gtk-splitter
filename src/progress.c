@@ -28,7 +28,7 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    /* Set up the window. */
    pwindow->main_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
    gtk_window_set_title( GTK_WINDOW( pwindow->main_window ), title );
-   //gtk_window_set_resizable( GTK_WINDOW( pwindow->main_window ), FALSE );
+   gtk_window_set_resizable( GTK_WINDOW( pwindow->main_window ), FALSE );
    
    /* Set up the table. */
    pwindow->table = gtk_table_new( 4, 2, FALSE );
