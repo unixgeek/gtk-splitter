@@ -75,8 +75,9 @@ int main(int argc, char *argv[])
 
    /* Setup widgets for inputing and displaying the selected
       file and selected output directory. */
-   main_window.open_button = gtk_button_new_with_label( "Open" );
-   main_window.output_button = gtk_button_new_with_label( "Output" );
+   main_window.open_button = gtk_button_new_from_stock( GTK_STOCK_OPEN );
+   //main_window.output_button = gtk_button_new_with_label( "Output" );
+   main_window.output_button = gtk_button_new_from_stock( GTK_STOCK_SAVE );
    main_window.file_name_box = gtk_entry_new( );
    main_window.output_box = gtk_entry_new( );
    gtk_entry_set_editable( GTK_ENTRY( main_window.file_name_box ), FALSE );
@@ -113,7 +114,8 @@ int main(int argc, char *argv[])
    gtk_option_menu_set_menu( GTK_OPTION_MENU( main_window.chunk_size_units ), main_window.units_menu );
 
    /* The button that starts the split or combine process. */
-   main_window.start_button = gtk_button_new_with_label( "Start" );
+   //main_window.start_button = gtk_button_new_with_label( "Start" );
+   main_window.start_button = gtk_button_new_from_stock( GTK_STOCK_EXECUTE );
 
    gtk_window_set_title( GTK_WINDOW( main_window.base_window ), "gtk-splitter" );
    gtk_container_set_border_width( GTK_CONTAINER( main_window.base_window ), 5 );
