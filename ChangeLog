@@ -1,3 +1,21 @@
+2003-06-09  gunter  <techgunter@yahoo.com>
+
+	* split.c, combine.c, callbacks.c, interface.c, file_selection.c,
+	  configure.in, md5.c, md5.h:
+	Replaced the old md5 wrapper code with the mhash library.
+	Removed md5.c and md5.h.
+	
+	* split.h, split.c, callbacks.c, callbacks.h, combine.c, 
+	  combine.h, file_selection.c, file_selection.h, globals.h,
+	  gtk-splitter.c, interface.c, interface.h, md5.c, md5.h,
+	  progress.c, progress.h:
+	Major code cleanup.
+	
+	* verify_dialog.c, verify_dialog.h, error.c, error.h, 
+          interface.c, interface.h, src/Makefile.am:
+        Relocated interface related code into a new module (interface.c).
+        Removed modules that were no longer needed (verify_dialog.c and error.c).
+	
 2003-03-14  gunter  <techgunter@yahoo.com>
 
 	* callbacks.c, callbacks.h, combine.c, combine.h, file_selection.c, 
