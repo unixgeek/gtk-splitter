@@ -1,4 +1,5 @@
 CFLAGS = -Wall @GTK_CFLAGS@
+gtk_splitter_LDADD = @GTK_LIBS@
 
 bin_PROGRAMS = gtk-splitter
 

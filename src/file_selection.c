@@ -61,7 +61,7 @@ void get_file_name(GtkWidget *tmp, gtk_splitter_window *gsw )
    gchar *selected_file;
    
    /* Get the selected file name from the dialog. */
-   selected_file = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
+   selected_file = ( gchar * ) gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
    
    set_file_name( gsw, selected_file );
 }
@@ -151,7 +151,7 @@ void get_directory_name(GtkWidget *tmp, gtk_splitter_window *gsw)
    
   
    /* Get the selected directory name from the user using the standard GTK+ file selection dialog. */
-   selected_directory = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
+   selected_directory = ( gchar * ) gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
  
    set_directory_name( gsw, selected_directory );
 }
