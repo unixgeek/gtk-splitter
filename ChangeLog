@@ -1,6 +1,7 @@
 2002-12-20  gunter <techgunter@yahoo.com>
 
-	* gtk-splitter.c, globals.h:
+	* configure.in, globals.h, gtk-splitter.c:
+	Added an icon to the main window.
 
 	* combine.c, split.c:
 	Style changes in the message text.
