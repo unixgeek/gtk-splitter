@@ -1,4 +1,9 @@
-2002-11-16  techgunter  <techgunter@solace>
+2002-11-23  techgunter  <techgunter@yahoo.com>
+
+	* callbacks.c:
+	Fixed a bug where 'units' was not getting defaulted to BYTES.
+
+2002-11-16  techgunter  <techgunter@yahoo.com>
 
 	* progress.c:
 	Tweaked the progress window.

@@ -119,7 +119,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /* Figure out how many files to split the selected file into. */
    stat( infile, &file_info );
    file_size = file_info.st_size;
-     
+
    /* Check to see if the file will be evenly split.
       If not, there will be one file with a smaller size. */
    number_of_even_files = ( gint ) file_info.st_size / chunk_size;
