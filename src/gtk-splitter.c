@@ -21,200 +21,37 @@
  */
 
 #include <gtk/gtk.h>
-#include <stdio.h>
-#include <string.h>
+#include <glib.h>
 #include <stdlib.h>
 #include <limits.h>
 #include "globals.h"
 #include "callbacks.h"
-#include "error.h"
+#include "interface.h"
 #include "file_selection.h"
 
-
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
    /* Used to automatically detect whether a file name read from
       the command-line should be split or combined. */
    char ext[4];
    char *ptr;
-   char *home;
    char resolved_name[PATH_MAX];
    
-   /* gtk_splitter_window is a struct containing all the widgets
-      for the main window of gtk-splitter. */
-   gtk_splitter_window main_window;
+   GtkSplitterWindow *main_window;
 
    /* Initialize gtk. */
    gtk_init( &argc, &argv );
 
-   /* Store the path to the user's home directory. */
-   home = getenv( "HOME" );
-   if ( home == NULL )
-     {
-       display_error( "Could not determine home directory.\n"
-                      "Check environment variables for $HOME." );
-       
-       /* Default to '/' as the user's home directory. */ 
-       strcpy( main_window.my_session_data.home_directory, "/" );
-     }
-   else
-     {
-       strcpy( main_window.my_session_data.home_directory, home );
-       strcat( main_window.my_session_data.home_directory, "/" );
-     }
-
-   /* Set the default output directory to the user's home directory. */
-   strcpy( main_window.my_session_data.output_directory, main_window.my_session_data.home_directory );
-
-   printf( "%s-%s Gunter Wambaugh\n", PACKAGE, VERSION );
-
-   /* Create a new top-level window. */
-   main_window.base_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-
-   /* Set the window so its dimensions are program controlled and not user controlled. */
-   gtk_window_set_policy( GTK_WINDOW( main_window.base_window ), FALSE, FALSE, TRUE );
-
-   /* Set the window icon. */
-   main_window.icon = gdk_pixbuf_new_from_file( ICON_AND_PATH, NULL );
-   if ( main_window.icon != NULL )
-      gtk_window_set_icon( GTK_WINDOW( main_window.base_window ), main_window.icon );
-
-   /* Create storage boxes with no spacing. */
-   main_window.base_box = gtk_vbox_new( FALSE, 0 );
-   main_window.box1 = gtk_hbox_new( FALSE, 0 );
-   main_window.box5 = gtk_hbox_new( FALSE, 0 );
-   main_window.box2 = gtk_hbox_new( TRUE, 0 );
-   main_window.box3 = gtk_hbox_new( TRUE, 0 );
-   main_window.box4 = gtk_hbox_new( TRUE, 0 );
-
-   /* Setup widgets for inputing and displaying the selected
-      file and selected output directory. */
-   main_window.open_button = gtk_button_new_from_stock( GTK_STOCK_OPEN );
-   main_window.output_button = gtk_button_new_from_stock( GTK_STOCK_SAVE );
-   main_window.file_name_box = gtk_entry_new( );
-   main_window.output_box = gtk_entry_new( );
-   gtk_entry_set_editable( GTK_ENTRY( main_window.file_name_box ), FALSE );
-   gtk_entry_set_editable( GTK_ENTRY( main_window.output_box ), FALSE );
-   gtk_entry_set_text( GTK_ENTRY( main_window.output_box ), main_window.my_session_data.home_directory );
-
-   /* Radio buttons for the split and combine options. */
-   main_window.split_button = gtk_radio_button_new_with_label( NULL, "Split" );
-   main_window.combine_button = gtk_radio_button_new_with_label_from_widget(
-                                GTK_RADIO_BUTTON( main_window.split_button ), "Combine" );
-
-   /* Toggle button for the DOS batch file option. */
-   main_window.batch_file_button = gtk_check_button_new_with_label(" Create DOS batch file" );
-
-   /* Toggle button for the verfiy file option. */
-   main_window.verify_button = gtk_check_button_new_with_label(" Verify" );
-
-   /* 1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4
-      (or so they say--depends on the FS) so (1.39 * 1048576) = 1457664. */
-   main_window.size_input_adj = GTK_ADJUSTMENT( gtk_adjustment_new( 1457664, 1, G_MAXFLOAT, 1, 5, 5 ) );
-   main_window.my_session_data.entry = 1457664;
-   main_window.my_session_data.unit = BYTES;
-   /* We can split up to 4 GB max? 4294967296-1 */
-
-   /* Widgets for inputing the chunk size. */
-   main_window.size_input = gtk_spin_button_new( main_window.size_input_adj, 1.0, 2 );
-   main_window.chunk_size_units = gtk_option_menu_new( );
-   main_window.units_menu = gtk_menu_new( );
-   main_window.unit_bytes = gtk_menu_item_new_with_label( "Bytes" );
-   main_window.unit_kilobytes = gtk_menu_item_new_with_label( "Kilobytes" );
-   main_window.unit_megabytes = gtk_menu_item_new_with_label( "Megabytes" );
-   gtk_menu_append( GTK_MENU( main_window.units_menu ), main_window.unit_bytes );
-   gtk_menu_append( GTK_MENU( main_window.units_menu ), main_window.unit_kilobytes );
-   gtk_menu_append( GTK_MENU( main_window.units_menu ), main_window.unit_megabytes );
-   gtk_option_menu_set_menu( GTK_OPTION_MENU( main_window.chunk_size_units ), main_window.units_menu );
-
-   /* The button that starts the split or combine process. */
-   main_window.custom_start_button = gtk_button_new( );
-   main_window.custom_start_button_alignment = gtk_alignment_new( 0.5, 0.5, 0, 0 );
-   main_window.custom_start_button_box = gtk_hbox_new( FALSE, 2 );
-   main_window.custom_start_button_image = gtk_image_new_from_stock( GTK_STOCK_JUMP_TO, GTK_ICON_SIZE_BUTTON );
-   main_window.custom_start_button_label = gtk_label_new_with_mnemonic( "S_tart" );
-   gtk_container_add( GTK_CONTAINER( main_window.custom_start_button ), main_window.custom_start_button_alignment );
-   gtk_container_add( GTK_CONTAINER( main_window.custom_start_button_alignment ), main_window.custom_start_button_box );
-   gtk_box_pack_start( GTK_BOX( main_window.custom_start_button_box ), main_window.custom_start_button_image, FALSE, FALSE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.custom_start_button_box ), main_window.custom_start_button_label, FALSE, FALSE, 0 );
-   gtk_label_set_justify( GTK_LABEL( main_window.custom_start_button_label ), GTK_JUSTIFY_LEFT );
-   
-
-   gtk_window_set_title( GTK_WINDOW( main_window.base_window ), "gtk-splitter" );
-   gtk_container_set_border_width( GTK_CONTAINER( main_window.base_window ), 5 );
-
-   /* Put the gui together. */
-   gtk_container_add( GTK_CONTAINER( main_window.base_window ), main_window.base_box );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.box1, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.box5, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.box2, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.box3, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.verify_button, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.batch_file_button, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.base_box ), main_window.box4, TRUE, TRUE, 0 );
-
-   gtk_box_pack_start( GTK_BOX( main_window.box1 ), main_window.open_button, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.box1 ), main_window.file_name_box, FALSE, TRUE, 0 );
-   gtk_box_set_spacing( GTK_BOX( main_window.box1 ), 5 );
-
-   gtk_box_pack_start( GTK_BOX( main_window.box5 ), main_window.output_button, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.box5 ), main_window.output_box, FALSE, TRUE, 0 );
-   gtk_box_set_spacing( GTK_BOX( main_window.box5 ), 5 );
-
-   gtk_box_pack_start( GTK_BOX( main_window.box2 ), main_window.split_button, TRUE, TRUE, 10 );
-   gtk_box_pack_start( GTK_BOX( main_window.box2 ), main_window.combine_button, TRUE, TRUE, 10 );
-
-   gtk_box_pack_start( GTK_BOX( main_window.box3 ), main_window.size_input, TRUE, TRUE, 0 );
-   gtk_box_pack_start( GTK_BOX( main_window.box3 ), main_window.chunk_size_units, TRUE, TRUE, 0 );
-
-   gtk_box_pack_start( GTK_BOX( main_window.box4 ), main_window.custom_start_button, TRUE, TRUE, 20 );
-   /* The end of putting the gui together. */
+   main_window = gtk_splitter_main_window_new( );
 
    /* Initialize session data. */
-   initialize_session_data( &main_window.my_session_data );
-   initialize_splitter_window( &main_window );
-
-   /* Different signals the gui listens for.*/
-   /* Most callbacks listed here are defined in callbacks.h */
-   g_signal_connect( GTK_OBJECT( main_window.base_window), "destroy",
-                     G_CALLBACK( gtk_main_quit ), NULL);
-
-   g_signal_connect( GTK_OBJECT( main_window.split_button ), "clicked",
-                     G_CALLBACK( toggle_split), ( gpointer ) &main_window );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.combine_button ), "clicked",
-                     G_CALLBACK( toggle_combine ), ( gpointer ) &main_window );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.size_input_adj ), "value_changed",
-                     G_CALLBACK(set_data), ( gpointer ) &main_window );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.custom_start_button ), "clicked",
-                     G_CALLBACK( start_split_or_combine ), ( gpointer ) &main_window );
-
-   g_signal_connect( GTK_OBJECT( main_window.open_button ), "clicked",
-                     G_CALLBACK( get_file_name_dialog ), ( gpointer ) &main_window );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.output_button ), "clicked",
-                     G_CALLBACK( get_directory_name_dialog ), ( gpointer ) &main_window );
-
-   g_signal_connect( GTK_OBJECT( main_window.batch_file_button ), "toggled",
-                     G_CALLBACK( toggle_batch ), ( gpointer ) &main_window.my_session_data );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.verify_button ), "toggled",
-                     G_CALLBACK( toggle_verify ), ( gpointer ) &main_window.my_session_data );
-                       
-   g_signal_connect( GTK_OBJECT( main_window.unit_bytes ), "activate",
-                     G_CALLBACK( set_unit_bytes ), ( gpointer ) &main_window.my_session_data );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.unit_kilobytes ), "activate",
-                     G_CALLBACK( set_unit_kilobytes ), ( gpointer ) &main_window.my_session_data );
-                     
-   g_signal_connect( GTK_OBJECT( main_window.unit_megabytes ), "activate",
-                     G_CALLBACK( set_unit_megabytes ), ( gpointer ) &main_window.my_session_data );
-   /* End of callbacks. */
+   initialize_session_data( main_window->session_data );
+   initialize_splitter_window( main_window );
+    
+   g_print( "%s-%s Gunter Wambaugh\n", PACKAGE, VERSION );
 
    /* Display the gui on the screen. */
-   gtk_widget_show_all( main_window.base_window );
+   gtk_widget_show_all( main_window->base_window );
    
    /* Determine whether a file name read from
       the command-line should be split or combined. */
@@ -224,7 +61,7 @@ int main(int argc, char *argv[])
         
        if ( ptr != NULL )
          {
-           set_file_name( &main_window, resolved_name );
+           set_file_name( main_window, resolved_name );
 
            if ( strlen( resolved_name ) >= 3 )
              {
@@ -237,14 +74,16 @@ int main(int argc, char *argv[])
                if ( strcmp( ext, "001" ) == 0 )
                  {
                    /* Start with the combine button selected. */
-                   gtk_button_clicked( GTK_BUTTON( main_window.combine_button ) );
+                   gtk_button_clicked( GTK_BUTTON( main_window->combine_button ) );
                  } 
              }
          }
      }
 
    /* Run the main loop of gtk. */
-   gtk_main();
+   gtk_main( );
 
+   gtk_splitter_main_window_destroy( main_window );
+   
    return 0;
 }

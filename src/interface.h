@@ -1,5 +1,5 @@
 /* 
- * error.h
+ * interface.h
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -19,12 +19,18 @@
  * along with gtk-splitter; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
-#ifndef ERROR_H
-#define ERROR_H
+#include "globals.h"
 
-#include <gtk/gtk.h>
+GtkSplitterWindow* gtk_splitter_main_window_new( );
 
-void display_error(gchar *);
+void gtk_splitter_main_window_destroy( GtkSplitterWindow *gsw );
 
-#endif /* ERROR_H */
+void display_error( gchar *error );
+
+void display_verification( gboolean verified );
+
+#endif /* INTERFACE_H */

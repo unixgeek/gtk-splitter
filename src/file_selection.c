@@ -20,23 +20,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <string.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "globals.h"
-#include "error.h"
+#include "interface.h"
 #include "file_selection.h"
 
 /* For choosing a file with the gtk open dialog. */ //remove file_selection_dialog
-void get_file_name_dialog(GtkWidget *main_window, gtk_splitter_window *gsw)
+void get_file_name_dialog( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
    /* Set up a simple gtk file selection dialog. */
    gsw->file_selection_dialog = gtk_file_selection_new( "Select a file." );
 
    /* Default the dialog to the user's home directory. */
    gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
-                                    gsw->my_session_data.home_directory );
+                                    gsw->session_data->home_directory );
    
    /* Hide the create, delete, and rename buttons. */
    gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
@@ -53,12 +53,12 @@ void get_file_name_dialog(GtkWidget *main_window, gtk_splitter_window *gsw)
 	                          "clicked", G_CALLBACK( gtk_widget_destroy ),
                              ( gpointer ) gsw->file_selection_dialog );
 
-   /*Display the dialog.*/
+   /* Display the dialog. */
    gtk_widget_show( gsw->file_selection_dialog );
 }
 
 /* Gets the file name from get_file_name_dialog(). */
-void get_file_name(GtkWidget *tmp, gtk_splitter_window *gsw )
+void get_file_name( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
    gchar *selected_file;
    
@@ -69,10 +69,9 @@ void get_file_name(GtkWidget *tmp, gtk_splitter_window *gsw )
 }
 
 /* Sets the file name in the GUI and session_data struct. */
-void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
+void set_file_name( GtkSplitterWindow *gsw, gchar *file_name_to_set )
 {
-   
-   gushort i, j, path_only_count;
+   gchar *pos;
    struct stat file_information;
    
    if ( stat( file_name_to_set, &file_information )  == -1 )
@@ -80,32 +79,20 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
        display_error( "file_selection.c:  Could not stat file." );
    }
    /* Copy the selected file name (full path). */
-   strcpy(gsw->my_session_data.file_name_and_path, file_name_to_set);
+   g_stpcpy( gsw->session_data->file_name_and_path, file_name_to_set );
 
-   /* The path only length is going to be AT MOST the length of the file name and path. */
-   path_only_count = strlen( gsw->my_session_data.file_name_and_path );
-
-   /* Start at the end and count backwards till we find a '/'. */
-   while ( ( gsw->my_session_data.file_name_and_path[path_only_count] != '/' ) && ( path_only_count != 0 ) )
-     path_only_count--;
-
-   /* Add the count of the last '/'. */
-   if ( path_only_count != 0 )
-     path_only_count++;
-
-   /* Copy the file name only. */
-   j = 0;
-   for ( i = path_only_count; i != strlen( gsw->my_session_data.file_name_and_path ); i++ )
-     {
-       gsw->my_session_data.file_name_only[j] = gsw->my_session_data.file_name_and_path[i];
-       j++;
-     }
-
-   /* Add the null terminator. */
-   gsw->my_session_data.file_name_only[j] = '\0';
-     
-   /* Set the filename in the entry box. */
-   gtk_entry_set_text( GTK_ENTRY( gsw->file_name_box ), gsw->my_session_data.file_name_only );
+   pos = g_strrstr( gsw->session_data->file_name_and_path, "/" );
+   
+   /* Increment past the '/'. */
+   pos++; 
+   
+   if ( pos != NULL )
+       g_stpcpy( gsw->session_data->file_name_only, pos );
+   else
+       g_stpcpy( gsw->session_data->file_name_only, gsw->session_data->file_name_and_path );
+   
+    /* Set the filename in the entry box. */
+   gtk_entry_set_text( GTK_ENTRY( gsw->file_name_box ), gsw->session_data->file_name_only );
 
    /* Set the gui so that all of the buttons active. */
    gtk_widget_set_sensitive( gsw->split_button, TRUE );
@@ -114,12 +101,13 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
    gtk_widget_set_sensitive( gsw->size_input, TRUE );
    gtk_widget_set_sensitive( gsw->chunk_size_units, TRUE );
    gtk_widget_set_sensitive( gsw->custom_start_button, TRUE );
+#ifdef HAVE_LIBMHASH
    gtk_widget_set_sensitive( gsw->verify_button, TRUE );
-
+#endif
 }
 
 /* For choosing a directory with the gtk open dialog. */
-void get_directory_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
+void get_directory_name_dialog( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
    /* Set up a simple gtk file selection dialog. */
    gsw->file_selection_dialog = gtk_file_selection_new( "Select the output directory." );
@@ -127,7 +115,7 @@ void get_directory_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
    /* Default the dialog to the last chosen output directory.
       (On first run, output_directory is set to the user's home directory.) */
    gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
-                                    gsw->my_session_data.output_directory );
+                                    gsw->session_data->output_directory );
    
    /* Hide the create, delete, and rename buttons. */
    gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
@@ -152,11 +140,10 @@ void get_directory_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
 }
 
 /* Gets the directory name from get_file_name_dialog(). */
-void get_directory_name(GtkWidget *tmp, gtk_splitter_window *gsw)
+void get_directory_name( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
    gchar *selected_directory;
    
-  
    /* Get the selected directory name from the user using the standard GTK+ file selection dialog. */
    selected_directory = ( gchar * ) gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
  
@@ -164,12 +151,11 @@ void get_directory_name(GtkWidget *tmp, gtk_splitter_window *gsw)
 }
 
 /* Sets the directory name in the GUI and session_data struct. */
-void set_directory_name(gtk_splitter_window *gsw, gchar *directory_name_to_set)
+void set_directory_name( GtkSplitterWindow *gsw, gchar *directory_name_to_set )
 {
- 
    /* Set output_directory to selected_dir. */
-   strcpy( gsw->my_session_data.output_directory, directory_name_to_set );
+   g_stpcpy( gsw->session_data->output_directory, directory_name_to_set );
 
    /* Display the new directory in the main window. */
-   gtk_entry_set_text( GTK_ENTRY( gsw->output_box ), gsw->my_session_data.output_directory );
+   gtk_entry_set_text( GTK_ENTRY( gsw->output_box ), gsw->session_data->output_directory );
 }

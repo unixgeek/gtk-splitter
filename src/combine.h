@@ -27,6 +27,6 @@
 #include "globals.h"
 
 /* Combine the selected file. */
-gboolean gtk_splitter_combine_files(GtkWidget *, session_data *);
+gboolean gtk_splitter_combine_files( GtkSplitterSessionData * );
 
 #endif /* COMBINE_H */

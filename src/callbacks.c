@@ -22,80 +22,95 @@
 
 #include <gtk/gtk.h>
 #include <limits.h>
+#include <stdlib.h>
 #include "callbacks.h"
 #include "split.h"
 #include "combine.h"
 #include "globals.h"
+#include "interface.h"
 
 /* Set the units to 'bytes'. */
-void set_unit_bytes(GtkWidget *tmp, session_data *data)
+void set_unit_bytes( GtkWidget *widget, GtkSplitterSessionData *gssd )
 {
-   data->unit = BYTES;
+   gssd->unit = BYTES;
 }
 
 /* Set the units to 'kilobytes'. */
-void set_unit_kilobytes(GtkWidget *tmp, session_data *data)
+void set_unit_kilobytes( GtkWidget *widget, GtkSplitterSessionData *gssd )
 {
-   data->unit = KILOBYTES;
+   gssd->unit = KILOBYTES;
 }
 
 /* Set the units to 'megabytes'. */
-void set_unit_megabytes(GtkWidget *tmp, session_data *data)
+void set_unit_megabytes( GtkWidget *widget, GtkSplitterSessionData *gssd )
 {
-   data->unit = MEGABYTES;
+   gssd->unit = MEGABYTES;
 }
 
 /* When the value in the spin button is changed, store the value. */
-void set_data(GtkWidget *tmp, gtk_splitter_window *gsw)
+void set_data( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
-   gsw->my_session_data.entry = gtk_spin_button_get_value_as_float( GTK_SPIN_BUTTON( gsw->size_input ) );
+   gsw->session_data->entry = gtk_spin_button_get_value_as_float( GTK_SPIN_BUTTON( gsw->size_input ) );
 }
 
 /* Initial settings for the session_data. */
-void initialize_session_data(session_data *data)
+void initialize_session_data( GtkSplitterSessionData *gssd )
 {
-   int i;
+   gint i;
+   gchar *home;
    
    /* Clear the strings. */
    for ( i = 0; i!= PATH_MAX; i++ )
      {
-       data->file_name_only[i] = '\0';
-       data->file_name_and_path[i] = '\0';
+       gssd->file_name_only[i] = '\0';
+       gssd->file_name_and_path[i] = '\0';
      }
+   
      
-   /* Split is the default action. */
-   data->split = TRUE;
+   /* Store the path to the user's home directory. */
+   home = getenv( "HOME" );
+   if ( home == NULL )
+     {
+       display_error( "Could not determine home directory.\n"
+                      "Check environment variables for $HOME." );
+       
+       /* Default to '/' as the user's home directory. */ 
+       g_sprintf( gssd->home_directory, "/" );
+     }
+   else
+     {
+       g_sprintf( gssd->home_directory, "%s/", home );
+     }
 
-   /* Set the default chunk_size. (1.44MB) */
-   //data->entry = 1457664;
-   //data->unit = BYTES;
+   /* Set the default output directory to the user's home directory. */
+   g_stpcpy( gssd->output_directory, gssd->home_directory );
+
+   /* Split is the default action. */
+   gssd->split = TRUE;
    
    /* Don't create a dos batch file by default. */
-   data->create_batchfile = FALSE;
-
-   /* Verify file by default. */
-   data->verify = TRUE;
+   gssd->create_batchfile = FALSE;
 }
 
 /* Initial settings for the main window.*/
-void initialize_splitter_window(gtk_splitter_window *gsw)
+void initialize_splitter_window( GtkSplitterWindow *gsw )
 {
    /* Insure that the split button is clicked. */
    gtk_button_clicked( GTK_BUTTON( gsw->split_button ) );
-   
-   /* Set the display to the default chunk size. (1.44MB) */
-   //gtk_adjustment_set_value( gsw->size_input_adj , 1457664 );
 
-   /* The default unit is bytes. */
-   //gtk_menu_item_select( GTK_MENU_ITEM( gsw->unit_bytes ) );
-   
+   /* Show the defauult output_directory. */
+   gtk_entry_set_text( GTK_ENTRY( gsw->output_box ), gsw->session_data->home_directory );    
+    
    /* Don't create a dos batch file by default. */
    gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( gsw->batch_file_button ), FALSE );
 
+ #ifdef HAVE_LIBMHASH   
    /* Verify file by default. */
    gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( gsw->verify_button ), TRUE );
-   
-   /* Disable all buttons, except for the open button.
+   gsw->session_data->verify = TRUE;
+#endif
+    
+    /* Disable all buttons, except for the open button.
      This is so that nothing is done until a file is selected. */
    gtk_widget_set_sensitive( gsw->split_button, FALSE );
    gtk_widget_set_sensitive( gsw->combine_button, FALSE );
@@ -103,17 +118,18 @@ void initialize_splitter_window(gtk_splitter_window *gsw)
    gtk_widget_set_sensitive( gsw->size_input, FALSE );
    gtk_widget_set_sensitive( gsw->chunk_size_units, FALSE );
    gtk_widget_set_sensitive( gsw->custom_start_button, FALSE );
+#ifdef HAVE_LIBMHASH
    gtk_widget_set_sensitive( gsw->verify_button, FALSE );
-
+#endif
 
    /* Clear the filename in the entry box. */
    gtk_entry_set_text( GTK_ENTRY( gsw->file_name_box), "" );
 }
 
 /* Settings for the split action. */
-void toggle_split(GtkWidget *tmp, gtk_splitter_window *gsw)
+void toggle_split( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
-   gsw->my_session_data.split = TRUE;
+   gsw->session_data->split = TRUE;
 
    /* Enable buttons related to the split action. */
    gtk_widget_set_sensitive( gsw->batch_file_button, TRUE );
@@ -122,9 +138,9 @@ void toggle_split(GtkWidget *tmp, gtk_splitter_window *gsw)
 }
 
 /* Settings for the combine action. */
-void toggle_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
+void toggle_combine( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
-   gsw->my_session_data.split = FALSE;
+   gsw->session_data->split = FALSE;
 
    /* Disable buttons not related to the combine action. */
    gtk_widget_set_sensitive( gsw->batch_file_button, FALSE );
@@ -133,19 +149,21 @@ void toggle_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
 }
 
 /* Set the batcfile option. */
-void toggle_batch(GtkWidget *tmp, session_data *data)
+void toggle_batch( GtkWidget *widget, GtkSplitterSessionData *gssd )
 {
-   data->create_batchfile = !data->create_batchfile;
+   gssd->create_batchfile = !gssd->create_batchfile;
 }
 
+#ifdef HAVE_LIBMHASH
 /* Set the verify option. */
-void toggle_verify(GtkWidget *tmp, session_data *data)
+void toggle_verify( GtkWidget *widget, GtkSplitterSessionData *gssd )
 {
-   data->verify = !data->verify;
+   gssd->verify = !gssd->verify;
 }
+#endif
 
 /* Start either the split or combine process. */
-void start_split_or_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
+void start_split_or_combine( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
    gboolean do_initialization;
 
@@ -154,16 +172,16 @@ void start_split_or_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
 
    /* split() and combine() return a boolean value.
       This is used to recover from non-critical errors that may occur in split() or combine(). */
-   if ( gsw->my_session_data.split )
-     do_initialization = gtk_splitter_split_file( tmp, &gsw->my_session_data );
+   if ( gsw->session_data->split )
+     do_initialization = gtk_splitter_split_file( gsw->session_data );
    else
-     do_initialization = gtk_splitter_combine_files( tmp, &gsw->my_session_data );
+     do_initialization = gtk_splitter_combine_files( gsw->session_data );
 
    /* If split or combine return TRUE, then reset the session_data and the main window. */
    if ( do_initialization )
      {
        initialize_splitter_window( gsw );
-       initialize_session_data( &gsw->my_session_data );
+       initialize_session_data( gsw->session_data );
      }
 
    /* Show the main window. */

@@ -34,16 +34,16 @@
 /* session_data is a struct containing information related to a selected file. */
 typedef struct
   {
-    gchar file_name_and_path[PATH_MAX];
-    gchar file_name_only[PATH_MAX];
     gfloat entry;
     enum {BYTES, KILOBYTES, MEGABYTES} unit;
-    gboolean split;
-    gboolean create_batchfile;
+    gchar file_name_and_path[PATH_MAX];
+    gchar file_name_only[PATH_MAX];
     gchar home_directory[PATH_MAX];
     gchar output_directory[PATH_MAX];
     gboolean verify;
-  } session_data;
+    gboolean split;
+    gboolean create_batchfile;    
+  } GtkSplitterSessionData;
 
 /* gtk_splitter_window is a struct for storing widgets related to the main
    window of gtk-splitter. */
@@ -78,7 +78,7 @@ typedef struct
     GtkWidget *size_input;
     GtkWidget *file_selection_dialog;
     GdkPixbuf *icon;
-    session_data my_session_data;
-  } gtk_splitter_window;
+    GtkSplitterSessionData *session_data;
+  } GtkSplitterWindow;
 
 #endif /* GLOBALS_H */

@@ -3,7 +3,7 @@ AC_INIT(src/gtk-splitter.c)
 
 dnl -- Package information. --
 PACKAGE=gtk-splitter
-VERSION=2.1
+VERSION=2.2
 
 dnl -- Initialize Automake. --
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
@@ -20,10 +20,13 @@ AC_PROG_INSTALL
 dnl -- Set the path to the icon. --
 AC_DEFINE_UNQUOTED(ICON_AND_PATH, "${prefix}/share/pixmaps/gtk-splitter.png")
 
-dnl -- Check for GTK+2.0 and pkg-config. --
+dnl -- Check for GTK+-2.x, Glib-2.x and pkg-config. --
 PKG_CHECK_MODULES(GTK,"gtk+-2.0") 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
+
+dnl -- Check for MHASH
+AC_CHECK_LIB(mhash, mhash_init, , [have_mhash="no"])
 
 dnl -- Create package building scripts. --
 AC_CONFIG_FILES(build_rpm.sh, chmod +x build_rpm.sh)
@@ -37,12 +40,12 @@ AC_OUTPUT([ Makefile
           ])
 
 dnl -- Dislpay some information. --
-AC_MSG_RESULT(--------------------------------------------------------)
-AC_MSG_RESULT()
-AC_MSG_RESULT(If this configure script fails to look for something)
-AC_MSG_RESULT(send me an email:  techgunter@yahoo.com)
-AC_MSG_RESULT()
-AC_MSG_RESULT(Type 'make' and then (as root) 'make install'.)
-AC_MSG_RESULT()
-AC_MSG_RESULT(--------------------------------------------------------)
-AC_MSG_RESULT()
+echo "--------------------------------------------------------"
+if test "$have_mhash" == "no"; 
+then
+   echo "The mhash library was not found, so verification"
+   echo "support will not be compiled."
+fi
+
+echo "Type 'make' and then (as root) 'make install'."
+echo "--------------------------------------------------------"

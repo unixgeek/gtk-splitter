@@ -26,16 +26,16 @@
 #include <gtk/gtk.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "md5.h"
-#include "error.h"
+#include <mhash.h>
+#include "interface.h"
 #include "globals.h"
 #include "progress.h"
 #include "dostextfile.h"
 
-gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
+gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
 {
    /* Progress window stuff. */
-   progress_window progress;
+   ProgressWindow *progress_window = NULL;
    gboolean do_progress;
 
    /* FILE streams. */
@@ -72,50 +72,48 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
    /* The size the file should be split into. */
    gulong chunk_size;
 
-   /* The return value of generate_md5_sum( ) */
-   generate_md5_return_type md5_return;
-
+#ifdef HAVE_LIBMHASH
+   /* For mhash. */
+   unsigned char hash[16];
+   MHASH thread;
+   gchar md5_file[PATH_MAX];
+   FILE *md5;
+   int i;
+#endif
    
    /* Setup the infile string. */
-   strcpy( infile, data->file_name_and_path );
+   g_stpcpy( infile, gssd->file_name_and_path );
    
    /* Setup the outfile string. */
-   strcpy( outfile, data->output_directory );
-   strcat( outfile, data->file_name_only );
-   strcat( outfile, "." );
-   strcat( outfile, ext );
+   g_sprintf( outfile, "%s%s.%s", gssd->output_directory, gssd->file_name_only, ext );
   
    /* Setup strings used when creating a batch file. */
-   if ( data->create_batchfile )
+   if ( gssd->create_batchfile )
      {
        /* Setup the outfile_only string.
           If the file name is too long, truncate it.
           Also, convert some characters to '_'. */
-       strcpy( outfile_only, data->file_name_only );
+       g_stpcpy( outfile_only, gssd->file_name_only );
        dosify_file_name( outfile_only );
-      
-       /* Re-setup the outfile string. */
-       strcpy( outfile, data->output_directory );
-       strcat( outfile, outfile_only );
-       strcat( outfile, "." );
-       strcat( outfile, ext );
+                
+      /* Re-setup the outfile string. */
+       g_sprintf( outfile, "%s%s.%s", gssd->output_directory, outfile_only, ext );
 
        /* Setup the batchname_and_path string. */ 
-       strcpy( batchname_and_path, data->output_directory );
-       strcat( batchname_and_path, outfile_only );
-       strcat( batchname_and_path, ".bat" ); 
+       g_sprintf( batchname_and_path, "%s%s.bat", gssd->output_directory, outfile_only ); 
      }
-   
-   chunk_size = 0;
+
    /* Determine chunk_size (bytes). */
-   switch ( data->unit )
+   switch ( gssd->unit )
      {
-       case BYTES      :  chunk_size = data->entry;
+       case BYTES      :  chunk_size = gssd->entry;
                           break;
-       case KILOBYTES  :  chunk_size = ( data->entry * 1024 );
-			                 break;
-       case MEGABYTES  :  chunk_size = ( data->entry * 1024 * 1024 );
-			                 break;
+       case KILOBYTES  :  chunk_size = ( gssd->entry * 1024 );
+			              break;
+       case MEGABYTES  :  chunk_size = ( gssd->entry * 1024 * 1024 );
+			              break;
+       default         :  chunk_size = gssd->entry;
+                          break;
      }
   
    /* Figure out how many files to split the selected file into. */
@@ -154,14 +152,15 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
    else
      {
        do_progress = TRUE;
-       create_progress_window( &progress, "Split Progress" );
-       gtk_widget_show_all( progress.main_window );
+       progress_window = progress_window_new( );
+       gtk_window_set_title( GTK_WINDOW( progress_window->base_window ), "Split Progress" );
+       gtk_widget_show_all( progress_window->base_window );
        while ( g_main_iteration( FALSE ) );
      }
 
    batch = NULL;
    /*---Setup a batchfile if so desired.------------------------------------------------------------*/
-   if ( data->create_batchfile )
+   if ( gssd->create_batchfile )
      {
  
        batch = fopen( batchname_and_path, "wb+" );
@@ -169,7 +168,7 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
          {
            display_error( "split.c:  Could not create the batch file." );
            if ( do_progress )
-              destroy_progress_window( &progress );
+              progress_window_destroy( progress_window );
            return FALSE;
 	      }
        /* Write some header information to the batchfile. */
@@ -181,99 +180,29 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
        writeln_dostextfile( batch, " Gunter Wambaugh" );
        writeln_dostextfile( batch, "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
        write_dostextfile( batch, "Echo Original File Name:  " );
-       writeln_dostextfile( batch, data->file_name_only );
+       writeln_dostextfile( batch, gssd->file_name_only );
        write_dostextfile( batch, "Echo Creating " );
        writeln_dostextfile( batch, outfile_only );
        write_dostextfile( batch, "copy /b " );
        /* End of header information */
+          
+       strcat( outfile_only, ".ext" ); /* Potential BUG. */
          
-       /* Reserve four spaces for the extension; it will change later. */
-       strcat(outfile_only, ".ext"); /* Potential BUG. */
-     }
+          }
    /*---Done with setting up the batcfhile.-------------------------------------------------------------*/
 
 
-   /* Create an md5sum of the selected file, if desired. */
-   if ( data->verify )
-     {
-       if ( do_progress )
-          progress_window_set_message_text( progress.message, "Generating md5 sum..." );
-       
-       md5_return = generate_md5_sum( data->file_name_and_path, data->output_directory );
-       
-       /* See if the return was okay first. */
-       if ( md5_return != GENERATE_MD5_MD5SUM_EXIT_OK )
-         {
-           switch ( md5_return )
-             {
-               case GENERATE_MD5_OVERFLOW_ERROR:
-                  
-                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_OVERFLOW_ERROR)" );
-                  break;
-               
-               case GENERATE_MD5_STAT_FAILED:
-                  
-                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_STAT_FAILED)" );
-                  break;
-               
-               case GENERATE_MD5_NOT_A_REGULAR_FILE:
-                  
-                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_NOT_A_REGULAR_FILE)" );
-                  break;
-   
-               case GENERATE_MD5_NOT_A_DIRECTORY:
-                  
-                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_NOT_A_DIRECTORY)" );
-                  break;
-               
-               case GENERATE_MD5_CHDIR_FAILED:
-                  
-                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_CHDIR_FAILED)" );
-                  break;
-                  
-               case GENERATE_MD5_SYSTEM_ERROR:
-                  
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_ERROR)" );
-                  break;
-               
-               case GENERATE_MD5_SYSTEM_SH_NOT_AVAILABLE:
-                  
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_SH_NOT_AVAILABLE)" ); 
-                  break;
-               
-               case GENERATE_MD5_SYSTEM_SH_EXEC_ERROR:
-                 
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_SH_EXEC_ERROR)" ); 
-                  break;
-               
-               case GENERATE_MD5_MD5SUM_EXIT_OK:
-                  
-                  break;
-               
-               case GENERATE_MD5_MD5SUM_EXIT_FAILURE:  
-                  
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_MD5SUM_EXIT_FAILURE)" );
-                  break;
-               
-               case GENERATE_MD5_EXIT_STATUS_UNKNOWN:
-                  
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_EXIT_STATUS_UNKNOWN)" );
-                  break;
-             }
-         }
-     } 
-     
    /* Open the selected file. */
    in = fopen( infile, "rb" );
    if ( in == NULL )
      {
        display_error( "split.c:  Could not open the selected file." );
-       if ( data->create_batchfile )
+       if ( gssd->create_batchfile )
          {
            fclose( batch );
          }
        if ( do_progress )
-          destroy_progress_window( &progress );
+          progress_window_destroy( progress_window );
        return FALSE;
      }
 
@@ -283,12 +212,12 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
      {
        display_error( "split.c:  Could not create an output file." );
        fclose( in );
-       if ( data->create_batchfile )
+       if ( gssd->create_batchfile )
          {
            fclose( batch );
          }
        if ( do_progress )
-          destroy_progress_window( &progress );
+          progress_window_destroy( progress_window );
        return FALSE;
      }
    
@@ -297,7 +226,8 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
    for ( file_count = 1; file_count <= number_of_parts; file_count++ )
      {
        if ( do_progress )  /* Display the file name we are creating. */
-         progress_window_set_message_text( progress.message, outfile );
+         gtk_label_set_text( GTK_LABEL( progress_window->message ), outfile );
+while ( g_main_iteration( FALSE ) );       
        /* The leftover file. (?) */
        if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( number_of_parts ) ) )
          {
@@ -308,12 +238,13 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
                bytes_read++;
                if ( ( do_progress ) && ( ( byte_count % UPDATE_INTERVAL ) == 0 ) )
                  {
-                   progress_window_set_percentage( progress.current_progress,
-                                                 ( ( gfloat ) byte_count ) / 
-                                                 ( ( gfloat ) size_of_leftover_file ) );
-                   progress_window_set_percentage( progress.total_progress,
-                                                 ( ( gfloat ) bytes_read ) /
-                                                 ( ( gfloat ) file_size ) );
+                   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( progress_window->current_progress ),
+                                                ( ( gfloat ) byte_count ) / 
+                                                ( ( gfloat ) size_of_leftover_file ) );
+                   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( progress_window->total_progress ),
+                                                ( ( gfloat ) bytes_read ) /
+                                                ( ( gfloat ) file_size ) );
+                   while ( g_main_iteration( FALSE ) );
                  }
              }
          }
@@ -326,18 +257,19 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
                bytes_read++;
                if ( ( do_progress ) && ( ( byte_count % UPDATE_INTERVAL ) == 0 ) )
                  {
-                   progress_window_set_percentage( progress.current_progress,
-							                            ( ( gfloat ) byte_count ) / 
-                                                 ( ( gfloat ) chunk_size ) );
-                   progress_window_set_percentage( progress.total_progress,
-							                            ( ( gfloat ) bytes_read ) /
-                                                 ( ( gfloat ) file_size ) );
+                   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( progress_window->current_progress ),
+							                      ( ( gfloat ) byte_count ) / 
+                                                  ( ( gfloat ) chunk_size ) );
+                   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( progress_window->total_progress ),
+							                      ( ( gfloat ) bytes_read ) /
+                                                  ( ( gfloat ) file_size ) );
+                   while ( g_main_iteration( FALSE ) );  
                  }
              }
          }
 
        /* Copy the outfile name to the batch file. */
-       if ( data->create_batchfile )
+       if ( gssd->create_batchfile )
          {
            if ( strcmp( ext, "001" ) != 0 )
              write_dostextfile( batch, "+" );
@@ -370,12 +302,12 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
          {
            display_error( "split.c:  Could not close an output file." );
            fclose( in );
-           if ( data->create_batchfile )
+           if ( gssd->create_batchfile )
              {
                fclose( batch );
              }
           if ( do_progress )
-             destroy_progress_window( &progress );
+             progress_window_destroy( progress_window );
           return FALSE;
          }
 
@@ -391,39 +323,91 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
              {
                display_error( "split.c:  Could not create an output file." );
                fclose( in );
-               if ( data->create_batchfile )
+               if ( gssd->create_batchfile )
                  {
                    fclose( batch );
                  }
                if ( do_progress )
-                  destroy_progress_window( &progress );
+                  progress_window_destroy( progress_window );
                return FALSE;
              }
          }
      }
-     /* End of split process. */
+   /* End of split process. */
 
+#ifdef HAVE_LIBMHASH     
+   /* Create an md5sum of the selected file, if desired. */
+   if ( gssd->verify )
+     {
+       if ( do_progress )
+          gtk_label_set_text( GTK_LABEL( progress_window->message ), "Generating md5 sum..." );
+     
+       thread = mhash_init( MHASH_MD5 );
+       
+       if ( thread == MHASH_FAILED )
+          display_error( "split.c:  Error generating md5 sum." );
+       else
+       {
+          bytes_read = 0;
+          fseek( in, 0, SEEK_SET );
+          while ( fread( &temp, 1, 1, in ) == 1 ) 
+          {
+            mhash( thread, &temp, 1 );
+            bytes_read++;
+            if ( ( do_progress ) && ( ( bytes_read % UPDATE_INTERVAL ) == 0 ) )  
+            {
+               gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( progress_window->current_progress ),
+                                                ( ( gfloat ) bytes_read ) /
+                                                ( ( gfloat ) file_size ) );
+               gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( progress_window->total_progress ),
+                                                ( ( gfloat ) bytes_read ) /
+                                                ( ( gfloat ) file_size ) );
+               while ( g_main_iteration( FALSE ) );  
+            }
+          }
+          
+          mhash_deinit( thread, hash );
+          outfile[strlen( outfile ) - 4] = '\0';
+          g_sprintf( md5_file, "%s.md5", outfile );
+          md5 = fopen( md5_file, "w+" );
+          
+          if ( md5 != NULL )
+          {
+             //fwrite( hash, sizeof( gchar ), mhash_get_block_size( MHASH_MD5 ), md5 );
+             for ( i = 0; i < mhash_get_block_size ( MHASH_MD5 ); i++ ) 
+                fprintf( md5, "%.2x", hash[i] );
+             fflush( md5 );
+             fclose( md5 );
+         }
+         else
+         {
+            display_error( "split.c:  Error writing md5 sum to file." );
+         }
+       }
+     }
+ #endif
+     
    /* Close the selected file. */
    if ( fclose( in ) == EOF )
      {
        display_error( "split.c:  Could not close the selected file." );
-       if ( data->create_batchfile )
+       if ( gssd->create_batchfile )
          {
            fclose( batch );
          }
        if ( do_progress )
-          destroy_progress_window( &progress );
+          progress_window_destroy( progress_window );
        return TRUE;
      }
 
    /* Finalize the batch file. */
-   if ( data->create_batchfile )
+   if ( gssd->create_batchfile )
      {
        write_dostextfile( batch, " " );
        outfile_only[strlen( outfile_only ) - 4] = '\0';
        write_dostextfile( batch, outfile_only );
 		 
-		 /* Write some footer information to the batchfile. */
+	   /* Write some footer information to the batchfile. */
        writeln_dostextfile( batch, " > ~combine.tmp" );
        writeln_dostextfile( batch, "erase ~combine.tmp" );
        writeln_dostextfile( batch, "Echo Finished." );
@@ -433,7 +417,7 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
          {
            display_error( "split.c:  Could not close the batch file." );
            if ( do_progress )
-              destroy_progress_window( &progress );
+              progress_window_destroy( progress_window );
            return TRUE;
          }
      }
@@ -441,8 +425,8 @@ gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
    /* Free the progress window. */
    if ( do_progress )
      {
-       gtk_widget_hide_all( progress.main_window );
-       destroy_progress_window( &progress );
+       gtk_widget_hide_all( progress_window->base_window );
+       progress_window_destroy( progress_window );
      }
 
    return TRUE;

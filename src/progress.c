@@ -22,64 +22,71 @@
 
 #include <gtk/gtk.h>
 #include "progress.h"
+#include "callbacks.h"
+#include "interface.h"
 
-void create_progress_window(progress_window *pwindow, gchar *title)
+ProgressWindow* progress_window_new( )
 {
+   ProgressWindow *pw;
+    
+   pw = g_malloc( sizeof( ProgressWindow ) );
+    
+   if ( pw == NULL )
+   {
+       display_error( "progress.c:  Couldn't allocate memory for ProgressWindow" );
+       exit( 1 );
+   }
+   
    /* Set up the window. */
-   pwindow->main_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-   gtk_window_set_title( GTK_WINDOW( pwindow->main_window ), title );
-   gtk_window_set_resizable( GTK_WINDOW( pwindow->main_window ), FALSE );
+   pw->base_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+   gtk_window_set_resizable( GTK_WINDOW( pw->base_window ), FALSE );
    
    /* Set up the table. */
-   pwindow->table = gtk_table_new( 4, 2, FALSE );
+   pw->table = gtk_table_new( 4, 2, FALSE );
    
    /* Set up the progress bars. */
-   pwindow->current_progress = gtk_progress_bar_new( );
-   pwindow->total_progress = gtk_progress_bar_new( );
+   pw->current_progress = gtk_progress_bar_new( );
+   pw->total_progress = gtk_progress_bar_new( );
    
    /* Set up the labels. */
-   pwindow->file_label = gtk_label_new( "Current File:  " );
-   gtk_misc_set_alignment( GTK_MISC( pwindow->file_label ), 0, 0.5 );
+   pw->file_label = gtk_label_new( "Current File:  " );
+   gtk_misc_set_alignment( GTK_MISC( pw->file_label ), 0, 0.5 );
    
-   pwindow->current_progress_label = gtk_label_new( "Current Progress:  " );
-   gtk_misc_set_alignment( GTK_MISC( pwindow->current_progress_label ), 0, 0.5 );
+   pw->current_progress_label = gtk_label_new( "Current Progress:  " );
+   gtk_misc_set_alignment( GTK_MISC( pw->current_progress_label ), 0, 0.5 );
    
-   pwindow->total_progress_label = gtk_label_new( "Total Progress:  " );
-   gtk_misc_set_alignment( GTK_MISC( pwindow->total_progress_label ), 0, 0.5 );
+   pw->total_progress_label = gtk_label_new( "Total Progress:  " );
+   gtk_misc_set_alignment( GTK_MISC( pw->total_progress_label ), 0, 0.5 );
    
-   pwindow->message = gtk_label_new( "" );
+   pw->message = gtk_label_new( "" );
 
    /* Set up a separator. */
-   pwindow->separator = gtk_hseparator_new( );
+   pw->separator = gtk_hseparator_new( );
    
    /* Add the widgets to the dialog. */
-   gtk_container_add( GTK_CONTAINER( pwindow->main_window ), pwindow->table );
+   gtk_container_add( GTK_CONTAINER( pw->base_window ), pw->table );
    /* Row 0 */
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->file_label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0 );
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->message, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->file_label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->message, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0 );
    /* Row 1 */
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->current_progress_label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0 );
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->current_progress, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->current_progress_label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->current_progress, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0 );
    /* Row 2 */
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->separator, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->separator, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0 );
    /* Row 3 */
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->total_progress_label, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 0, 0 );
-   gtk_table_attach( GTK_TABLE( pwindow->table ), pwindow->total_progress, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->total_progress_label, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 0, 0 );
+   gtk_table_attach( GTK_TABLE( pw->table ), pw->total_progress, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 0, 0 );
+   
+   g_signal_connect( GTK_OBJECT( pw->base_window ), "destroy",
+                     G_CALLBACK( gtk_widget_destroyed ), &pw->base_window );
+                     
+   return pw;
 }
 
-void destroy_progress_window(progress_window *pwindow)
+void progress_window_destroy( ProgressWindow *pw )
 {
-   gtk_widget_destroy( pwindow->main_window );
-}
-
-void progress_window_set_message_text(GtkWidget *msg, gchar *text)
-{
-   gtk_label_set_text( GTK_LABEL( msg ), text );
-   while ( g_main_iteration( FALSE ) );
-}
-
-void progress_window_set_percentage(GtkWidget *pbar, gfloat fraction)
-{
-   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( pbar ), fraction );
-   while ( g_main_iteration( FALSE ) );
+   if ( pw->base_window != NULL )
+       gtk_widget_destroy( pw->base_window );
+   
+   g_free ( pw );
 }

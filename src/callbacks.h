@@ -27,34 +27,34 @@
 #include "globals.h"
 
 /* Tell our program which units to use: bytes, kilobytes, or megabytes. */
-void set_unit_bytes(GtkWidget *, session_data *);
+void set_unit_bytes( GtkWidget *widget, GtkSplitterSessionData *gssd );
 
-void set_unit_kilobytes(GtkWidget *, session_data *);
+void set_unit_kilobytes( GtkWidget *widget, GtkSplitterSessionData *gssd );
 
-void set_unit_megabytes(GtkWidget *, session_data *);
+void set_unit_megabytes( GtkWidget *widget, GtkSplitterSessionData *gssd );
 
 /* Reads the chunksize inputed in the spin box. */
-void set_data(GtkWidget *, gtk_splitter_window *);
+void set_data( GtkWidget *widget, GtkSplitterWindow *gsw );
 
 /* Tell our program to split the selected file. */
-void toggle_split(GtkWidget *, gtk_splitter_window *);
+void toggle_split( GtkWidget *widget, GtkSplitterWindow *gsw );
 
 /* Tell our program to combine the selected file. */
-void toggle_combine(GtkWidget *, gtk_splitter_window *);
+void toggle_combine( GtkWidget *widget, GtkSplitterWindow *gsw );
 
 /* Toggle whether or not we will create a dos batch file. */
-void toggle_batch(GtkWidget *, session_data *);
+void toggle_batch( GtkWidget *widget, GtkSplitterSessionData *gssd );
 
 /* Toggle whether or not we will verify the file. */
-void toggle_verify(GtkWidget *, session_data *);
+void toggle_verify( GtkWidget *widget, GtkSplitterSessionData *gssd );
 
-/* Initial settings for session_data. */
-void initialize_session_data(session_data *);
+/* Initial settings for GtkSplitterSessionData. */
+void initialize_session_data( GtkSplitterSessionData *gssd );
 
 /* Initial settings for the main window. */
-void initialize_splitter_window(gtk_splitter_window *);
+void initialize_splitter_window( GtkSplitterWindow *gsw );
 
 /* Start the split/combine process. */
-void start_split_or_combine(GtkWidget *, gtk_splitter_window *);
+void start_split_or_combine( GtkWidget *widget, GtkSplitterWindow *gsw );
 
 #endif /* CALLBACKS_H */
