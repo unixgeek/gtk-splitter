@@ -1,3 +1,8 @@
+2.1	(2003-03-17):
+	
+	* Fixed a bug in copying the user's home directory.
+	* Fixed a nasty bug that was uncovered with GTK+ 2.2.1.
+
 2.0	(2002-12-23):
 
 	* New GTK+ 2.0 interface.
