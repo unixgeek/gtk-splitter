@@ -33,7 +33,6 @@
 
 int main(int argc, char *argv[])
 {
-
    /* Used to automatically detect whether a file name read from
       the command-line should be split or combined. */
    gchar ext[4];
