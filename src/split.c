@@ -35,7 +35,7 @@
 gboolean split(GtkWidget *tmp, session_data *data)
 {
    /* Progress window stuff. */
-   progress_window *progress;
+   progress_window progress;
    gboolean do_progress;
 
    /* FILE streams. */
@@ -152,19 +152,9 @@ gboolean split(GtkWidget *tmp, session_data *data)
    else
      {
        do_progress = TRUE;
-       progress = g_malloc( sizeof ( progress_window ) );
-       if ( progress == NULL )
-         {
-           display_error( "split.c:  Could not allocate memory for a progress window.", FALSE );
-           /* Try to go on without it. */
-           do_progress = FALSE;
-         }
-       else
-         {
-           create_progress_window( progress, "Split Progress" );
-           gtk_widget_show_all( progress->main_window );
-           while ( g_main_iteration( FALSE ) );
-         }
+       create_progress_window( &progress, "Split Progress" );
+       gtk_widget_show_all( progress.main_window );
+       while ( g_main_iteration( FALSE ) );
      }
 
    /*---Setup a batchfile if so desired.------------------------------------------------------------*/
@@ -176,10 +166,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
          {
            display_error( "split.c:  Could not create the batch file.", TRUE );
            if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
+              destroy_progress_window( &progress );
            return FALSE;
 	      }
        /* Write some header information to the batchfile. */
@@ -223,10 +210,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            fclose( batch );
          }
        if ( do_progress )
-         {
-           destroy_progress_window( progress );
-           g_free( progress );
-         }
+          destroy_progress_window( &progress );
        return FALSE;
      }
 
@@ -241,10 +225,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            fclose( batch );
          }
        if ( do_progress )
-         {
-           destroy_progress_window( progress );
-           g_free( progress );
-         }
+          destroy_progress_window( &progress );
        return FALSE;
      }
    
@@ -253,7 +234,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    for ( file_count = 1; file_count <= number_of_parts; file_count++ )
      {
        if ( do_progress )  /* Display the file name we are creating. */
-         progress_window_set_status_text( progress->status, outfile );
+         progress_window_set_status_text( progress.status, outfile );
        /* The leftover file. (?) */
        if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( number_of_parts ) ) )
          {
@@ -264,10 +245,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
                bytes_read++;
                if ( ( do_progress ) && ( ( byte_count % UPDATE_INTERVAL ) == 0 ) )
                  {
-                   progress_window_set_percentage( progress->current_progress,
+                   progress_window_set_percentage( progress.current_progress,
                                                  ( ( gfloat ) byte_count ) / 
                                                  ( ( gfloat ) size_of_leftover_file ) );
-                   progress_window_set_percentage( progress->total_progress,
+                   progress_window_set_percentage( progress.total_progress,
                                                  ( ( gfloat ) bytes_read ) /
                                                  ( ( gfloat ) file_size ) );
                  }
@@ -282,10 +263,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
                bytes_read++;
                if ( ( do_progress ) && ( ( byte_count % UPDATE_INTERVAL ) == 0 ) )
                  {
-                   progress_window_set_percentage( progress->current_progress,
+                   progress_window_set_percentage( progress.current_progress,
 							                            ( ( gfloat ) byte_count ) / 
                                                  ( ( gfloat ) chunk_size ) );
-                   progress_window_set_percentage( progress->total_progress,
+                   progress_window_set_percentage( progress.total_progress,
 							                            ( ( gfloat ) bytes_read ) /
                                                  ( ( gfloat ) file_size ) );
                  }
@@ -331,10 +312,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                fclose( batch );
              }
           if ( do_progress )
-            {
-               destroy_progress_window( progress );
-               g_free( progress );
-            }
+             destroy_progress_window( &progress );
           return FALSE;
          }
 
@@ -355,10 +333,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                    fclose( batch );
                  }
                if ( do_progress )
-                 {
-                   destroy_progress_window( progress );
-                   g_free( progress );
-                 }
+                  destroy_progress_window( &progress );
                return FALSE;
              }
          }
@@ -374,10 +349,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            fclose( batch );
          }
        if ( do_progress )
-         {
-           destroy_progress_window( progress );
-           g_free( progress );
-         }
+          destroy_progress_window( &progress );
        return TRUE;
      }
 
@@ -398,10 +370,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
          {
            display_error( "split.c:  Could not close the batch file.", FALSE );
            if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
+              destroy_progress_window( &progress );
            return TRUE;
          }
      }
@@ -409,9 +378,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /* Free the progress window. */
    if ( do_progress )
      {
-       gtk_widget_hide_all( progress->main_window );
-       destroy_progress_window( progress );
-       g_free( progress );
+       gtk_widget_hide_all( progress.main_window );
+       destroy_progress_window( &progress );
      }
 
    return TRUE;

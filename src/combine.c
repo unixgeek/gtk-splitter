@@ -32,30 +32,43 @@
 
 gboolean combine(GtkWidget *tmp, session_data *data)
 {
-   progress_window *progress;
+   /* Progress window stuff. */
+   progress_window progress;
    gboolean do_progress, done;
+   
+   /* File streams. */
    FILE *in, *out;
+
+   /* Various counters. */
    guint file_count, temp, files_to_combine;
-   gulong file_size, byte_count, bytes_read;
-   gchar outfile[PATH_MAX], infile[PATH_MAX], ext[] = {"001"};
+   gulong combined_file_size, byte_count, bytes_read;
+   
+   /* The name of the first file part (including the path). */
+   gchar infile[PATH_MAX];
+   
+   /* The name of the combined file. */
+   gchar outfile[PATH_MAX];
+   
+   /* The extension for file parts. */
+   gchar ext[] = {"001"};
+   
    struct stat file_info;
 
-   files_to_combine = 0;
-   file_size = 0;
-   bytes_read = 0;
 
-   /* Setup the outfile. */
+   /* Setup the infile string. */
+   strcpy( infile, data->file_name_and_path );
+   
+   /* Setup the outfile string. */
    strcpy( outfile, data->output_directory );
    strcat( outfile, data->file_name_only );
-  
+   
    /* The outfile to be created is the file_name_only minus the '.00x' extension.
       (i.e. the end of outfile might be:  [.] [0] [0] [1].) */ 
    outfile[strlen( outfile ) - 4] = '\0';
 
-   /* Setup the infile. */
-   strcpy( infile, data->file_name_and_path );
-
    /* Do some pre-combine calcualations. */
+   files_to_combine = 0;
+   combined_file_size = 0;
    done = FALSE;
    do
      {
@@ -68,8 +81,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
          {
            files_to_combine++;
 
-           stat(infile, &file_info);
-           file_size += file_info.st_size;
+           stat( infile, &file_info );
+           combined_file_size += file_info.st_size;
 
            /* Increment the extension. */
            if ( ext[2] != '9' )
@@ -88,7 +101,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
 
            /* Move on to the next file. */
            fclose( in );
-           infile[strlen(infile) - 3] = '\0';
+           infile[strlen( infile ) - 3] = '\0';
            strcat( infile, ext );
          }
 
@@ -118,40 +131,28 @@ gboolean combine(GtkWidget *tmp, session_data *data)
      }
 
    /* Decide whether or not a progress window would be beneficiary. */
-   if ( file_size <= UPDATE_INTERVAL )
+   if ( combined_file_size <= UPDATE_INTERVAL )
      do_progress = FALSE;
    else
      {
        do_progress = TRUE;
-       progress = g_malloc( sizeof( progress_window ) );
-       if ( progress == NULL )
-         {
-           display_error( "combine.c:  Could not allocate memory for a progress window.", FALSE );
-           /* Try to go on without it. */
-           do_progress = FALSE;
-         }
-       else
-         {
-           create_progress_window( progress, "Combine Progress" );
-           gtk_widget_show_all( progress->main_window );
-           while ( g_main_iteration( FALSE ) );
-         }
+       create_progress_window( &progress, "Combine Progress" );
+       gtk_widget_show_all( progress.main_window );
+       while ( g_main_iteration( FALSE ) );
      }
 
    /* Now DO the combine. */
+   bytes_read = 0;
    for (file_count = 0; file_count != files_to_combine; file_count++)
      {
        if ( do_progress )
-         progress_window_set_status_text( progress->status, outfile );
+         progress_window_set_status_text( progress.status, outfile );
        in = fopen( infile, "rb" );
        if ( in == NULL )
          {
            display_error( "combine.c:  Could not open one of the files to be combined.", FALSE );
            if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
+              destroy_progress_window( &progress );
            fclose( out );
            return FALSE;
          }
@@ -163,10 +164,10 @@ gboolean combine(GtkWidget *tmp, session_data *data)
            fputc( temp, out );
            if ( ( do_progress ) && ( ( byte_count % UPDATE_INTERVAL ) == 0 ) )
              {
-               progress_window_set_percentage( progress->current_progress,
+               progress_window_set_percentage( progress.current_progress,
                                                ( ( gfloat ) byte_count ) / ( ( gfloat ) file_info.st_size ) );
-               progress_window_set_percentage( progress->total_progress,
-                                               ( ( gfloat ) bytes_read ) / ( ( gfloat ) file_size ) );
+               progress_window_set_percentage( progress.total_progress,
+                                               ( ( gfloat ) bytes_read ) / ( ( gfloat ) combined_file_size ) );
              }
          }
 
@@ -193,13 +194,11 @@ gboolean combine(GtkWidget *tmp, session_data *data)
          {
            display_error( "combine.c:  Could not open one of the files to be combined.", FALSE );
            if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
+              destroy_progress_window( &progress );
            fclose( out );
            return FALSE;
          }
+         
        infile[strlen( infile ) - 3] = '\0';
        strcat( infile, ext );
      }
@@ -210,18 +209,15 @@ gboolean combine(GtkWidget *tmp, session_data *data)
      {
        display_error( "combine.c:  Could not close the combined file.", FALSE );
        if ( do_progress )
-         {
-           destroy_progress_window( progress );
-           g_free( progress );
-         }
+          destroy_progress_window( &progress );
        return TRUE;
      }
      
    /* Verify if desired. */
    if ( data->verify )
      {
-       if ( do_progress ) 
-         progress_window_set_status_text( progress->status, "Verifying file..." );
+       //if ( do_progress ) 
+         //progress_window_set_status_text( progress->status, "Verifying file..." );
        
        //if ( verify_file( outfile, data->fp_length ) != 0 )
           //display_error( "\ncombine.c:  File verification failed!\n", FALSE );
@@ -229,9 +225,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    
    if ( do_progress )
      {
-       gtk_widget_hide_all( progress->main_window );
-       destroy_progress_window( progress );
-       g_free( progress );
+       gtk_widget_hide_all( progress.main_window );
+       destroy_progress_window( &progress );
      }
 
    return TRUE;
