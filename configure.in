@@ -17,8 +17,10 @@ AC_PROG_CPP
 dnl -- Check for a BSD compatible installer. --
 AC_PROG_INSTALL
 
-dnl -- Check for GTK+. --
-AM_PATH_GTK(1.2.10)
+dnl -- Check for GTK+2.0 and pkg-config. --
+PKG_CHECK_MODULES(GTK,"gtk+-2.0") 
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
 
 dnl -- Create the Makefiles. --
 AC_OUTPUT([ Makefile
@@ -30,7 +32,6 @@ AC_OUTPUT([ Makefile
 dnl -- Dislpay some information. --
 AC_MSG_RESULT(--------------------------------------------------------)
 AC_MSG_RESULT()
-AC_MSG_RESULT(This is my first attempt at using automake and autoconf.)
 AC_MSG_RESULT(If this configure script fails to look for something)
 AC_MSG_RESULT(send me an email:  techgunter@yahoo.com)
 AC_MSG_RESULT()

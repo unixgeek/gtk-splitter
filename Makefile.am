@@ -1,8 +1,8 @@
 SUBDIRS = src
-EXTRA_DIST = gtk-splitter.spec    \
-             gtk-splitter.desktop \
-             gtk-splitter.png     \
-             depcomp              \
+EXTRA_DIST = gtk-splitter.spec		\
+             gtk-splitter.desktop		\
+             gtk-splitter.png			\
+             depcomp				\
              HOSTS                
 
 gnome_menudir=$(prefix)/share/gnome/apps/Utilities
