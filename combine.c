@@ -51,7 +51,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    stat(data->filename_and_path, &file_info);  /*Not necessary?*/
 
    /*Setup the outfile.*/
-   outfile_length = (strlen(data->home_dir) + data->f_length);  /*f_length includes space for '\0'.*/
+   outfile_length = (strlen(data->output_dir) + data->f_length);  /*f_length includes space for '\0'.*/
    outfile = g_malloc( outfile_length  * sizeof(gchar) );
    if (outfile == NULL)
      {
@@ -75,7 +75,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    fprintf(stderr, "combine.c:  Allocated %d bytes for infile.\n", infile_length);
    fprintf(stderr, "combine.c:  Allocated %d bytes for outfile.\n", outfile_length);
 #endif
-   strcpy(outfile, data->home_dir);
+   strcpy(outfile, data->output_dir);
    strcat(outfile, data->filename_only);
    outfile[outfile_length - 5] = '\0';
  

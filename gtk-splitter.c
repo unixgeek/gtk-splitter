@@ -52,15 +52,15 @@ int main(int argc, char *argv[])
      }
 
      /*Store the users home directory.*/
-   gtk_s_window->sdata->home_dir = getenv("HOME");
-   if (gtk_s_window->sdata->home_dir == NULL) 
+   gtk_s_window->sdata->output_dir = getenv("HOME");
+   if (gtk_s_window->sdata->output_dir == NULL) 
      {
        fprintf(stderr, "!! - Critical error: Could not determine home directory; "
 			   "check environment variables for $HOME. - !!!\n");
        return 0;
      }
 	
-   strcat(gtk_s_window->sdata->home_dir, "/");
+   strcat(gtk_s_window->sdata->output_dir, "/");
 
    fprintf(stderr, "%s\n", GTK_SPLITTER_VERSION);
 
@@ -85,15 +85,19 @@ int main(int argc, char *argv[])
    /*Create our storage boxes - no spacing.*/
    gtk_s_window->base_box = gtk_vbox_new(FALSE, 0);
    gtk_s_window->box1 = gtk_hbox_new(FALSE, 0);
+   gtk_s_window->box5 = gtk_hbox_new(FALSE, 0);
    gtk_s_window->box2 = gtk_hbox_new(TRUE, 0);
    gtk_s_window->box3 = gtk_hbox_new(FALSE, 0);
    gtk_s_window->box4 = gtk_hbox_new(TRUE, 0);
 
    /*Open button to select a file.*/
    gtk_s_window->open_button = gtk_button_new_with_label("Open");
+   gtk_s_window->output_button = gtk_button_new_with_label("Output");
    gtk_s_window->filename_box = gtk_entry_new();
+   gtk_s_window->output_box = gtk_entry_new();
    gtk_entry_set_editable(GTK_ENTRY (gtk_s_window->filename_box), FALSE);
-	
+   gtk_entry_set_editable(GTK_ENTRY (gtk_s_window->output_box), FALSE);
+
    /*Split and combine radio buttons.*/
    gtk_s_window->split_button = gtk_radio_button_new_with_label(NULL, "Split");
    gtk_s_window->combine_button = gtk_radio_button_new_with_label_from_widget(
@@ -129,6 +133,7 @@ int main(int argc, char *argv[])
    /*Put our little gui together.*/
    gtk_container_add(GTK_CONTAINER (gtk_s_window->base_window), gtk_s_window->base_box);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box1, TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box5, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box2, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box3, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->batch_file_button, TRUE, TRUE, 0);
@@ -136,6 +141,9 @@ int main(int argc, char *argv[])
 
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->open_button, TRUE, FALSE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->filename_box, TRUE, FALSE, 0);
+
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->box5), gtk_s_window->output_button, TRUE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->box5), gtk_s_window->output_box, TRUE, FALSE, 0);
 
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box2), gtk_s_window->split_button, TRUE, TRUE, 10);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box2), gtk_s_window->combine_button, TRUE, TRUE, 10);

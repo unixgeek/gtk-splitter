@@ -42,7 +42,7 @@ typedef struct
     gushort unit;
     gboolean split;
     gboolean create_batchfile;
-    gchar *home_dir;
+    gchar *output_dir;
   } session_data;
 
 typedef struct
@@ -51,11 +51,13 @@ typedef struct
     GtkWidget *base_window;
     GtkWidget *base_box;
     GtkWidget *box1;
+    GtkWidget *box5; //Need to place in proper order.
     GtkWidget *box2;
     GtkWidget *box3;
     GtkWidget *box4;
 /*Various buttons.*/
     GtkWidget *open_button;
+    GtkWidget *output_button;
     GtkWidget *batch_file_button;
     GtkWidget *split_button;
     GtkWidget *combine_button;
@@ -67,8 +69,9 @@ typedef struct
     GtkWidget *kbytesopt;
     GtkWidget *mbytesopt;
     enum {BYTES, KBYTES, MBYTES};
-/*Widget to display the filename.*/
+/*Widgets to display the filename and output directory.*/
     GtkWidget *filename_box;
+    GtkWidget *output_box;
 /*Widgets for inputing chunk size.*/
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;

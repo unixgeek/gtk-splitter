@@ -117,7 +117,9 @@ void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
    /*Simple gtk open dialog, copied and pasted from the tutorial.*/
    gsw->file_selector = gtk_file_selection_new("Choose a file.");
 
-   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->file_selector), gsw->sdata->home_dir);
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->file_selector), gsw->sdata->output_dir);
+   gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION (gsw->file_selector));
+
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->ok_button),
 	              "clicked", GTK_SIGNAL_FUNC(setfilename), gsw);
    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->ok_button),
