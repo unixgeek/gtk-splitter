@@ -49,9 +49,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    strcat( outfile, data->file_name_only );
   
    /* The outfile to be created is the file_name_only minus the '.00x' extension.
-      NOTE:  outfile_length contains an extra count for the '\0' at the end.
-      (i.e. the end of outfile might be:  [.] [0] [0] [1] [\0].) */ 
-   outfile[strlen( outfile ) - 5] = '\0';
+      (i.e. the end of outfile might be:  [.] [0] [0] [1].) */ 
+   outfile[strlen( outfile ) - 4] = '\0';
 
    /* Setup the infile. */
    strcpy( infile, data->file_name_and_path );

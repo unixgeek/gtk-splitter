@@ -21,6 +21,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <limits.h>
 #include "callbacks.h"
 #include "split.h"
 #include "combine.h"
@@ -53,6 +54,15 @@ void set_data(GtkWidget *tmp, gtk_splitter_window *gsw)
 /* Initial settings for the session_data. */
 void initialize_session_data(session_data *data)
 {
+   int i;
+   
+   /* Clear the strings. */
+   for ( i = 0; i!= PATH_MAX; i++ )
+     {
+       data->file_name_only[i] = '\0';
+       data->file_name_and_path[i] = '\0';
+     }
+     
    /* Split is the default action. */
    data->split = TRUE;
 
