@@ -76,8 +76,12 @@ void dosify_filename(gchar *tmp)
        
    /*Convert spaces to underscores.*/
    for ( i = 0; i <= 7; i++ )
-     {
-       if ( ( tmp[i] == ' ' ) || ( tmp[i] == '+' ) )
+     {  /* {'*' '+' ' ' '|' '\' '=' '?' '[' ']' ';' ':' '"' '<' '>' ','} */
+       if ( ( tmp[i] == '*' ) || ( tmp[i] == '+' ) || ( tmp[i] == ' ') ||
+            ( tmp[i] == '|' ) || ( tmp[i] == '\\' ) || ( tmp[i] == '=' )||
+            ( tmp[i] == '?' ) || ( tmp[i] == '[' ) || ( tmp[i] == ']' ) ||
+            ( tmp[i] == ';' ) || ( tmp[i] == ':' ) || ( tmp[i] == '"' ) ||
+            ( tmp[i] == '<' ) || ( tmp[i] == '>' ) || ( tmp[i] == ',' ) )
          tmp[i] = '_';
      }
 }
