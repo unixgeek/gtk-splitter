@@ -1,3 +1,23 @@
+2003-01-10  gunter  <techgunter@yahoo.com>
+
+	* clean.sh, configure.in, build_deb.sh.in:
+	Created a script for creating a debian package.
+
+2003-01-09  gunter  <techgunter@yahoo.com>
+
+	* md5.c:
+	Modified the command-line arguments to work with simpler md5sum
+	implementations.
+
+	* split.c:
+	Made some small changes to silence some warning messages.
+
+	* build_rpm.sh.in, build_tgz.sh.in, clean.sh, configure.in, 
+	  gtk-splitter.spec.in, slack-desc, src/Makefile.am, 
+	  Makefile.am:
+	Created a script for building a binary and source rpm package.
+	Created a script for building a tgz package.
+
 2002-12-24  gunter  <techgunter@yahoo.com>
 
 	* gtk-splitter.desktop, callbacks.c, callbacks.h, combine.c, gtk-splitter.c,
@@ -72,7 +92,8 @@
 	Tweaked the progress window.
 
 	* callbacks.c, file_selection.c, globals.h, gtk-splitter.c:
-	Added widgets to change the start button to a button with a stock icon and custom text.
+	Added widgets to change the start button to a button with a stock icon and
+	custom text.
 
 2002-11-08  gunter  <techgunter@yahoo>
 
