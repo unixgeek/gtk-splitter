@@ -38,7 +38,7 @@ void display_error(gchar *error, gboolean quit)
    /* Error messages are also sent to stderr before setting up this function.
       This is just incase some unexpected problems occur and an error dialog
       becomes impossible. */
-   fprintf( stderr, "%s", message );
+   fprintf( stderr, "Error:  %s", message );
 
    /* Use a GTK+ stock error dialog. */
    dialog = gtk_dialog_new();
