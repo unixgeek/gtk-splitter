@@ -41,11 +41,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
    FILE *in, *out, *batch;
    
    /*Various character array pointers.*/
-   gchar *infile, *outfile, *batchname_and_path, *outfile_only, *original_name, ext[] = {"001"};
+   gchar infile[PATH_MAX], outfile[PATH_MAX], batchname_and_path[PATH_MAX], outfile_only[PATH_MAX], original_name[PATH_MAX], ext[] = {"001"};
   
-   /*Array length variables.*/
-   gushort infile_length, outfile_length, bp_length, outfile_only_length;
-
    /*For storing the character read in by fgetc().*/
    gint temp;
 
@@ -71,17 +68,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
      }
 
    /*Set up the infile array.*/
-   infile_length = data->fp_length;
-   infile = g_malloc( infile_length * sizeof( gchar ) );
-   if ( infile == NULL )
-     {
-       display_error( "\nsplit.c:  Could allocate memory for infile string.\n", TRUE );
-       return FALSE;
-     }
    strcpy( infile, data->filename_and_path );
-   infile[infile_length - 1] = '\0';
-   /*infile is setup.*/
-
+   
    /*Figure out how many files to split the selected file into.*/
    stat( infile, &file_info );
    file_size = file_info.st_size;
@@ -97,7 +85,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( data->chunk_size >= file_size )
      {
        display_error( "\nsplit.c:  Chunk size is greater than or equal to the file size.\n", FALSE );
-       g_free( infile );
        return FALSE;
      }
 
@@ -107,7 +94,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( files_to_split > 999 )
      {
        display_error( "\nsplit.c:  Exceeded maximum number of files (999).\n", FALSE );
-       g_free( infile );
        return FALSE;
      }
 
@@ -135,66 +121,23 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /*---Setup a batchfile if so desired.------------------------------------------------------------*/
    if ( data->create_batchfile )
      {
-       outfile_only_length = data->f_length + 4;  /*f_length includes space for '\0'.*/
-       outfile_only = g_malloc( outfile_only_length * sizeof( gchar ) );
-       if ( outfile_only == NULL )
-         {
-           display_error( "\nsplit.c:  Could not allocate memory for outfile_only string.\n", TRUE );
-           if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
-           g_free( infile );
-           return FALSE;
-         }
-
-       original_name = g_malloc( data->f_length * sizeof( gchar ) );
-       if ( original_name == NULL )
-         {
-           display_error( "\nsplit.c:  Could not allocate memory for original_name string.\n", TRUE );
-           if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
-           g_free( outfile_only );
-           g_free( infile );
-           return FALSE;
-         }
  
        strcpy( original_name, data->filename_only );
-       original_name[data->f_length - 1] = '\0';
 
        /*If the file name is too long, truncate it.
          Also, convert spaces to '_'.*/
        dosify_filename( data->filename_only );
 
        /*dosify_filename() will truncate the file name if it is longer than 12 characters.*/
-       if ( ( data->f_length - 1 ) > 12 )
+       if ( strlen( data->filename_only ) > 12 )
          {
-			  data->f_length = 13;
-			  g_realloc( data->filename_only, data->f_length );
+			  data->filename_only[13] = '\0';
          }
 
        strcpy( outfile_only, data->filename_only );
        /*Reserve four spaces for the extension; it will change later.*/
        strcat(outfile_only, ".ext");
-       bp_length = data->f_length + strlen( data->output_dir ) + 4;  /*f_length includes space for '\0'.*/
-       batchname_and_path = g_malloc( bp_length * sizeof( gchar ) );
-       if ( batchname_and_path == NULL )
-         {
-           display_error( "\nsplit.c:  Could not allocate memory for batchname_and_path string.\n", TRUE );
-           g_free( outfile_only );
-           if ( do_progress )
-             {
-               destroy_progress_window( progress );
-               g_free( progress );
-             }
-           g_free( infile );
-           return FALSE;
-         }
-
+       
        strcpy( batchname_and_path, data->output_dir );
        strcat( batchname_and_path, data->filename_only );
        strcat( batchname_and_path, ".bat" );
@@ -203,14 +146,11 @@ gboolean split(GtkWidget *tmp, session_data *data)
        if ( batch == NULL )
          {
            display_error( "\nsplit.c:  Could not create the batch file.\n", TRUE );
-           g_free( batchname_and_path );
-           g_free( outfile_only );
            if ( do_progress )
              {
                destroy_progress_window( progress );
                g_free( progress );
              }
-           g_free( infile );
            return FALSE;
 	      }
        /*Write some header information to the batchfile.*/
@@ -227,33 +167,11 @@ gboolean split(GtkWidget *tmp, session_data *data)
        writeln_dostextfile( batch, data->filename_only );
        write_dostextfile( batch, "copy /b " );
        /*End of header information*/
-
-      /*This is no longer needed.*/
-      g_free( original_name );
      }
    /*---Done with setting up the batcfhile.-------------------------------------------------------------*/
 
 
    /*Setup the outfile array.*/
-   outfile_length = data->f_length + strlen( data->output_dir ) + 4 ;  /*f_length includes space for '\0'.*/
-   outfile = g_malloc( outfile_length * sizeof( char ) );
-   if ( outfile == NULL )
-     {
-       display_error( "\nsplit.c: Could not allocate memory for outfile string.\n", TRUE );
-       if ( data->create_batchfile )
-         {
-           fclose( batch );
-           g_free( batchname_and_path );
-           g_free( outfile_only );
-         }
-       if ( do_progress )
-         {
-           destroy_progress_window( progress );
-           g_free( progress );
-         }
-       g_free( infile );
-       return FALSE;
-     }
    strcpy( outfile, data->output_dir );
    strcat( outfile, data->filename_only );
    strcat( outfile, "." );
@@ -261,32 +179,28 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /*outfile is setup.*/
 
    /*Create an md5sum of the selected file, if desired.*/
-   if ( data->verify )
-     {
-       if (do_progress )
-         progress_window_set_status_text( progress->status, "Generating MD5 checksum.." );
+   //if ( data->verify )
+     //{
+       //if (do_progress )
+         //progress_window_set_status_text( progress->status, "Generating MD5 checksum.." );
        
-       create_sum( data->filename_and_path, data->fp_length, data->output_dir );
-     } 
+       //create_sum( data->filename_and_path, data->fp_length, data->output_dir );
+     //} 
      
    /*Open the selected file.*/
    in = fopen( infile, "rb" );
    if ( in == NULL )
      {
        display_error( "\nsplit.c:  Could not open the selected file.\n", TRUE );
-       g_free( outfile );
        if ( data->create_batchfile )
          {
            fclose( batch );
-           g_free( batchname_and_path );
-           g_free( outfile_only );
          }
        if ( do_progress )
          {
            destroy_progress_window( progress );
            g_free( progress );
          }
-       g_free( infile );
        return FALSE;
      }
 
@@ -296,19 +210,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
      {
        display_error( "\nsplit.c:  Could not create an output file.\n", FALSE );
        fclose( in );
-       g_free( outfile );
        if ( data->create_batchfile )
          {
            fclose( batch );
-           g_free( batchname_and_path );
-           g_free( outfile_only );
          }
        if ( do_progress )
          {
            destroy_progress_window( progress );
            g_free( progress );
          }
-       g_free( infile );
        return FALSE;
      }
 
@@ -390,19 +300,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
          {
            display_error( "\nsplit.c:  Could not close an output file.\n", TRUE );
            fclose( in );
-           g_free( outfile );
            if ( data->create_batchfile )
              {
-               fclose( batch );
-               g_free( batchname_and_path );
-               g_free( outfile_only );
+               fclose( batch );;
              }
           if ( do_progress )
             {
-              destroy_progress_window( progress );
-              g_free( progress );
+               destroy_progress_window( progress );
+               g_free( progress );
             }
-          g_free( infile );
           return FALSE;
          }
 
@@ -418,19 +324,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
              {
                display_error( "\nsplit.c:  Could not create an output file.\n", TRUE );
                fclose( in );
-               g_free( outfile );
                if ( data->create_batchfile )
                  {
                    fclose( batch );
-                   g_free( batchname_and_path );
-                   g_free( outfile_only );
                  }
                if ( do_progress )
                  {
                    destroy_progress_window( progress );
                    g_free( progress );
                  }
-               g_free( infile );
                return FALSE;
              }
          }
@@ -441,19 +343,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( fclose( in ) == EOF )
      {
        display_error( "\nsplit.c:  Could not close the selected file.\n", FALSE );
-       g_free( outfile );
        if ( data->create_batchfile )
          {
            fclose( batch );
-           g_free( batchname_and_path );
-           g_free( outfile_only );
          }
        if ( do_progress )
          {
            destroy_progress_window( progress );
            g_free( progress );
          }
-       g_free( infile );
        return TRUE;
      }
 
@@ -469,27 +367,17 @@ gboolean split(GtkWidget *tmp, session_data *data)
        writeln_dostextfile( batch, "Echo Finished." );
        /*End of footer information.*/
        
-       /*Free the memory we allocated.*/
-		 g_free( batchname_and_path );
-       g_free( outfile_only );
        if ( fclose( batch ) == EOF )
          {
            display_error( "\nsplit.c:  Could not close the batch file.\n", FALSE );
-           g_free( outfile );
-           g_free( outfile_only );
            if ( do_progress )
              {
                destroy_progress_window( progress );
                g_free( progress );
              }
-           g_free( infile );
            return TRUE;
          }
      }
-
-   /*Free the memory we allocated.*/
-   g_free( infile );
-   g_free( outfile );
 
    /*Free the progress window.*/
    if ( do_progress )

@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
        return 0;
      }
 
-   /*Allocate memory to store the path to user's home directory.*/
+   /* Store the path to the user's home directory. */
    gtk_s_window->sdata->home_dir = getenv( "HOME" );
    if ( gtk_s_window->sdata->home_dir == NULL )
      {
@@ -63,18 +63,10 @@ int main(int argc, char *argv[])
                       "Check environment variables for $HOME.\n", TRUE );
        return 0;
      }
-
    strcat( gtk_s_window->sdata->home_dir, "/" );
-
-   /*Allocate memory to store the output home directory.*/
-   gtk_s_window->sdata->output_dir = g_malloc( strlen( gtk_s_window->sdata->home_dir ) * sizeof( gchar ) + 1 );
-   if ( gtk_s_window->sdata->output_dir == NULL )
-     {
-       fprintf( stderr, "!!! - Critical error:  Could not allocate any memory. - !!!\n" );
-       return 0;
-     }
+   
+   /* Set the default output directory to the user's home directory. */
    strcpy( gtk_s_window->sdata->output_dir, gtk_s_window->sdata->home_dir );
-   gtk_s_window->sdata->output_dir[strlen( gtk_s_window->sdata->output_dir )] = '\0';
 
    printf( "%s-%s Gunter Wambaugh\n", PACKAGE, VERSION );
 
@@ -206,7 +198,6 @@ int main(int argc, char *argv[])
 
    /*Free the memory that was allocated.*/
    g_free( gtk_s_window->sdata->home_dir );
-   g_free( gtk_s_window->sdata->output_dir );
    g_free( gtk_s_window->sdata );
    g_free( gtk_s_window );
 

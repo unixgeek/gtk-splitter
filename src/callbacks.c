@@ -56,13 +56,6 @@ void initialize_session_data(session_data *data)
    /*Split is the default action.*/
    data->split = TRUE;
 
-   /*Initialize dynamic array information.*/
-   /*Our arrays are always cleared in setfilename().*/
-   data->filename_and_path = NULL;
-   data->filename_only = NULL;
-   data->fp_length = 0;
-   data->f_length = 0;
-
    /*Set the default chunk_size. (1.44MB)*/
    data->entry = 1457664;
    data->chunk_size = 1457664;

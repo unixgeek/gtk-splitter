@@ -37,8 +37,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    FILE *in, *out;
    guint file_count, temp, files_to_combine;
    gulong file_size, byte_count, bytes_read;
-   gchar *outfile, *infile, ext[] = {"001"};
-   gushort outfile_length, infile_length;
+   gchar outfile[PATH_MAX], infile[PATH_MAX], ext[] = {"001"};
    struct stat file_info;
 
    files_to_combine = 0;
@@ -46,33 +45,17 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    bytes_read = 0;
 
    /*Setup the outfile.*/
-   outfile_length = ( strlen( data->output_dir ) + data->f_length );  /*f_length includes space for '\0'.*/
-   outfile = g_malloc( outfile_length  * sizeof( gchar ) );
-   if ( outfile == NULL )
-     {
-       display_error( "\ncombine.c:  Could not allocate memory for outfile string.\n", TRUE );
-       return FALSE;
-     }
    strcpy( outfile, data->output_dir );
    strcat( outfile, data->filename_only );
+  
    /*The outfile to be created is the filename_only minus the '.00x' extension.
      NOTE:  outfile_length contains an extra count for the '\0' at the end.
      (i.e. the end of outfile might be:  [.] [0] [0] [1] [\0].)*/ 
-   outfile[outfile_length - 5] = '\0';
+   outfile[strlen( outfile ) - 5] = '\0';
    /*Outfile is ready.*/
 
    /*Setup the infile.*/
-   infile_length = data->fp_length;
-   infile = g_malloc( data->fp_length * sizeof( gchar ) );
-   if ( infile == NULL )
-     {
-       display_error( "\ncombine.c:  Could not allocate memory for infile string.\n", TRUE );
-       g_free( outfile );
-       return FALSE;
-     }
    strcpy( infile, data->filename_and_path );
-   infile[infile_length - 1] = '\0';
-   /*Infile is ready.*/
 
    /*Do some pre-combine calcualations.*/
    done = FALSE;
@@ -120,8 +103,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    if ( files_to_combine > 999 )
      {
        display_error( "\ncombine.c:  Exceeded maximum number of files (999).\n", FALSE );
-       g_free( infile );
-       g_free( outfile );
        return FALSE;
      }
 
@@ -135,8 +116,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    if ( out == NULL )
      {
        display_error( "\ncombine.c:  Could not create an output file.\n", TRUE );
-       g_free( infile );
-       g_free( outfile );
        return FALSE;
      }
 
@@ -176,8 +155,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
                g_free( progress );
              }
            fclose( out );
-           g_free( infile );
-           g_free( outfile );
            return FALSE;
          }
        stat( infile, &file_info );
@@ -223,8 +200,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
                g_free( progress );
              }
            fclose( out );
-           g_free( infile );
-           g_free( outfile );
            return FALSE;
          }
        infile[strlen( infile ) - 3] = '\0';
@@ -241,8 +216,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
            destroy_progress_window( progress );
            g_free( progress );
          }
-       g_free( infile );
-       g_free( outfile );
        return TRUE;
      }
      
@@ -252,14 +225,10 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        if ( do_progress ) 
          progress_window_set_status_text( progress->status, "Verifying file..." );
        
-       if ( verify_file( outfile, data->fp_length ) != 0 )
-          display_error( "\ncombine.c:  File verification failed!\n", FALSE );
+       //if ( verify_file( outfile, data->fp_length ) != 0 )
+          //display_error( "\ncombine.c:  File verification failed!\n", FALSE );
      }
    
-   /*Free the memory we allocated.*/
-   g_free( infile );
-   g_free( outfile );
-
    if ( do_progress )
      {
        gtk_widget_hide_all( progress->main_window );

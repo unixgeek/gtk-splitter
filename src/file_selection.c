@@ -54,35 +54,18 @@ void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
 /*This function is called from choose_file() and sets the appropriate data members of session_data.*/
 void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
-   gchar *tmp_ptr;
+   gchar *selcted_file;
    gushort i, j, path_only_count;
 
    i = 0;
    j = 0;
 
-   /*Free any previous data*/
-   g_free( gsw->sdata->filename_and_path );
-   g_free( gsw->sdata->filename_only );
-
+ 
    /*Get the selected file name from the dialog.*/
-   tmp_ptr = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->selection_dialog ) );
+   selcted_file = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->selection_dialog ) );
 
-   /*Set the length of the file name (full path) and add in a count for the NULL terminator.*/
-   gsw->sdata->fp_length = strlen(tmp_ptr) + 1;
-
-   /*Allocate memory to hold the file name (full path) because tmp_ptr will soon be
-     out of scope.*/
-   gsw->sdata->filename_and_path = g_malloc( gsw->sdata->fp_length * sizeof( gchar ) );
-   if ( gsw->sdata->filename_and_path == NULL )
-     display_error( "\ncallbacks.c:  Could not allocate memory for file_name_and_path string.\n", TRUE );
-     /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
-   /*End of memory allocation.*/
-
-   /*Copy the file name (full path).*/
-   strcpy(gsw->sdata->filename_and_path, tmp_ptr);
-
-   /*Add in the NULL terminator.*/
-   gsw->sdata->filename_and_path[gsw->sdata->fp_length - 1] = '\0';
+   /* Copy the selected file name (full path). */
+   strcpy(gsw->sdata->filename_and_path, selcted_file);
 
    /*The path only length is going to be AT MOST the length of the file name and path.*/
    path_only_count = strlen( gsw->sdata->filename_and_path );
@@ -94,27 +77,12 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    /*Add the count of the last '/'.*/
    path_only_count++;
 
-   /*The length of the file name will be the length of file name and path minus the
-     length of the path.  Notice that fp_length includes 1 extra count for the NULL terminator
-     so there is no need to count for it again.*/
-   gsw->sdata->f_length = gsw->sdata->fp_length - path_only_count;
-
-   /*Allocate memory to store file name only.*/
-   gsw->sdata->filename_only = g_malloc( gsw->sdata->f_length * sizeof( gchar ) );
-   if ( gsw->sdata->filename_only == NULL )
-     display_error( "\ncallbacks.c:  Could not allocate memory for file_name_only string.\n", TRUE );
-     /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
-   /*End of memory allocation.*/
-
    /*Copy the filename only.*/
-   for ( i = path_only_count; i != gsw->sdata->fp_length; i++ )
+   for ( i = path_only_count; i != strlen( gsw->sdata->filename_and_path ); i++ )
      {
        gsw->sdata->filename_only[j] = gsw->sdata->filename_and_path[i];
        j++;
      }
-
-   /*Add the NULL terminator.*/
-   gsw->sdata->filename_only[gsw->sdata->f_length -1 ] = '\0';
 
    /*Set the filename in the entry box.*/
    gtk_entry_set_text( GTK_ENTRY( gsw->filename_box ), gsw->sdata->filename_only );
@@ -163,20 +131,12 @@ void setdirname(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    gchar *selected_dir;
 
-   /*Get the selected directory name from the dialog.*/
+   /* Get the selected directory name from the user using the standard GTK+ file selection dialog. */
    selected_dir = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->selection_dialog ) );
 
-   /*Free any previous data.*/
-   g_free( gsw->sdata->output_dir );
-   /*Allocate memory for the output directory.*/
-   gsw->sdata->output_dir = g_malloc( strlen( selected_dir ) * sizeof( gchar ) + 1 );
-   /*This does not work...don't know why.  I used free and malloc instead.
-     g_realloc(gsw->sdata->output_dir, strlen(selected_dir) * sizeof(gchar) + 1);*/
-
-   /*selected_dir will soon be out of scope, so we need to copy it.*/
+   /* Set output_dir to selected_dir. */
    strcpy( gsw->sdata->output_dir, selected_dir );
-   /*NULL terminate the string.*/
-   gsw->sdata->output_dir[strlen( selected_dir )] = '\0';
-   /*Display the new directory in the main window.*/
+
+   /* Display the new directory in the main window. */
    gtk_entry_set_text( GTK_ENTRY( gsw->output_box ), gsw->sdata->output_dir );
 }

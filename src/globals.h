@@ -26,23 +26,22 @@
 #define GLOBALS_H
 
 #include <gtk/gtk.h>
+#include <limits.h>
 
 #define UPDATE_INTERVAL 32768  /*Update the progress bar every 32k.*/
 
-/*Session_data is a struct used to store information related the selected file.*/
+/*Session_data is a struct used to store information related to the selected file.*/
 typedef struct
   {
-    gchar *filename_and_path;
-    gushort fp_length;
-    gchar *filename_only;
-    gushort f_length;
+    gchar filename_and_path[PATH_MAX];
+    gchar filename_only[PATH_MAX];
     gfloat entry;
     gulong chunk_size;
     enum {BYTES, KILOBYTES, MEGABYTES} unit;
     gboolean split;
     gboolean create_batchfile;
     gchar *home_dir;
-    gchar *output_dir;
+    gchar output_dir[PATH_MAX];
     gboolean verify;
   } session_data;
 
@@ -74,7 +73,7 @@ typedef struct
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;
     GtkWidget *selection_dialog;
-    session_data *sdata;
+    session_data *sdata;  //FIX ME
   } gtk_splitter_window;
 
 #endif /* GLOBALS_H */
