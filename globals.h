@@ -42,6 +42,7 @@ typedef struct
     gushort unit;
     gboolean split;
     gboolean create_batchfile;
+    gchar *home_dir;
     gchar *output_dir;
   } session_data;
 
@@ -77,6 +78,7 @@ typedef struct
     GtkWidget *size_input;
 /*Widget for inputing a file name.*/
     GtkWidget *file_selector;
+    GtkWidget *dir_selector;
 /*Session_data is a structure used to store info on the selected file.*/
     session_data *sdata;
   } gtk_splitter_window;

@@ -52,15 +52,24 @@ int main(int argc, char *argv[])
      }
 
      /*Store the users home directory.*/
-   gtk_s_window->sdata->output_dir = getenv("HOME");
-   if (gtk_s_window->sdata->output_dir == NULL) 
+   gtk_s_window->sdata->home_dir = getenv("HOME");
+   if (gtk_s_window->sdata->home_dir == NULL) 
      {
        fprintf(stderr, "!! - Critical error: Could not determine home directory; "
 			   "check environment variables for $HOME. - !!!\n");
        return 0;
      }
 	
-   strcat(gtk_s_window->sdata->output_dir, "/");
+   strcat(gtk_s_window->sdata->home_dir, "/");
+
+   gtk_s_window->sdata->output_dir = g_malloc(strlen(gtk_s_window->sdata->home_dir) * sizeof(gchar) + 1);
+   if (gtk_s_window->sdata->output_dir == NULL)
+     {
+       fprintf(stderr, "!!! - Critical error:  Could not allocate any memory. - !!!\n");
+       return 0;
+     }
+   strcpy(gtk_s_window->sdata->output_dir, gtk_s_window->sdata->home_dir);
+   gtk_s_window->sdata->output_dir[strlen(gtk_s_window->sdata->output_dir)] = '\0';   
 
    fprintf(stderr, "%s\n", GTK_SPLITTER_VERSION);
 
@@ -87,7 +96,7 @@ int main(int argc, char *argv[])
    gtk_s_window->box1 = gtk_hbox_new(FALSE, 0);
    gtk_s_window->box5 = gtk_hbox_new(FALSE, 0);
    gtk_s_window->box2 = gtk_hbox_new(TRUE, 0);
-   gtk_s_window->box3 = gtk_hbox_new(FALSE, 0);
+   gtk_s_window->box3 = gtk_hbox_new(TRUE, 0);
    gtk_s_window->box4 = gtk_hbox_new(TRUE, 0);
 
    /*Open button to select a file.*/
@@ -97,6 +106,8 @@ int main(int argc, char *argv[])
    gtk_s_window->output_box = gtk_entry_new();
    gtk_entry_set_editable(GTK_ENTRY (gtk_s_window->filename_box), FALSE);
    gtk_entry_set_editable(GTK_ENTRY (gtk_s_window->output_box), FALSE);
+
+   gtk_entry_set_text(GTK_ENTRY (gtk_s_window->output_box), gtk_s_window->sdata->home_dir);
 
    /*Split and combine radio buttons.*/
    gtk_s_window->split_button = gtk_radio_button_new_with_label(NULL, "Split");
@@ -139,11 +150,11 @@ int main(int argc, char *argv[])
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->batch_file_button, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box4, TRUE, TRUE, 0);	
 
-   gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->open_button, TRUE, FALSE, 0);
-   gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->filename_box, TRUE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->open_button, TRUE, TRUE, 7);
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->filename_box, TRUE, TRUE, 0);
 
-   gtk_box_pack_start(GTK_BOX (gtk_s_window->box5), gtk_s_window->output_button, TRUE, FALSE, 0);
-   gtk_box_pack_start(GTK_BOX (gtk_s_window->box5), gtk_s_window->output_box, TRUE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->box5), gtk_s_window->output_button, TRUE, TRUE, 4);
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->box5), gtk_s_window->output_box, TRUE, TRUE, 0);
 
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box2), gtk_s_window->split_button, TRUE, TRUE, 10);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box2), gtk_s_window->combine_button, TRUE, TRUE, 10);
@@ -174,6 +185,10 @@ int main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(set_data), gtk_s_window);
    gtk_signal_connect(GTK_OBJECT (gtk_s_window->start_button), "clicked", 
                       GTK_SIGNAL_FUNC(start), gtk_s_window);
+  gtk_signal_connect(GTK_OBJECT (gtk_s_window->open_button), "clicked", 
+                      GTK_SIGNAL_FUNC(choose_file), gtk_s_window);
+  gtk_signal_connect(GTK_OBJECT (gtk_s_window->output_button), "clicked", 
+                      GTK_SIGNAL_FUNC(choose_directory), gtk_s_window);
 
    gtk_signal_connect(GTK_OBJECT (gtk_s_window->batch_file_button), "toggled", 
                       GTK_SIGNAL_FUNC(toggle_batch), gtk_s_window->sdata);
@@ -183,8 +198,6 @@ int main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(set_kbytes), gtk_s_window->sdata);
    gtk_signal_connect(GTK_OBJECT (gtk_s_window->mbytesopt), "activate", 
                       GTK_SIGNAL_FUNC(set_mbytes), gtk_s_window->sdata);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->open_button), "clicked", 
-                      GTK_SIGNAL_FUNC(choose_file), gtk_s_window);
   /*End of callbacks.*/
 
 #if DEBUG
@@ -202,6 +215,7 @@ int main(int argc, char *argv[])
    gtk_main();
 
    /*Free the memory allocated for our structs.*/
+   g_free(gtk_s_window->sdata->output_dir);
    g_free(gtk_s_window->sdata);
    g_free(gtk_s_window);
 

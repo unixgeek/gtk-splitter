@@ -117,7 +117,7 @@ void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
    /*Simple gtk open dialog, copied and pasted from the tutorial.*/
    gsw->file_selector = gtk_file_selection_new("Choose a file.");
 
-   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->file_selector), gsw->sdata->output_dir);
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->file_selector), gsw->sdata->home_dir);
    gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION (gsw->file_selector));
 
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->ok_button),
@@ -130,6 +130,43 @@ void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
                              (gpointer) gsw->file_selector);
    gtk_widget_show(gsw->file_selector);
 }
+
+void setdirname(GtkWidget *tmp, gtk_splitter_window *gsw)
+{
+   gchar *selected_dir;
+
+   selected_dir = gtk_file_selection_get_filename(GTK_FILE_SELECTION (gsw->dir_selector) );
+
+   g_free(gsw->sdata->output_dir);
+   gsw->sdata->output_dir = g_malloc (strlen(selected_dir) * sizeof(gchar) + 1);
+   /*This does not work...don't know why.  I used free and malloc instead.
+     g_realloc(gsw->sdata->output_dir, strlen(selected_dir) * sizeof(gchar) + 1);*/
+
+   strcpy(gsw->sdata->output_dir, selected_dir);
+
+   gsw->sdata->output_dir[strlen(selected_dir)] = '\0';
+
+   gtk_entry_set_text(GTK_ENTRY (gsw->output_box), gsw->sdata->output_dir);
+}
+
+void choose_directory(GtkWidget *tmp, gtk_splitter_window *gsw)
+{  
+   gsw->dir_selector = gtk_file_selection_new("Choose the output directory.");
+
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->dir_selector), gsw->sdata->output_dir);
+   gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION (gsw->dir_selector));
+
+   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION (gsw->dir_selector)->ok_button),
+	              "clicked", GTK_SIGNAL_FUNC(setdirname), gsw);
+   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->dir_selector)->ok_button),
+	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
+                             (gpointer) gsw->dir_selector);	
+   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->dir_selector)->cancel_button),
+	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
+                             (gpointer) gsw->dir_selector);
+   gtk_widget_show(gsw->dir_selector);
+}
+
 
 void set_bytes(GtkWidget *tmp, session_data *data)
 {
