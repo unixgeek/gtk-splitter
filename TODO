@@ -1,2 +1,3 @@
 Try and clean up 'clean up code' as well as malloc code.
-Add a check to ensure the path selected by output is a directory.
+Check the opening of files.
+Re-arrange split.c and combine.c for better design.

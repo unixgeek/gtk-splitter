@@ -1,4 +1,4 @@
-/* 
+/*
  * split.c
  *
  * Copyright 2001 Gunter Wambaugh
@@ -28,7 +28,6 @@
 
 #include "batchfile.h"
 #include "globals.h"
-#include "callbacks.h"
 #include "error.h"
 #include "progress.h"
 
@@ -51,7 +50,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    struct stat file_info;
 
    /*Doing this in callbacks doesn't work...(?)*/
-   switch (data->unit) 
+   switch (data->unit)
      {
        case BYTES   :  data->chunk_size = data->entry;
                        break;
@@ -66,21 +65,19 @@ gboolean split(GtkWidget *tmp, session_data *data)
    infile = g_malloc( infile_length * sizeof(gchar) );
    if (infile == NULL)
      {
-       fprintf(stderr, "split.c:  Could allocate memory for infile string.\n");
        display_error("\nsplit.c:  Could allocate memory for infile string.\n", TRUE);
        return FALSE;
      }
    strcpy(infile, data->filename_and_path);
    infile[infile_length - 1] = '\0';
-   
+
    stat(infile, &file_info);
    file_size = file_info.st_size;
    number_of_even_files = (gint) file_info.st_size/data->chunk_size;
    size_of_leftover_file = file_size - (number_of_even_files * data->chunk_size);
 
-   if (data->chunk_size >= file_size) 
+   if (data->chunk_size >= file_size)
      {
-       fprintf(stderr, "split.c:  Chunk size is greater than or equal to the file size.\n");
        display_error("\nsplit.c:  Chunk size is greater than or equal to the file size.\n", FALSE);
        g_free(infile);
        return FALSE;
@@ -93,7 +90,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    if (files_to_split > 999)
      {
-       fprintf(stderr, "split.c:  Exceeded maximum number of files (999).\n");
        display_error("\nsplit.c:  Exceeded maximum number of files (999).\n", FALSE);
        g_free(infile);
        return FALSE;
@@ -104,29 +100,31 @@ gboolean split(GtkWidget *tmp, session_data *data)
    else
      do_progress = TRUE;
 
-   if (do_progress) 
+   if (do_progress)
      {
        progress = g_malloc(sizeof(progress_window));
        if (progress == NULL)
          {
-           fprintf(stderr, "split.c:  Could not allocate memory for a progress window.\n");
            display_error("\nsplit.c:  Could not allocate memory for a progress window.\n", FALSE);
            /*Try to go on without it.*/
            do_progress = FALSE;
          }
        else
-         create_progress_window(progress, "Split Progress");
+         {
+           create_progress_window(progress, "Split Progress");
+           gtk_widget_show_all(progress->main_window);
+           while ( g_main_iteration( FALSE ) );
+         }
      }
-   
+
    /*BATCH FILE FOR DOS*/
    /*Do we need to create a batch file?*/
-   if (data->create_batchfile) 
+   if (data->create_batchfile)
      {
        outfile_only_length = data->f_length + 4;  /*f_length includes space for '\0'.*/
        outfile_only = g_malloc( outfile_only_length * sizeof(gchar) );
        if (outfile_only == NULL)
          {
-           fprintf(stderr, "split.c:  Could not allocate memory for outfile_only string.\n");
            display_error("\nsplit.c:  Could not allocate memory for outfile_only string.\n", TRUE);
            if (do_progress)
              {
@@ -146,10 +144,9 @@ gboolean split(GtkWidget *tmp, session_data *data)
        /*Reserve four spaces for the extension; it will change later.*/
        strcat(outfile_only, ".ext");
        bp_length = data->f_length + strlen(data->output_dir) + 4;  /*f_length includes space for '\0'.*/
-       batchname_and_path = g_malloc( bp_length * sizeof(gchar));  
+       batchname_and_path = g_malloc( bp_length * sizeof(gchar));
        if (batchname_and_path == NULL)
          {
-           fprintf(stderr, "split.c:  Could not allocate memory for batchname_and_path string.\n");
            display_error("\nsplit.c:  Could not allocate memory for batchname_and_path string.\n", TRUE);
            g_free(outfile_only);
            if (do_progress)
@@ -166,9 +163,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
        strcat(batchname_and_path, ".bat");
 
        batch = fopen(batchname_and_path, "w+");
-       if (batch == NULL) 
+       if (batch == NULL)
          {
-           fprintf(stderr, "aplit.c:  Could not create the batch file.\n");
            display_error("\nsplit.c:  Could not create the batch file.\n", TRUE);
            g_free(batchname_and_path);
            g_free(outfile_only);
@@ -176,7 +172,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
              {
                destroy_progress_window(progress);
                g_free(progress);
-             }           
+             }
            g_free(infile);
            return FALSE;
 	 }
@@ -184,20 +180,19 @@ gboolean split(GtkWidget *tmp, session_data *data)
        initialize_batchfile(batch, data->filename_only);
      }
    /*END OF BATCH FILE*/
-   
+
    /*Setup the outfile.*/
    outfile_length = data->f_length + strlen(data->output_dir) + 4 ;  /*f_length includes space for '\0'.*/
    outfile = g_malloc( outfile_length * sizeof(char) );
    if (outfile == NULL)
      {
-       fprintf(stderr, "split.c:: Could not allocate memory for outfile string.\n");
        display_error("\nsplit.c:: Could not allocate memory for outfile string.\n", TRUE);
        if (data->create_batchfile)
          {
            fclose(batch);
            g_free(batchname_and_path);
            g_free(outfile_only);
-         }       
+         }
        if (do_progress)
          {
            destroy_progress_window(progress);
@@ -214,9 +209,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    /*Open the selected file.*/
    in = fopen(infile, "rb");
-   if (in == NULL) 
+   if (in == NULL)
      {
-       fprintf(stderr, "split.c:  Could not open the selected file.\n");
        display_error("\nsplit.c:  Could not open the selected file.\n", TRUE);
        g_free(outfile);
        if (data->create_batchfile)
@@ -224,7 +218,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            fclose(batch);
            g_free(batchname_and_path);
            g_free(outfile_only);
-         }       
+         }
        if (do_progress)
          {
            destroy_progress_window(progress);
@@ -236,9 +230,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    /*Open the first outfile.*/
    out = fopen(outfile, "wb+");
-   if (out == NULL) 
+   if (out == NULL)
      {
-       fprintf(stderr, "split.c:  Could not create an output file.\n");
        display_error("\nsplit.c:  Could not create an output file.\n", FALSE);
        fclose(in);
        g_free(outfile);
@@ -247,7 +240,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            fclose(batch);
            g_free(batchname_and_path);
            g_free(outfile_only);
-         }       
+         }
        if (do_progress)
          {
            destroy_progress_window(progress);
@@ -258,47 +251,45 @@ gboolean split(GtkWidget *tmp, session_data *data)
      }
 
    /*The actual split process.*/
-   for (file_count = 1; file_count <= files_to_split; file_count++) 
+   for (file_count = 1; file_count <= files_to_split; file_count++)
      {
        if (do_progress)  /*Display the file we are creating.*/
-         gtk_statusbar_push(GTK_STATUSBAR (progress->status), 1, outfile);
-       if ( (size_of_leftover_file != 0) && (file_count  == (files_to_split) ) ) 
+         progress_window_set_status_text(progress->status, outfile);
+       if ( (size_of_leftover_file != 0) && (file_count  == (files_to_split) ) )
          {
-           for (byte_count = 1; (byte_count <= size_of_leftover_file); byte_count++) 
+           for (byte_count = 1; (byte_count <= size_of_leftover_file); byte_count++)
              {
                temp = fgetc(in);
                fputc(temp, out);
                bytes_read++;
-               if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0)) 
+               if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
                  {
-                   gtk_progress_set_percentage(GTK_PROGRESS (progress->current_progress), 
-                                              ((double) byte_count) / ((double) size_of_leftover_file));
-                   gtk_progress_set_percentage(GTK_PROGRESS (progress->total_progress),
-                                              ((double) bytes_read) / ((double) file_size));
-                   while (g_main_iteration(FALSE));
+                   progress_window_set_percentage(progress->current_progress,
+                                              ((gfloat) byte_count) / ((gfloat) size_of_leftover_file));
+                   progress_window_set_percentage(progress->total_progress,
+                                              ((gfloat) bytes_read) / ((gfloat) file_size));
                  }
-             }  
+             }
          }
-       else 
+       else
          {
            for (byte_count = 1; (byte_count <= data->chunk_size); byte_count++)
              {
                temp = fgetc(in);
                fputc(temp, out);
                bytes_read++;
-               if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0)) 
+               if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
                  {
-                   gtk_progress_set_percentage(GTK_PROGRESS (progress->current_progress),
-							          ( (double) byte_count) / ( (double) data->chunk_size) );
-                   gtk_progress_set_percentage(GTK_PROGRESS (progress->total_progress),
-							          ( (double) bytes_read) / ( (double) file_size) );
-                   while (g_main_iteration(FALSE));
+                   progress_window_set_percentage(progress->current_progress,
+							          ( (gfloat) byte_count) / ( (gfloat) data->chunk_size) );
+                   progress_window_set_percentage(progress->total_progress,
+							          ( (gfloat) bytes_read) / ( (gfloat) file_size) );
                  }
              }
          }
 
        /*Copy the outfile name to the batch file.*/
-       if (data->create_batchfile) 
+       if (data->create_batchfile)
          {
            if (strcmp(ext, "001") != 0)
              write_batchfile(batch, "+");
@@ -317,7 +308,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            ext[2] = '0';
            if (ext[1] != '9')
              ext[1]++;
-           else 
+           else
              {
                ext[1] = '0';
                ext[0]++;
@@ -328,7 +319,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
        fflush(out);
        if (fclose(out) == EOF)
          {
-           fprintf(stderr, "split.c:  Could not close an output file.\n");
            display_error("\nsplit.c:  Could not close an output file.\n", TRUE);
            fclose(in);
            g_free(outfile);
@@ -337,7 +327,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                fclose(batch);
                g_free(batchname_and_path);
                g_free(outfile_only);
-             }       
+             }
           if (do_progress)
             {
               destroy_progress_window(progress);
@@ -348,16 +338,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
          }
 
        /*Close the outfile and start a new one.*/
-       if (bytes_read != file_size) 
+       if (bytes_read != file_size)
          {
             /*Setup a new outfile.*/
            outfile[strlen(outfile) - 3] = '\0';
            strcat(outfile, ext);
-           
+
            out = fopen(outfile, "wb+");
-           if (out == NULL) 
+           if (out == NULL)
              {
-               fprintf(stderr, "split.c:  Could not create an output file.");
                display_error("\nsplit.c:  Could not create an output file.\n", TRUE);
                fclose(in);
                g_free(outfile);
@@ -366,7 +355,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                    fclose(batch);
                    g_free(batchname_and_path);
                    g_free(outfile_only);
-                 }       
+                 }
                if (do_progress)
                  {
                    destroy_progress_window(progress);
@@ -378,10 +367,9 @@ gboolean split(GtkWidget *tmp, session_data *data)
          }
      }
      /*End of split process.*/
-    
-     if (fclose(in) == EOF) 
+
+     if (fclose(in) == EOF)
          {
-           fprintf(stderr, "split.c:  Could not close the selected file.\n");
            display_error("\nsplit.c:  Could not close the selected file.\n", FALSE);
            g_free(outfile);
            if (data->create_batchfile)
@@ -389,7 +377,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                fclose(batch);
                g_free(batchname_and_path);
                g_free(outfile_only);
-             }       
+             }
            if (do_progress)
              {
                destroy_progress_window(progress);
@@ -399,16 +387,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
            return TRUE;
          }
 
-   if (data->create_batchfile) 
+   if (data->create_batchfile)
      {
        write_batchfile(batch, " ");
        write_batchfile(batch, data->filename_only);
-       finalize_batchfile(batch); 
+       finalize_batchfile(batch);
        g_free(batchname_and_path);
        g_free(outfile_only);
-       if (fclose(batch) == EOF) 
+       if (fclose(batch) == EOF)
          {
-           fprintf(stderr, "split.c:  Could not close the batch file.\n");
            display_error("\nsplit.c:  Could not close the batch file.\n", FALSE);
            g_free(outfile);
            g_free(outfile_only);
@@ -421,14 +408,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
            return TRUE;
          }
      }
-  
+
 
    g_free(infile);
    g_free(outfile);
-	
+
    /*Hide the status window and unhide our gui.*/
-   if (do_progress) 
+   if (do_progress)
      {
+       gtk_widget_hide_all(progress->main_window);
        destroy_progress_window(progress);
        g_free(progress);
      }

@@ -1,4 +1,4 @@
-/* 
+/*
  * progress.h
  *
  * Copyright 2001 Gunter Wambaugh
@@ -37,5 +37,9 @@ typedef struct
 void create_progress_window(progress_window *, gchar *);
 
 void destroy_progress_window(progress_window *);
+
+void progress_window_set_status_text(GtkWidget *, gchar *);
+
+void progress_window_set_percentage(GtkWidget *, gfloat);
 
 #endif /* PROGRESS_H */

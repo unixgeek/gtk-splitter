@@ -1,4 +1,4 @@
-/* 
+/*
  * gtk-splitter.c
  *
  * Copyright 2001 Gunter Wambaugh
@@ -33,7 +33,7 @@
 
 
 int main(int argc, char *argv[])
-{  	
+{
    /*gtk_splitter_window is a structure containing all the widgets for the main window of gtk-splitter.*/
    gtk_splitter_window *gtk_s_window;
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
      }
 
    gtk_s_window->sdata = g_malloc( sizeof(session_data) );
-   if (gtk_s_window->sdata == NULL) 
+   if (gtk_s_window->sdata == NULL)
      {
        fprintf(stderr, "!!! - Critical error:  Could not allocate any memory. - !!!\n");
        return 0;
@@ -53,13 +53,13 @@ int main(int argc, char *argv[])
 
      /*Store the users home directory.*/
    gtk_s_window->sdata->home_dir = getenv("HOME");
-   if (gtk_s_window->sdata->home_dir == NULL) 
+   if (gtk_s_window->sdata->home_dir == NULL)
      {
-       fprintf(stderr, "!! - Critical error: Could not determine home directory; "
-			   "check environment variables for $HOME. - !!!\n");
+       display_error( "Could not determine home directory.\n"
+                      "Check environment variables for $HOME.\n", TRUE );
        return 0;
      }
-	
+
    strcat(gtk_s_window->sdata->home_dir, "/");
 
    gtk_s_window->sdata->output_dir = g_malloc(strlen(gtk_s_window->sdata->home_dir) * sizeof(gchar) + 1);
@@ -69,18 +69,18 @@ int main(int argc, char *argv[])
        return 0;
      }
    strcpy(gtk_s_window->sdata->output_dir, gtk_s_window->sdata->home_dir);
-   gtk_s_window->sdata->output_dir[strlen(gtk_s_window->sdata->output_dir)] = '\0';   
+   gtk_s_window->sdata->output_dir[strlen(gtk_s_window->sdata->output_dir)] = '\0';
 
    fprintf(stderr, "%s\n", GTK_SPLITTER_VERSION);
 
    /*Initialize gtk.*/
    gtk_init(&argc, &argv);
-       
+
    /*Create a new window.*/
    gtk_s_window->base_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    /*Set our window size so it is program controlled - and not user controlled.*/
    gtk_window_set_policy(GTK_WINDOW (gtk_s_window->base_window), FALSE, FALSE, TRUE);
-	
+
    /*Create our storage boxes - no spacing.*/
    gtk_s_window->base_box = gtk_vbox_new(FALSE, 0);
    gtk_s_window->box1 = gtk_hbox_new(FALSE, 0);
@@ -103,11 +103,11 @@ int main(int argc, char *argv[])
    gtk_s_window->split_button = gtk_radio_button_new_with_label(NULL, "Split");
    gtk_s_window->combine_button = gtk_radio_button_new_with_label_from_widget(
                                   GTK_RADIO_BUTTON (gtk_s_window->split_button), "Combine");
-	
+
    /*Toggle button to create a dos batch file.*/
    gtk_s_window->batch_file_button = gtk_check_button_new_with_label("Create DOS batch file.");
-	
-   /*1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4 
+
+   /*1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4
     (or so they say--depends on the FS) so (1.39 * 1048576) = 1457664. */
    gtk_s_window->size_input_adj = (GtkAdjustment *) gtk_adjustment_new(1457664, 1, G_MAXFLOAT, 1, 5, 5);
 
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box2, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box3, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->batch_file_button, TRUE, TRUE, 0);
-   gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box4, TRUE, TRUE, 0);	
+   gtk_box_pack_start(GTK_BOX (gtk_s_window->base_box), gtk_s_window->box4, TRUE, TRUE, 0);
 
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->open_button, TRUE, TRUE, 7);
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box1), gtk_s_window->filename_box, TRUE, TRUE, 0);
@@ -156,38 +156,38 @@ int main(int argc, char *argv[])
 
    /*Initialize our data.*/
    initialize_session_data(gtk_s_window->sdata);
-   initialize_splitter_window(gtk_s_window);	
+   initialize_splitter_window(gtk_s_window);
 
    /*Different signals that our gui picks up.*/
    /*All callbacks here are defined in callbacks.h*/
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->base_window), "destroy", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->base_window), "destroy",
                       GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->split_button), "clicked", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->split_button), "clicked",
                       GTK_SIGNAL_FUNC(toggle_split), gtk_s_window);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->combine_button), "clicked", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->combine_button), "clicked",
                       GTK_SIGNAL_FUNC(toggle_combine), gtk_s_window);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->size_input_adj), "value_changed", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->size_input_adj), "value_changed",
                       GTK_SIGNAL_FUNC(set_data), gtk_s_window);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->start_button), "clicked", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->start_button), "clicked",
                       GTK_SIGNAL_FUNC(start), gtk_s_window);
-  gtk_signal_connect(GTK_OBJECT (gtk_s_window->open_button), "clicked", 
+  gtk_signal_connect(GTK_OBJECT (gtk_s_window->open_button), "clicked",
                       GTK_SIGNAL_FUNC(choose_file), gtk_s_window);
-  gtk_signal_connect(GTK_OBJECT (gtk_s_window->output_button), "clicked", 
+  gtk_signal_connect(GTK_OBJECT (gtk_s_window->output_button), "clicked",
                       GTK_SIGNAL_FUNC(choose_directory), gtk_s_window);
 
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->batch_file_button), "toggled", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->batch_file_button), "toggled",
                       GTK_SIGNAL_FUNC(toggle_batch), gtk_s_window->sdata);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->bytesopt), "activate", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->bytesopt), "activate",
                       GTK_SIGNAL_FUNC(set_bytes), gtk_s_window->sdata);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->kbytesopt), "activate", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->kbytesopt), "activate",
                       GTK_SIGNAL_FUNC(set_kbytes), gtk_s_window->sdata);
-   gtk_signal_connect(GTK_OBJECT (gtk_s_window->mbytesopt), "activate", 
+   gtk_signal_connect(GTK_OBJECT (gtk_s_window->mbytesopt), "activate",
                       GTK_SIGNAL_FUNC(set_mbytes), gtk_s_window->sdata);
   /*End of callbacks.*/
 
    /*Display the gui on the screen.*/
-   gtk_widget_show_all(gtk_s_window->base_window);	
+   gtk_widget_show_all(gtk_s_window->base_window);
 
    /*Run the main loop of gtk.*/
    gtk_main();

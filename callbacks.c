@@ -1,4 +1,4 @@
-/* 
+/*
  * callbacks.c
  *
  * Copyright 2001 Gunter Wambaugh
@@ -39,24 +39,23 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gsw->sdata->fp_length = strlen(tmp_ptr) + 1;  /*Add in a count for the NULL terminator.*/
 
    g_free(gsw->sdata->filename_and_path);  /*Free any previous sdata.*/
-   
+
    gsw->sdata->filename_and_path = g_malloc( gsw->sdata->fp_length * sizeof(gchar) );
    if (gsw->sdata->filename_and_path == NULL)
      {
-       fprintf(stderr, "callbacks.c:  Could not allocate memory for file_name_and_path string.\n");
        display_error("\ncallbacks.c:  Could not allocate memory for file_name_and_path string.\n", TRUE);
      } /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
-   
+
    strcpy(gsw->sdata->filename_and_path, tmp_ptr);
    gsw->sdata->filename_and_path[gsw->sdata->fp_length - 1] = '\0';
-	
+
    /*Find out what the file name is, without the path.*/
    path_only_count = gsw->sdata->fp_length - 1;
    j = 0;
    /*Start at the end and count backwards till we find a '/'*/
    while (gsw->sdata->filename_and_path[path_only_count] != '/')
      path_only_count--;
-	
+
    path_only_count++; /*add the count of the last '/' */
 
    gsw->sdata->f_length = gsw->sdata->fp_length - path_only_count;  /*No +1 is needed, already in fp_length.*/
@@ -65,13 +64,13 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
 
    gsw->sdata->filename_only = g_malloc( gsw->sdata->f_length * sizeof(gchar));
    if (gsw->sdata->filename_only == NULL)
-     {
-       fprintf(stderr, "callbacks.c:  Could not allocate memory for file_name_only string.\n");
-       display_error("\ncallbacks.c:  Could not allocate memory for file_name_only string.\n", TRUE);            } /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
+     display_error("\ncallbacks.c:  Could not allocate memory for file_name_only string.\n", TRUE);
+     /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
+
    gsw->sdata->filename_only[gsw->sdata->f_length -1] = '\0';
-   
+
    /*Copy the filename only.*/
-   for (i = path_only_count; i != gsw->sdata->fp_length; i++) 
+   for (i = path_only_count; i != gsw->sdata->fp_length; i++)
      {
        gsw->sdata->filename_only[j] = gsw->sdata->filename_and_path[i];
        j++;
@@ -87,11 +86,11 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_widget_set_sensitive(gsw->batch_file_button, TRUE);
    gtk_widget_set_sensitive(gsw->size_input, TRUE);
    gtk_widget_set_sensitive(gsw->chunk_size_units, TRUE);
-   gtk_widget_set_sensitive(gsw->start_button, TRUE); 
+   gtk_widget_set_sensitive(gsw->start_button, TRUE);
 }
 
 void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
-{  
+{
    /*Simple gtk open dialog, copied and pasted from the tutorial.*/
    gsw->file_selector = gtk_file_selection_new("Choose a file.");
 
@@ -102,7 +101,7 @@ void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
 	              "clicked", GTK_SIGNAL_FUNC(setfilename), gsw);
    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->ok_button),
 	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
-                             (gpointer) gsw->file_selector);	
+                             (gpointer) gsw->file_selector);
    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->cancel_button),
 	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
                              (gpointer) gsw->file_selector);
@@ -128,7 +127,7 @@ void setdirname(GtkWidget *tmp, gtk_splitter_window *gsw)
 }
 
 void choose_directory(GtkWidget *tmp, gtk_splitter_window *gsw)
-{  
+{
    gsw->dir_selector = gtk_file_selection_new("Choose the output directory.");
 
    gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->dir_selector), gsw->sdata->output_dir);
@@ -138,7 +137,7 @@ void choose_directory(GtkWidget *tmp, gtk_splitter_window *gsw)
 	              "clicked", GTK_SIGNAL_FUNC(setdirname), gsw);
    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->dir_selector)->ok_button),
 	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
-                             (gpointer) gsw->dir_selector);	
+                             (gpointer) gsw->dir_selector);
    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->dir_selector)->cancel_button),
 	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
                              (gpointer) gsw->dir_selector);
@@ -167,12 +166,12 @@ void set_data(GtkWidget *tmp, gtk_splitter_window *gsw)
    gsw->sdata->entry = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON (gsw->size_input) );
 }
 
-void initialize_session_data(session_data *data)	
+void initialize_session_data(session_data *data)
 {
-   /*Our arrays are cleared in setfilename()*/ 
+   /*Our arrays are cleared in setfilename()*/
    /*Split is default action.*/
    data->split = TRUE;
-   
+
    /*Initialize dynamic array information.*/
    data->filename_and_path = NULL;
    data->filename_only = NULL;
@@ -181,8 +180,8 @@ void initialize_session_data(session_data *data)
 
    /*Set the default chunk_size. (1.44MB)*/
    data->entry = 1457664;
-   data->chunk_size = 1457664; 
-   
+   data->chunk_size = 1457664;
+
 }
 
 void initialize_splitter_window(gtk_splitter_window *gsw)
@@ -242,11 +241,11 @@ void start(GtkWidget *tmp, gtk_splitter_window *gsw)
      do_initialization = combine(tmp, gsw->sdata);
 
    /*Reset the data.*/
-   if (do_initialization)  
-     {   
+   if (do_initialization)
+     {
        initialize_session_data(gsw->sdata);
        initialize_splitter_window(gsw);
-     }   
-   
+     }
+
    gtk_widget_show_all(gsw->base_window);
 }
