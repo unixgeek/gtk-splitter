@@ -27,7 +27,6 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
-#include "error.h"
 #include "globals.h"
 #include "progress.h"
 #include "interface.h"

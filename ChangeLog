@@ -1,3 +1,8 @@
+2003-11-11  gunter  <techgunter@yahoo.com>
+
+	* combine.c
+	Removed a deprecated header file.
+
 2003-06-13  gunter  <techgunter@yahoo.com>
 
 	* combine.c:
