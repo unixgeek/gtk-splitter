@@ -39,7 +39,8 @@ typedef struct
     gushort f_length;
     gfloat entry;
     gulong chunk_size;
-    gushort unit;
+    //gushort unit;
+    enum {BYTES, KBYTES, MBYTES} unit;
     gboolean split;
     gboolean create_batchfile;
     gchar *home_dir;
@@ -68,7 +69,6 @@ typedef struct
     GtkWidget *bytesopt;
     GtkWidget *kbytesopt;
     GtkWidget *mbytesopt;
-    enum {BYTES, KBYTES, MBYTES};
     GtkWidget *filename_box;
     GtkWidget *output_box;
     GtkAdjustment *size_input_adj;
