@@ -13,70 +13,47 @@ E-mail me at techgunter@yahoo.com
 [ Detailed install instructions ]
 SEE INSTALL
 
-[ Installing from CVS ]
-
--Required packages:
- +autoconf
- +automake
- +make
- +C compiler
- +gtk+
- +gtk+-devel
-
--Procedure:
- + >./autogen.sh
- + >./configure
- + >make
- + >make install (as root)
-
 [ Installing from source package ]
 
--Required packages:
- +make
- +C compiler
- +gtk+
- +gtk+-devel
+ $tar -xzvf gtk-splitter-VERSION.tar.gz
+ $cd gtk-splitter-VERSION
+ $./configure
+ $make
+ $make install (as root)
 
--Procedure:
- + >tar -xzvf gtk-splitter-VERSION.tar.gz
- + >cd gtk-splitter-VERSION
- + >./configure
- + >make
- + >make install (as root)
+[ Building a .rpm package from source ]
 
-[ Building an RPM package from CVS ]
+ $tar -xzvf gtk-splitter-VERSION.tar.gz
+ $cd gtk-splitter-VERSION
+ $./configure
+ $./build_rpm.sh
 
--Required packages:
- +autoconf
- +automake
- +make
- +C compiler
- +gtk+
- +gtk+-devel
- +rpm
+[ Installing the .rpm package ]
 
--Procedure:
- + >./autogen.sh
- + >./build_rpm.sh
+ As root:
+ $rpm -ivh gtk-splitter-VERSION.i386.rpm
+ $rpm -ivh gtk-splitter-VERSION.src.rpm (optional)
 
-[ Building an RPM package from source ]
+[ Building a .tgz (Slackware and others) from source ]
 
--Required packages:
- +make
- +C compiler
- +gtk+
- +gtk+-devel
- +rpm
+ $tar -xzvf gtk-splitter-VERSION.tar.gz
+ $cd gtk-splitter-VERSION
+ $./configure
+ $./build_tgz.sh
 
--Procedure:
- + >./build_rpm.sh
+[ Installing the .tgz package ]
 
-[ Installing the RPM package ]
+ As root:
+ $installpkg gtk-splitter-VERSION-ARCH-BUILD.tgz
 
--Required packages:
- +gtk+
- +rpm
+[ Building a .deb package from source ]
 
--Procedure:
- + >rpm -ivh gtk-splitter-VERSION.i386.rpm (as root)
- + >rpm -ivh gtk-splitter-VERSION.src.rpm (as root; optional)
+ $tar -xzvf gtk-splitter-VERSION.tar.gz
+ $cd gtk-splitter-VERSION
+ $./configure
+ $./build_deb.sh
+
+[ Installing the .deb package ]
+
+ As root:
+ $dpkg -i gtk-splitter-VERSION-ARCH-BUILD.deb
