@@ -23,6 +23,8 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <string.h>
 
 #include "dostextfile.h"
@@ -52,6 +54,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /* Variables for file sizes and progress tracking. */
    gulong file_size, size_of_leftover_file, byte_count, bytes_read;
    struct stat file_info;
+      
+   pid_t pid;
 
    bytes_read = 0;
   
@@ -177,14 +181,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
    strcat( outfile, "." );
    strcat( outfile, ext );
 
-   /*Create an md5sum of the selected file, if desired.*/
-   //if ( data->verify )
-     //{
-       //if (do_progress )
-         //progress_window_set_status_text( progress->status, "Generating MD5 checksum.." );
+   /* Create an md5sum of the selected file, if desired. */
+   if ( data->verify )
+     {
+       pid = fork( );
        
-       //create_sum( data->file_name_and_path, data->fp_length, data->output_directory );
-     //} 
+       if ( pid == 0 )
+         create_sum( data->file_name_and_path, data->output_directory );
+
+     } 
      
    /* Open the selected file. */
    in = fopen( infile, "rb" );

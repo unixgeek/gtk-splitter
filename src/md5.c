@@ -23,102 +23,95 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <limits.h>
 #include "md5.h"
 
-void create_sum(const char *filename_and_path, const int fp_length, const char *output_dir)
+
+void create_sum(const char *file_name_and_path, const char *output_directory)
 {
-   char *command;
-   char *root_of_open_file;
-   char *filename_only;
-   int i, j;
+   char sh_argument[PATH_MAX];
+   char file_path[PATH_MAX];
+   char file_name_only[PATH_MAX];
+   int i, j, length;
+
+   strcpy( file_path, file_name_and_path );
    
-   root_of_open_file = malloc( fp_length * sizeof( char ) );
-   filename_only = malloc( fp_length * sizeof( char ) );
-  
-   strcpy( root_of_open_file, filename_and_path );
-   strcpy( filename_only, filename_and_path );
+   length = strlen( file_path );
    
-   /* Determine the root of the open file and the file name. */
-   i = fp_length - 1;
-   while ( root_of_open_file[i] != '/' )
+   /* Find the root of the file. */
+   i = strlen( file_path );
+   while ( file_path[i] != '/' )
      i--;
    i++;
-   for ( j = 0; i < ( fp_length ); j++, i++ )
-     {
-       filename_only[j] = root_of_open_file[i];
-       root_of_open_file[i] = '\0';
-     }
-   filename_only[j] = '\0';
    
+   /* Copy the file name from file_path into file_name_only. */
+   for ( j = 0; i != length; j++, i++ )
+     {
+       file_name_only[j] = file_path[i];
+       file_path[i] = '\0';
+     }
+   file_name_only[j] = '\0';
+
+     
    /*
-      Setup the command to execute.
+      Setup the command-line argument for sh.
       Full Command: 
-      chdir {root_of_open_file}
-      md5sum "{filename_only}" > "{output_dir}{filename_only}.md5"{NULL}
+      chdir {file_path}
+      md5sum "{file_name_only}" > "{output_directory}{filename_only}.md5"{NULL}
    */
   
-   command = malloc( ( 8 + strlen( filename_only ) + 5 + strlen( output_dir ) + strlen( filename_only ) + 6 ) * sizeof( char ) );
-   strcpy( command, "md5sum \"" );
-   strcat( command, filename_only );
-   strcat( command, "\" > \"" );
-   strcat( command, output_dir );
-   strcat( command, filename_only );
-   strcat( command, ".md5\"" );
-   strcat( command, "\0" );
+   strcpy( sh_argument, "md5sum " );
+   strcat( sh_argument, "\"" );
+   strcat( sh_argument, file_name_only );
+   strcat( sh_argument, "\" > \"" );
+   strcat( sh_argument, output_directory );
+   strcat( sh_argument, file_name_only );
+   strcat( sh_argument, ".md5\"" );
+   strcat( sh_argument, "\0" );
      
-   chdir( root_of_open_file );
-   system( command );
-  
-   free( root_of_open_file );
-   free( filename_only );
-   free( command );
+   chdir( file_path );
+   execl( "/bin/sh", "sh", "-c", sh_argument, NULL);
 }
              
-int verify_file(const char *filename_and_path, const int fp_length)
+int verify_file(const char *file_name_and_path )
 {
-   char *command;
-   char *root_of_open_file;
-   char *filename_only;
-   int i, j, exit_status;
+   char sh_argument[PATH_MAX];
+   char file_path[PATH_MAX];
+   char file_name_only[PATH_MAX];
+   int i, j, length, exit_status;
    
-   root_of_open_file = malloc( fp_length * sizeof( char ) );
-   filename_only = malloc( fp_length * sizeof( char ) );
-  
-   strcpy( root_of_open_file, filename_and_path );
-   strcpy( filename_only, filename_and_path );
+   strcpy( file_path, file_name_and_path );
    
-   /* Determine the root of the open file and the file name. */
-   i = fp_length - 1;
-   while ( root_of_open_file[i] != '/' )
+   length = strlen( file_path );
+   
+   /* Find the root of the file. */
+   i = strlen( file_path );
+   while ( file_path[i] != '/' )
      i--;
    i++;
-   for ( j = 0; i < ( fp_length ); j++, i++ )
+   
+   /* Copy the file name from file_path into file_name_only. */
+   for ( j = 0; i != length; j++, i++ )
      {
-       filename_only[j] = root_of_open_file[i];
-       root_of_open_file[i] = '\0';
+       file_name_only[j] = file_path[i];
+       file_path[i] = '\0';
      }
-     
-   filename_only[j] = '\0';
+   file_name_only[j] = '\0';
 
    /*
-      Setup the command to execute.
+      Setup the sh_argument to execute.
       Full Command: 
       chdir {root_of_open_file}
       md5sum --status -c "{filename_only}.md5"{NULL}
    */
      
-   command = malloc( ( 20 + strlen( filename_only ) + 6 ) * sizeof( char ) );
-   strcpy( command, "md5sum --status -c \"" );
-   strcat( command, filename_only );
-   strcat( command, ".md5\"" );
-   strcat( command, "\0" );
+   strcpy( sh_argument, "md5sum --status -c \"" );
+   strcat( sh_argument, file_name_only );
+   strcat( sh_argument, ".md5\"" );
+   strcat( sh_argument, "\0" );
    
-   chdir( root_of_open_file );
-   exit_status = system( command );
-     
-   free( root_of_open_file );
-   free( filename_only );
-   free( command );
-     
+   chdir( file_path );
+   exit_status = system( sh_argument );
+       
    return ( exit_status );  
 }

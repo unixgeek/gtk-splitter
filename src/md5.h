@@ -23,8 +23,8 @@
 #ifndef MD5_H
 #define MD5_H
 
-void create_sum(const char *, const int, const char *);
+void create_sum(const char *, const char *);
 
-int verify_file(const char *, const int);
+int verify_file(const char *);
 
 #endif /* MD5_H */
