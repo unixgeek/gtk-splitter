@@ -139,7 +139,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        display_error("Exceeded maximum number of files.  (>999)", FALSE);
        g_free(infile);
        g_free(outfile);
-       return TRUE;
+       return FALSE;
      }	
 
    strcpy(ext, "001");

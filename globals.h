@@ -25,7 +25,7 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define UPDATE_INTERVAL 1024
 

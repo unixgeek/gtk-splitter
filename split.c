@@ -102,7 +102,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        fprintf(stderr, "split.c:  chunk_size >= file_size.\n");
        display_error("chunk size is greater than or equal to the file size.", FALSE);
        g_free(infile);
-       return TRUE;
+       return FALSE;
      }
 
    if (size_of_leftover_file == 0)
@@ -115,7 +115,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        fprintf(stderr, "split.c:  Exceeded maximum number of files.  (>999)\n");
        display_error("Exceeded maximum number of files.  (>999)", FALSE);
        g_free(infile);
-       return TRUE;
+       return FALSE;
      }
 
    if (file_size <= (UPDATE_INTERVAL * 4))
@@ -226,19 +226,19 @@ gboolean split(GtkWidget *tmp, session_data *data)
        display_error("Could not open the selected file.", FALSE);
        g_free(outfile);
        g_free(infile);
-       return TRUE;
+       return FALSE;
      }
 
    /*Open the first outfile.*/
    out = fopen(outfile, "wb+");
    if (out == NULL) 
      {
-       printf("split.c:  Error creating %s.\n", outfile);
+       fprintf(stderr, "split.c:  Error creating %s.\n", outfile);
        display_error("Could not open output file.", FALSE);
        fclose(in);
        g_free(outfile);
        g_free(infile);
-       return TRUE;
+       return FALSE;
      }
 
 #if DEBUG 
@@ -324,7 +324,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        fflush(out);
        if (fclose(out) == EOF)
          {
-           printf("split.c:  Error closing %s.\n", outfile);
+           fprintf(stderr, "split.c:  Error closing %s.\n", outfile);
            display_error("Could not close output file.", TRUE);
            return FALSE;
          }
@@ -339,7 +339,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            out = fopen(outfile, "wb+");
            if (out == NULL) 
              {
-               printf("split.c:  Error creating %s.\n", outfile);
+               fprintf(stderr, "split.c:  Error creating %s.\n", outfile);
                display_error("Could not open output file.", TRUE);
                return FALSE;
              }
@@ -353,7 +353,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            display_error("Could not close in file.", FALSE);
            g_free(outfile);
            g_free(infile);
-           return FALSE;
+           return TRUE;
          }
 
    if (data->create_batchfile) 
@@ -369,7 +369,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            fclose(in);
            g_free(outfile);
            g_free(infile);
-           return FALSE;
+           return TRUE;
          }
      }
 	

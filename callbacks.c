@@ -215,22 +215,26 @@ void toggle_batch(GtkWidget *tmp, session_data *data)
 
 void start(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
-   gboolean stable;
+   gboolean do_initialization;
 
    gtk_widget_hide_all(gsw->base_window);
 
    if (gsw->sdata->split)
-     stable = split(tmp, gsw->sdata);
+     do_initialization = split(tmp, gsw->sdata);
    else
-     stable = combine(tmp, gsw->sdata);
+     do_initialization = combine(tmp, gsw->sdata);
 
    /*Reset the data.*/
-   initialize_session_data(gsw->sdata);
-   initialize_splitter_window(gsw);
+   if (do_initialization)  
+     {   
+       initialize_session_data(gsw->sdata);
+       initialize_splitter_window(gsw);
+     }   
+   
    gtk_widget_show_all(gsw->base_window);
 
 #if DEBUG
-   if (stable)
+   if (do_initialization)
      fprintf(stderr, "callbacks.c:  split/combine returned stable.\n");
    else
      fprintf(stderr, "callbacks.c:  split/combine returned unstable.\n");
