@@ -149,14 +149,16 @@ gboolean split(GtkWidget *tmp, session_data *data)
            return FALSE;
          }
 
-       /*If the file name is too long, truncate it.*/
+       /*If the file name is too long, truncate it.
+         Also, convert spaces to '_'.*/
+       dosify_filename( data->filename_only );
+
+       /*dosify_filename() will truncate the file name if it is longer than 12 characters.*/
        if ( ( data->f_length - 1 ) > 12 )
          {
-           dosify_filename( data->filename_only );
 			  data->f_length = 13;
 			  g_realloc( data->filename_only, data->f_length );
          }
-       /*Convert spaces to '_'.*/
 
        strcpy( outfile_only, data->filename_only );
        /*Reserve four spaces for the extension; it will change later.*/

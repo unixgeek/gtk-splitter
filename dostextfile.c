@@ -55,7 +55,8 @@ void dosify_filename(gchar *tmp)
    gchar ext[3];
 
    length = strlen( tmp );
-  
+
+   /*Truncate the file name if it is longer than 12 characters.*/
    if ( length > 12 )
      {
        
@@ -70,14 +71,13 @@ void dosify_filename(gchar *tmp)
        tmp[9] = ext[0];
        tmp[10] = ext[1];
        tmp[11] = ext[2];
-
-       /*Truncate the file name and convert spaces to underscores.*/
-       for ( i = 0; i <= 7; i++ )
-         {
-           if ( tmp[i] == ' ' )
-             tmp[i] = '_';
-         }
-      
        tmp[12] = '\0';
+     }
+       
+   /*Convert spaces to underscores.*/
+   for ( i = 0; i <= 7; i++ )
+     {
+       if ( tmp[i] == ' ' )
+         tmp[i] = '_';
      }
 }

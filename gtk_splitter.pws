@@ -9,5 +9,6 @@ ShowLocals=true
 0=dostextfile
 
 [find_text]
-0=dosify
-1=batchfile
+0=file_info
+1=dosify
+2=batchfile
