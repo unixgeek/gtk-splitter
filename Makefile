@@ -8,7 +8,8 @@ FLAGS = -Wall
 all: gtk-splitter
 
 gtk-splitter: gtk-splitter.c $(OBJ)
-	$(CC) gtk-splitter.c $(OBJ) -o gtk-splitter $(FLAGS) `gtk-config --cflags` $(LIBS_DIR) $(LIBS) 
+	$(CC) gtk-splitter.c $(OBJ) -o gtk-splitter\
+	$(FLAGS) `gtk-config --cflags` $(LIBS_DIR) $(LIBS) 
 
 callbacks.o: callbacks.c
 	$(CC) -c callbacks.c $(FLAGS) `gtk-config --cflags`

@@ -268,7 +268,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                bytes_read++;
                if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0)) 
                  {
-                   gtk_progress_set_percentage(GTK_PROGRESS (progress->file_progress), 
+                   gtk_progress_set_percentage(GTK_PROGRESS (progress->current_progress), 
                                               ((double) byte_count) / ((double) size_of_leftover_file));
                    gtk_progress_set_percentage(GTK_PROGRESS (progress->total_progress),
                                               ((double) bytes_read) / ((double) file_size));
@@ -285,7 +285,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                bytes_read++;
                if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0)) 
                  {
-                   gtk_progress_set_percentage(GTK_PROGRESS (progress->file_progress),
+                   gtk_progress_set_percentage(GTK_PROGRESS (progress->current_progress),
 							          ( (double) byte_count) / ( (double) data->chunk_size) );
                    gtk_progress_set_percentage(GTK_PROGRESS (progress->total_progress),
 							          ( (double) bytes_read) / ( (double) file_size) );

@@ -189,7 +189,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
            fputc(temp, out);
            if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0)) 
              {
-               gtk_progress_set_percentage(GTK_PROGRESS (progress->file_progress),
+               gtk_progress_set_percentage(GTK_PROGRESS (progress->current_progress),
                                           ( (double) byte_count) / ((double) file_info.st_size) );
                gtk_progress_set_percentage(GTK_PROGRESS (progress->total_progress),
                                           ( (double) bytes_read) / ((double) file_size) );

@@ -30,17 +30,17 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    pwindow->main_window = gtk_window_new(GTK_WINDOW_DIALOG);
    gtk_window_set_title(GTK_WINDOW (pwindow->main_window), title);
    pwindow->vbox = gtk_vbox_new(TRUE, 0);
-   pwindow->file_progress = gtk_progress_bar_new();
+   pwindow->current_progress = gtk_progress_bar_new();
    pwindow->total_progress = gtk_progress_bar_new();
 
    pwindow->status = gtk_statusbar_new();
 
    gtk_container_add(GTK_CONTAINER (pwindow->main_window), pwindow->vbox);
-   gtk_box_pack_start(GTK_BOX (pwindow->vbox), pwindow->file_progress, TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX (pwindow->vbox), pwindow->current_progress, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (pwindow->vbox), pwindow->total_progress, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX (pwindow->vbox), pwindow->status, TRUE, TRUE, 0);
 
-   gtk_progress_set_show_text(GTK_PROGRESS (pwindow->file_progress), TRUE);
+   gtk_progress_set_show_text(GTK_PROGRESS (pwindow->current_progress), TRUE);
    gtk_progress_set_show_text(GTK_PROGRESS (pwindow->total_progress), TRUE);
 
    gtk_widget_show_all(pwindow->main_window);

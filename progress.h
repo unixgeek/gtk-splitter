@@ -26,7 +26,7 @@ typedef struct
   {
     GtkWidget *main_window;
     GtkWidget *vbox;
-    GtkWidget *file_progress;
+    GtkWidget *current_progress;
     GtkWidget *total_progress;
     GtkWidget *status;
   } progress_window;
