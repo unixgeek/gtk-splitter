@@ -33,6 +33,10 @@
 
 int main(int argc, char *argv[])
 {
+   /* Used to automatically detect whether a file name read from
+      the command-line should be split or combined. */
+   gchar ext[4];
+   
    /* gtk_splitter_window is a struct containing all the widgets
       for the main window of gtk-splitter. */
    gtk_splitter_window main_window;
@@ -159,9 +163,9 @@ int main(int argc, char *argv[])
    gtk_signal_connect( GTK_OBJECT( main_window.start_button ), "clicked",
                        GTK_SIGNAL_FUNC( start ), &main_window );
    gtk_signal_connect( GTK_OBJECT( main_window.open_button ), "clicked",
-                       GTK_SIGNAL_FUNC( choose_file ), &main_window );
+                       GTK_SIGNAL_FUNC( get_file_name_dialog ), &main_window );
    gtk_signal_connect( GTK_OBJECT( main_window.output_button ), "clicked",
-                       GTK_SIGNAL_FUNC( choose_directory ), &main_window );
+                       GTK_SIGNAL_FUNC( get_directory_name_dialog ), &main_window );
 
    gtk_signal_connect( GTK_OBJECT( main_window.batch_file_button ), "toggled",
                        GTK_SIGNAL_FUNC( toggle_batch ), &main_window.my_session_data );
@@ -176,6 +180,29 @@ int main(int argc, char *argv[])
 
    /* Display the gui on the screen. */
    gtk_widget_show_all( main_window.base_window );
+   
+   /* Determine whether a file name read from
+      the command-line should be split or combined. */
+   if ( argc == 2 )
+     { 
+       set_file_name( &main_window, argv[1] );
+
+       if ( strlen( argv[1] ) >= 3 )
+         {
+           /* Copy the file's extension. */
+           ext[0] = argv[1][strlen( argv[1] ) - 3];
+           ext[1] = argv[1][strlen( argv[1] ) - 2];
+           ext[2] = argv[1][strlen( argv[1] ) - 1];
+           ext[3] = '\0';
+           /* Check to see if the extension is '001'. */
+           if ( strcmp( ext, "001" ) == 0 )
+             {
+               /* Start with the combine button selected. */
+               gtk_button_clicked( GTK_BUTTON( main_window.combine_button ) );
+             } 
+         }
+     }
+
 
    /* Run the main loop of gtk. */
    gtk_main();

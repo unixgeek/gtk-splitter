@@ -13,3 +13,7 @@ icon.
 [X] Create scripts for building an RPM.
 [X] Add support for md5sum.
 [ ] Utilize the new stuff in GTK+ 2.0!
+[X] Accept a file from the command line.
+[ ] Drag-n-Drop support.
+[ ] Refactor code to decrease coupling and increase cohesion.
+
