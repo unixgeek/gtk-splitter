@@ -140,6 +140,8 @@ void choose_directory(GtkWidget *tmp, gtk_splitter_window *gsw)
    /*Hide the create, delete, and rename buttons.*/
    gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->selection_dialog ) );
 
+   /*Disable the ability to select files.*/
+   gtk_widget_set_sensitive( GTK_FILE_SELECTION( gsw->selection_dialog )->file_list, FALSE );
    /*Connect some signals to the dialog.*/
    gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->selection_dialog )->ok_button ),
 	                     "clicked", GTK_SIGNAL_FUNC( setdirname ), gsw);
