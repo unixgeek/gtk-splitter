@@ -175,10 +175,10 @@ verify_file_return_type verify_file(const char *file_name_and_path, const char *
    /*
       Setup the command-line argument for sh.
       Argument:
-      'md5sum --status --check "md5sum_and_path" &> /dev/null{NULL}'
+      'md5sum --check "md5sum_and_path" &> /dev/null{NULL}'
    */
    
-   strcpy( sh_argument, "md5sum --status --check \"" );
+   strcpy( sh_argument, "md5sum --check \"" );
    strcat( sh_argument, md5sum_and_path );
    strcat( sh_argument, "\" &> /dev/null" );
    strcat( sh_argument, "\0" );
