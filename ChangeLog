@@ -1,14 +1,65 @@
-2002-11-28  techgunter  <techgunter@yahoo.com>
+2002-12-20  gunter <techgunter@yahoo.com>
+
+	* gtk-splitter.c, globals.h:
+
+	* combine.c, split.c:
+	Style changes in the message text.
+
+	* file_selection.c:
+	Fixed a bug where file names could be mangled.
+
+	* file_selection.c:
+	Style changes in the title of the file/directory selection dialogs.
+
+	* combine.c, md5.c, md5.h, split.c:
+	Renamed the enumerated types in md5 to a more appropriate name.  Fixed a bug
+	in md5.c by using the WEXITSTATUS( ) macro.
+
+2002-12-17  gunter  <techgunter@yahoo.com>
+
+	* md5.c, md5.h, split.c, combine.c:
+	More work on the md5 stuff.
+
+	* combine.c, md5.c, md5.h, progress.c, split.c:
+	Added more paranoid error checking in md5.c.
+	Uncommented some code that I forgot to uncomment earlier in progress.c.
+	Fixed the combine progress so that it would show the current file being read
+        instead of the file that is being created. :)
+
+	* progress.c:
+	More tweaking of the progress window.
+
+2002-12-16  gunter  <techgunter@yahoo.com>
+
+	* configure.in:
+	Getting ready for a new release.
+
+	* progress.c:
+	Tweaked the progress window.
+
+	* file_selection.c:
+	Fixed an incorrect assumption I had made about stat( ).
+
+	* md5.c, md5.h, split.c, verify_dialog.c, combine.c:
+	Finally worked out the details of the file verification feature.  The md5
+	module is a wrapper for text-utils' md5sum.
+
+2002-12-13  gunter  <techgunter@yahoo.com>
+
+	* src/Makefile.am, verify_dialog.c, verify_dialog.h:
+	Created a dialog to display the results of file verification.
+
+2002-11-28  gunter  <techgunter@yahoo.com>
 
 	* progress.h, progress.c, combine.c, split.c:
 	Redesigned the progress window.
 
-2002-11-23  techgunter  <techgunter@yahoo.com>
+2002-11-23  gunter  <techgunter@yahoo.com>
 
 	* callbacks.c:
 	Fixed a bug where 'units' was not getting defaulted to BYTES.
 
-2002-11-16  techgunter  <techgunter@yahoo.com>
+2002-11-16  gunter  <techgunter@yahoo.com>
 
 	* progress.c:
 	Tweaked the progress window.
@@ -16,7 +67,7 @@
 	* callbacks.c, file_selection.c, globals.h, gtk-splitter.c:
 	Added widgets to change the start button to a button with a stock icon and custom text.
 
-2002-11-08  techgunter  <techgunter@yahoo>
+2002-11-08  gunter  <techgunter@yahoo>
 
 	* gtk-splitter.c:
 	If the check for $HOME fails, defalut to '/' as the home directory.
@@ -41,7 +92,7 @@
 	* Makefile.am, configure.in, src/Makefile.am:
 	Modified the autoconf and automake files for compilation with GTK+2.0.
 
-2002-11-07  techgunter  <techgunter@yahoo.com>
+2002-11-07  gunter  <techgunter@yahoo.com>
 
 	* combine.c, split.c:
 	Removed dynamic memory allocation for the progress window.

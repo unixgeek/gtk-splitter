@@ -17,6 +17,9 @@ AC_PROG_CPP
 dnl -- Check for a BSD compatible installer. --
 AC_PROG_INSTALL
 
+dnl -- Set the path to the icon.
+AC_DEFINE_UNQUOTED(ICON_AND_PATH, "${prefix}/share/pixmaps/gtk-splitter.png" )
+
 dnl -- Check for GTK+2.0 and pkg-config. --
 PKG_CHECK_MODULES(GTK,"gtk+-2.0") 
 AC_SUBST(GTK_CFLAGS)

@@ -77,6 +77,7 @@ typedef struct
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;
     GtkWidget *file_selection_dialog;
+    GdkPixbuf *icon;
     session_data my_session_data;
   } gtk_splitter_window;
 

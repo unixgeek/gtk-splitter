@@ -67,6 +67,11 @@ int main(int argc, char *argv[])
    /* Set the window so its dimensions are program controlled and not user controlled. */
    gtk_window_set_policy( GTK_WINDOW( main_window.base_window ), FALSE, FALSE, TRUE );
 
+   /* Set the window icon. */
+   main_window.icon = gdk_pixbuf_new_from_file( ICON_AND_PATH, NULL );
+   if ( main_window.icon != NULL )
+      gtk_window_set_icon( GTK_WINDOW( main_window.base_window ), main_window.icon );
+
    /* Create storage boxes with no spacing. */
    main_window.base_box = gtk_vbox_new( FALSE, 0 );
    main_window.box1 = gtk_hbox_new( FALSE, 0 );
