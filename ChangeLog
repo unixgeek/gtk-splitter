@@ -1,3 +1,9 @@
+2002-12-24  gunter  <techgunter@yahoo.com>
+
+	* gtk-splitter.desktop, callbacks.c, callbacks.h, combine.c, gtk-splitter.c,
+	  md5.c:
+	Ironed out a few miscellaneous flaws.
+
 2002-12-20  gunter <techgunter@yahoo.com>
 
 	* configure.in, globals.h, gtk-splitter.c:
