@@ -139,7 +139,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        return FALSE;
      }
 
-   /*Decide whether or not a progress bar would be beneficiary.*/
+   /*Decide whether or not a progress window would be beneficiary.*/
    if ( file_size <= UPDATE_INTERVAL )
      do_progress = FALSE;
    else
@@ -195,7 +195,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
          }
 
        /*Insure that all data is written to disk before we quit.*/
-       fflush(out);
+       fflush( out );
 
        /*Increment the extension.*/
        if ( ext[2] != '9' )
