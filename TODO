@@ -11,4 +11,4 @@
 [ ]Modify the configure stuff to check for gnome before installing the menu shortcut and icon.
 [ ]Create scripts for building an RPM.
 [ ]Add support for md5sum.
-
+[ ]Utilize the new stuff in GTK+ 2.0!
