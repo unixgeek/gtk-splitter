@@ -1,0 +1,11 @@
+AC_INIT(src/gtk-splitter.c)
+PACKAGE=gtk-splitter
+VERSION=1.0pre1
+AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+AC_PROG_CC
+AC_PROG_INSTALL
+AM_PATH_GTK(1.2.7)
+AC_CHECK_HEADERS(sys/stat.h)
+AC_OUTPUT([ Makefile
+            src/Makefile
+          ])
