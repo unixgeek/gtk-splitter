@@ -1,6 +1,12 @@
-Try and clean up 'clean up code' as well as malloc code.
+Dynamic array allocation or fixed allocation...that is the question.
 Check the opening of files.
-Re-arrange split.c and combine.c for better design.
 More effecient way to update the progress bar?
 Add the original file name to the batchfile.
 Verify the necessity of includes.
+
+#################
+# DO THESE FIRST #
+#################
+(1) Set up project to use autoconf and automake.
+(2) Create scripts for building an RPM.
+(3) Add project to www.tucows.com, linuxlinks.com, and any other linux free ware website.
