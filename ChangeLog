@@ -1,7 +1,10 @@
 2002-04-16  gunter  <techgunter@yahoo.com>
 
+	* gtk-splitter.{png/xpm}
+	Replaced the old icon (in xpm format) with a new icon (in png format).
+
 	* progress.c
-   The percentage inside the progress bar is no longer displayed.
+	The percentage inside the progress bar is no longer displayed.
 
 2002-04-10  gunter  <techgunter@yahoo.com>
 

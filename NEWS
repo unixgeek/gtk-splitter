@@ -1,4 +1,11 @@
-1.0pre1 ( ):
+1.0	(2002-04-17):
+
+	* New icon.
+	* Some GUI enhancements.
+	* The following characters are now filtered out of the file name when creating a batch file:
+	  '*'  '+'  ' '  '|'  '\'  '='  '?'  '['  ']'  ';'  ':'  '"'  '<'  '>'  ','.
+
+1.0pre1 (2002-03-11):
 
 	* Now uses autoconf and automake to ease compilation.
 	* When combining files with a batchfile, the original file name is displayed.
