@@ -33,8 +33,7 @@ ProgressWindow* progress_window_new( )
     
    if ( pw == NULL )
    {
-       display_error( "progress.c:  Couldn't allocate memory for ProgressWindow" );
-       exit( 1 );
+       return pw;
    }
    
    /* Set up the window. */

@@ -19,12 +19,14 @@
  * along with gtk-splitter; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+ 
+#ifdef HAVE_LIBMHASH
+#include <mhash.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
-#include <mhash.h>
 #include "error.h"
 #include "globals.h"
 #include "progress.h"
@@ -150,9 +152,14 @@ gboolean gtk_splitter_combine_files( GtkSplitterSessionData *data )
      {
        do_progress = TRUE;
        progress_window = progress_window_new( );
-       gtk_window_set_title( GTK_WINDOW( progress_window->base_window ), "Combine Progress" );
-       gtk_widget_show_all( progress_window->base_window );
-       while ( g_main_iteration( FALSE ) );
+       if ( progress_window == NULL )
+          do_progress = FALSE;
+       else
+       {
+          gtk_window_set_title( GTK_WINDOW( progress_window->base_window ), "Combine Progress" );
+          gtk_widget_show_all( progress_window->base_window );
+          while ( g_main_iteration( FALSE ) );
+       }
      }
 
    /* Now DO the combine. */
@@ -255,12 +262,12 @@ gboolean gtk_splitter_combine_files( GtkSplitterSessionData *data )
           mhash_deinit( thread, hash );
           for ( i = 0; i < mhash_get_block_size( MHASH_MD5 ); i++ ) 
           {
-             g_sprintf( hashtemp, "%.2x", hash[i] );
+             sprintf( hashtemp, "%.2x", hash[i] );
              strcat( new_hash, hashtemp );
           }
                   
           infile[strlen( infile ) - 4] = '\0';
-          g_sprintf( md5_file, "%s.md5", infile );
+          sprintf( md5_file, "%s.md5", infile );
           md5 = fopen( md5_file, "r" );
           
           if ( md5 != NULL )

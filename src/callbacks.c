@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "callbacks.h"
 #include "split.h"
 #include "combine.h"
@@ -75,11 +76,11 @@ void initialize_session_data( GtkSplitterSessionData *gssd )
                       "Check environment variables for $HOME." );
        
        /* Default to '/' as the user's home directory. */ 
-       g_sprintf( gssd->home_directory, "/" );
+       sprintf( gssd->home_directory, "/" );
      }
    else
      {
-       g_sprintf( gssd->home_directory, "%s/", home );
+       sprintf( gssd->home_directory, "%s/", home );
      }
 
    /* Set the default output directory to the user's home directory. */

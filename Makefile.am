@@ -9,7 +9,7 @@ EXTRA_DIST = gtk-splitter.spec		\
              slack-desc			\
              HOSTS                
 
-gnome_menudir = $(prefix)/share/gnome/apps/Utilities
+gnome_menudir = $(prefix)/share/applications
 gnome_menu_DATA = gtk-splitter.desktop
 
 icondir = $(prefix)/share/pixmaps

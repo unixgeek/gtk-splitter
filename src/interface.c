@@ -21,6 +21,7 @@
  */
 
 #include <glib.h>
+#include <stdlib.h>
 #include "globals.h"
 #include "callbacks.h"
 #include "file_selection.h"

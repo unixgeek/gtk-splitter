@@ -20,13 +20,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_LIBMHASH
+#include <mhash.h>
+#endif
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <mhash.h>
 #include "interface.h"
 #include "globals.h"
 #include "progress.h"
@@ -85,7 +87,7 @@ gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
    g_stpcpy( infile, gssd->file_name_and_path );
    
    /* Setup the outfile string. */
-   g_sprintf( outfile, "%s%s.%s", gssd->output_directory, gssd->file_name_only, ext );
+   sprintf( outfile, "%s%s.%s", gssd->output_directory, gssd->file_name_only, ext );
   
    /* Setup strings used when creating a batch file. */
    if ( gssd->create_batchfile )
@@ -97,10 +99,10 @@ gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
        dosify_file_name( outfile_only );
                 
       /* Re-setup the outfile string. */
-       g_sprintf( outfile, "%s%s.%s", gssd->output_directory, outfile_only, ext );
+       sprintf( outfile, "%s%s.%s", gssd->output_directory, outfile_only, ext );
 
        /* Setup the batchname_and_path string. */ 
-       g_sprintf( batchname_and_path, "%s%s.bat", gssd->output_directory, outfile_only ); 
+       sprintf( batchname_and_path, "%s%s.bat", gssd->output_directory, outfile_only ); 
      }
 
    /* Determine chunk_size (bytes). */
@@ -153,9 +155,14 @@ gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
      {
        do_progress = TRUE;
        progress_window = progress_window_new( );
-       gtk_window_set_title( GTK_WINDOW( progress_window->base_window ), "Split Progress" );
-       gtk_widget_show_all( progress_window->base_window );
-       while ( g_main_iteration( FALSE ) );
+       if ( progress_window == NULL )
+          do_progress = FALSE;
+       else
+       {
+          gtk_window_set_title( GTK_WINDOW( progress_window->base_window ), "Split Progress" );
+          gtk_widget_show_all( progress_window->base_window );
+          while ( g_main_iteration( FALSE ) );
+       }
      }
 
    batch = NULL;
@@ -368,7 +375,7 @@ while ( g_main_iteration( FALSE ) );
           
           mhash_deinit( thread, hash );
           outfile[strlen( outfile ) - 4] = '\0';
-          g_sprintf( md5_file, "%s.md5", outfile );
+          sprintf( md5_file, "%s.md5", outfile );
           md5 = fopen( md5_file, "w+" );
           
           if ( md5 != NULL )

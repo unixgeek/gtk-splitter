@@ -1,9 +1,10 @@
 [Desktop Entry]
+Encoding=UTF-8
 Name=File Splitter
-Name[en_US.ISO8859-1]=gtk-splitter
 Comment=GTK+ File Splitter
-Exec=gtk-splitter
+Exec=gtk-splitter %F
 Icon=gtk-splitter.png
 Terminal=false
-MultipleArgs=false
 Type=Application
+Categories=GNOME;Application;Utility;
+StartupNotify=true
