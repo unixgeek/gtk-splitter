@@ -20,6 +20,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef PROGRESS_H
+#define PROGRESS_H
+
 #include <gtk/gtk.h>
 
 typedef struct
@@ -35,3 +38,4 @@ void create_progress_window(progress_window *, gchar *);
 
 void destroy_progress_window(progress_window *);
 
+#endif /* PROGRESS_H */

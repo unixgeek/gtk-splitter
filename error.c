@@ -26,7 +26,7 @@
   This is just incase some memory problems occur and an error dialog
   becomes impossible.*/
 
-void display_error(char *error, gboolean quit)
+void display_error(gchar *error, gboolean quit)
 {
   GtkWidget *dialog, *label, *okay_button;
   

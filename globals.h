@@ -22,8 +22,8 @@
 
 /* This file contains global definitions.*/
 
-#ifndef __GLOBALS_H__
-#define __GLOBALS_H__
+#ifndef GLOBALS_H
+#define GLOBALS_H
 
 #define DEBUG 0
 
@@ -83,4 +83,4 @@ typedef struct
     session_data *sdata;
   } gtk_splitter_window;
 
-#endif /* __GLOBALS_H__ */
+#endif /* GLOBALS_H */

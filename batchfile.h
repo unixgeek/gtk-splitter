@@ -20,6 +20,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef BATCHFILE_H
+#define BATCHFILE_H
+
 #include <stdio.h>
 #include <gtk/gtk.h>
 
@@ -32,3 +35,5 @@ void initialize_batchfile(FILE *, gchar *);
 void finalize_batchfile(FILE *);
 
 void dosify_filename(gchar *, gushort);
+
+#endif /* BATCHFILE_H */

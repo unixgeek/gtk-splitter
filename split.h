@@ -20,7 +20,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef SPLIT_H
+#define SPLIT_H
+
+#include <gtk/gtk.h>
 #include "globals.h"
 
 /*Split the selected file.*/
 gboolean split(GtkWidget *, session_data *);
+
+#endif /* SPLIT_H */

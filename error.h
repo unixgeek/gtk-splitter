@@ -20,4 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-void display_error(char *, gboolean);
+#ifndef ERROR_H
+#define ERROR_H
+
+#include <gtk/gtk.h>
+
+void display_error(gchar *, gboolean);
+
+#endif /* ERROR_H */

@@ -20,6 +20,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef CALLBACKS_H
+#define CALLBACKS_H
+
+#include <gtk/gtk.h>
 #include "globals.h"
 
 /*Sets the filename in session_data.*/
@@ -56,3 +60,5 @@ void initialize_splitter_window(gtk_splitter_window *);
 
 /*Start the split/combine process.*/
 void start(GtkWidget *, gtk_splitter_window *);
+
+#endif /* CALLBACKS_H */

@@ -20,7 +20,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef COMBINE_H
+#define COMBINE_H
+
+#include <gtk/gtk.h>
 #include "globals.h"
 
 /*Combine the selected file.*/
 gboolean combine(GtkWidget *, session_data *);
+
+#endif /* COMBINE_H */
