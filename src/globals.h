@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* This file contains global definitions.*/
+/* This file contains global definitions. */
 
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -28,25 +28,26 @@
 #include <gtk/gtk.h>
 #include <limits.h>
 
-#define UPDATE_INTERVAL 32768  /*Update the progress bar every 32k.*/
+/* Update the progress bar every 32k. */
+#define UPDATE_INTERVAL 32768  
 
-/*Session_data is a struct used to store information related to the selected file.*/
+/* session_data is a struct containing information related to a selected file. */
 typedef struct
   {
-    gchar filename_and_path[PATH_MAX];
-    gchar filename_only[PATH_MAX];
+    gchar file_name_and_path[PATH_MAX];
+    gchar file_name_only[PATH_MAX];
     gfloat entry;
     gulong chunk_size;
     enum {BYTES, KILOBYTES, MEGABYTES} unit;
     gboolean split;
     gboolean create_batchfile;
-    gchar *home_dir;
-    gchar output_dir[PATH_MAX];
+    gchar *home_directory;
+    gchar output_directory[PATH_MAX];
     gboolean verify;
   } session_data;
 
-/*gtk_splitter_window is a struct for storing widgets related to the main
-  window of gtk-splitter.*/
+/* gtk_splitter_window is a struct for storing widgets related to the main
+   window of gtk-splitter. */
 typedef struct
   {
     GtkWidget *base_window;
@@ -65,15 +66,15 @@ typedef struct
     GtkWidget *verify_button;
     GtkWidget *chunk_size_units;
     GtkWidget *units_menu;
-    GtkWidget *bytesopt;
-    GtkWidget *kbytesopt;
-    GtkWidget *mbytesopt;
-    GtkWidget *filename_box;
+    GtkWidget *unit_bytes;
+    GtkWidget *unit_kilobytes;
+    GtkWidget *unit_megabytes;
+    GtkWidget *file_name_box;
     GtkWidget *output_box;
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;
-    GtkWidget *selection_dialog;
-    session_data *sdata;  //FIX ME
+    GtkWidget *file_selection_dialog;
+    session_data my_session_data;
   } gtk_splitter_window;
 
 #endif /* GLOBALS_H */

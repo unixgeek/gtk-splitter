@@ -44,26 +44,25 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    file_size = 0;
    bytes_read = 0;
 
-   /*Setup the outfile.*/
-   strcpy( outfile, data->output_dir );
-   strcat( outfile, data->filename_only );
+   /* Setup the outfile. */
+   strcpy( outfile, data->output_directory );
+   strcat( outfile, data->file_name_only );
   
-   /*The outfile to be created is the filename_only minus the '.00x' extension.
-     NOTE:  outfile_length contains an extra count for the '\0' at the end.
-     (i.e. the end of outfile might be:  [.] [0] [0] [1] [\0].)*/ 
+   /* The outfile to be created is the file_name_only minus the '.00x' extension.
+      NOTE:  outfile_length contains an extra count for the '\0' at the end.
+      (i.e. the end of outfile might be:  [.] [0] [0] [1] [\0].) */ 
    outfile[strlen( outfile ) - 5] = '\0';
-   /*Outfile is ready.*/
 
-   /*Setup the infile.*/
-   strcpy( infile, data->filename_and_path );
+   /* Setup the infile. */
+   strcpy( infile, data->file_name_and_path );
 
-   /*Do some pre-combine calcualations.*/
+   /* Do some pre-combine calcualations. */
    done = FALSE;
    do
      {
        in = fopen( infile, "rb" );
-       /*If the file cannot be opened, assume it does not exist.
-         Iterate through the extensions.  (.001, .002, .003, ...)*/
+       /* If the file cannot be opened, assume it does not exist.
+          Iterate through the extensions.  (.001, .002, .003, ...) */
        if ( in == NULL )
          done = TRUE;
        else
@@ -73,7 +72,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
            stat(infile, &file_info);
            file_size += file_info.st_size;
 
-           /*Increment the extension.*/
+           /* Increment the extension. */
            if ( ext[2] != '9' )
              ext[2]++;
            else
@@ -88,30 +87,30 @@ gboolean combine(GtkWidget *tmp, session_data *data)
                  }
              }
 
-           /*Move on to the next file.*/
+           /* Move on to the next file. */
            fclose( in );
            infile[strlen(infile) - 3] = '\0';
            strcat( infile, ext );
          }
 
      } while ( !done );
-     /*End of pre-combine calculations.
-       We now know how many files there are to be combined, and what the size
-       of the combined file should be.*/
+     /* End of pre-combine calculations.
+        We now know how many files there are to be combined, and what the size
+        of the combined file should be. */
 
-   /*Make sure the files don't exceed our limit.*/
+   /* Make sure the files don't exceed our limit. */
    if ( files_to_combine > 999 )
      {
        display_error( "\ncombine.c:  Exceeded maximum number of files (999).\n", FALSE );
        return FALSE;
      }
 
-   /*Reset the extension counter and the infile.*/
+   /* Reset the extension counter and the infile. */
    strcpy( ext, "001" );
    infile[strlen( infile ) - 3] = '\0';
    strcat( infile, ext );
 
-   /*Open a file to combine the other files to.*/
+   /* Open a file to combine the other files to. */
    out = fopen( outfile, "wb+" );
    if ( out == NULL )
      {
@@ -119,7 +118,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        return FALSE;
      }
 
-   /*Decide whether or not a progress window would be beneficiary.*/
+   /* Decide whether or not a progress window would be beneficiary. */
    if ( file_size <= UPDATE_INTERVAL )
      do_progress = FALSE;
    else
@@ -129,7 +128,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        if ( progress == NULL )
          {
            display_error( "\ncombine.c:  Could not allocate memory for a progress window.\n", FALSE );
-           /*Try to go on without it.*/
+           /* Try to go on without it. */
            do_progress = FALSE;
          }
        else
@@ -140,7 +139,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
          }
      }
 
-   /*Now DO the combine.*/
+   /* Now DO the combine. */
    for (file_count = 0; file_count != files_to_combine; file_count++)
      {
        if ( do_progress )
@@ -172,10 +171,10 @@ gboolean combine(GtkWidget *tmp, session_data *data)
              }
          }
 
-       /*Insure that all data is written to disk before we quit.*/
+       /* Insure that all data is written to disk before we close. */
        fflush( out );
 
-       /*Increment the extension.*/
+       /* Increment the extension. */
        if ( ext[2] != '9' )
          ext[2]++;
        else
@@ -190,7 +189,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
              }
          }
 
-       /*Move on to the next file.*/
+       /* Move on to the next file. */
        if ( fclose( in ) == EOF )
          {
            display_error( "\ncombine.c:  Could not open one of the files to be combined.\n", FALSE );
@@ -205,9 +204,9 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        infile[strlen( infile ) - 3] = '\0';
        strcat( infile, ext );
      }
-     /*End of the combine process.*/
+     /* End of the combine process. */
 
-   /*Close our newly combined file.*/
+   /* Close our newly combined file. */
    if ( fclose( out ) == EOF )
      {
        display_error( "\ncombine.c:  Could not close the combined file.\n", FALSE );
@@ -219,7 +218,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        return TRUE;
      }
      
-   /*Verify by md5sum if desired.*/
+   /* Verify if desired. */
    if ( data->verify )
      {
        if ( do_progress ) 

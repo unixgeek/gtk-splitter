@@ -26,16 +26,16 @@
 #include <gtk/gtk.h>
 #include "globals.h"
 
-/*For choosing a file with the gtk open dialog.*/
+/* For choosing a file with the gtk open dialog. */
 void choose_file(GtkWidget *, gtk_splitter_window *);
 
-/*Sets the filename in session_data to the selected file from choose_file().*/
+/* Sets the filename in session_data to the selected file from choose_file(). */
 void setfilename(GtkWidget *, gtk_splitter_window *);
 
-/*For choosing a directory with the gtk open dialog.*/
+/* For choosing a directory with the gtk open dialog. */
 void setdirname(GtkWidget *, gtk_splitter_window *);
 
-/*Sets the output_dir in session_data to the selected directory from choose_directory().*/
+/* Sets the output_dir in session_data to the selected directory from choose_directory(). */
 void choose_directory(GtkWidget *, gtk_splitter_window *);
 
 #endif /* FILE_SELECTION_H */

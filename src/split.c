@@ -33,30 +33,30 @@
 
 gboolean split(GtkWidget *tmp, session_data *data)
 {
-   /*Progress window stuff.*/
+   /* Progress window stuff. */
    progress_window *progress;
    gboolean do_progress;
 
-   /*FILE streams.*/
+   /* FILE streams. */
    FILE *in, *out, *batch;
    
-   /*Various character array pointers.*/
+   /* Various character array pointers. */
    gchar infile[PATH_MAX], outfile[PATH_MAX], batchname_and_path[PATH_MAX], outfile_only[PATH_MAX], original_name[PATH_MAX], ext[] = {"001"};
   
-   /*For storing the character read in by fgetc().*/
+   /* For storing the character read in by fgetc(). */
    gint temp;
 
-   /*Various counters.*/
+   /* Various counters. */
    guint number_of_even_files, file_count, files_to_split;
 
-   /*Variables for file sizes and progress tracking.*/
+   /* Variables for file sizes and progress tracking. */
    gulong file_size, size_of_leftover_file, byte_count, bytes_read;
    struct stat file_info;
 
    bytes_read = 0;
   
-   /*Determine the unit of measurement to evaluate the chunk_size.
-     chunk_size should probably be moved from the struct to a local variable.*/
+   /* Determine the unit of measurement to evaluate the chunk_size.
+      FIX ME:  chunk_size should probably be moved from the struct to a local variable. */
    switch ( data->unit )
      {
        case BYTES      :  data->chunk_size = data->entry;
@@ -67,10 +67,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
 			                 break;
      }
 
-   /*Set up the infile array.*/
-   strcpy( infile, data->filename_and_path );
+   /* Set up the infile array. */
+   strcpy( infile, data->file_name_and_path );
    
-   /*Figure out how many files to split the selected file into.*/
+   /* Figure out how many files to split the selected file into. */
    stat( infile, &file_info );
    file_size = file_info.st_size;
    number_of_even_files = ( gint ) file_info.st_size/data->chunk_size;
@@ -81,7 +81,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    else
      files_to_split = number_of_even_files + 1;
 
-   /*Make sure we are not trying to split the file into pieces larger than itself.*/
+   /* Make sure we are not trying to split the file into pieces larger than itself. */
    if ( data->chunk_size >= file_size )
      {
        display_error( "\nsplit.c:  Chunk size is greater than or equal to the file size.\n", FALSE );
@@ -89,15 +89,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
      }
 
 
-   /*Don't create more than 999 files.  Actually, since we are starting at 1, the limit is really
-     998 files.  (001 - 099)*/
+   /* Don't create more than 999 files.  Actually, since we are starting at 1, the limit is really
+      998 files.  (001 - 999) */
    if ( files_to_split > 999 )
      {
        display_error( "\nsplit.c:  Exceeded maximum number of files (999).\n", FALSE );
        return FALSE;
      }
 
-   /*Decide whether or not a progress window would be beneficiary.*/
+   /* Decide whether or not a progress window would be beneficiary. */
    if ( file_size <= UPDATE_INTERVAL )
      do_progress = FALSE;
    else
@@ -107,7 +107,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        if ( progress == NULL )
          {
            display_error( "\nsplit.c:  Could not allocate memory for a progress window.\n", FALSE );
-           /*Try to go on without it.*/
+           /* Try to go on without it. */
            do_progress = FALSE;
          }
        else
@@ -122,24 +122,24 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( data->create_batchfile )
      {
  
-       strcpy( original_name, data->filename_only );
+       strcpy( original_name, data->file_name_only );
 
-       /*If the file name is too long, truncate it.
-         Also, convert spaces to '_'.*/
-       dosify_filename( data->filename_only );
+       /* If the file name is too long, truncate it.
+          Also, convert some characters to '_'. */
+       dosify_file_name( data->file_name_only );
 
-       /*dosify_filename() will truncate the file name if it is longer than 12 characters.*/
-       if ( strlen( data->filename_only ) > 12 )
+       /* dosify_filename() will truncate the file name if it is longer than 12 characters. */
+       if ( strlen( data->file_name_only ) > 12 )
          {
-			  data->filename_only[13] = '\0';
+			  data->file_name_only[13] = '\0';
          }
 
-       strcpy( outfile_only, data->filename_only );
-       /*Reserve four spaces for the extension; it will change later.*/
+       strcpy( outfile_only, data->file_name_only );
+       /* Reserve four spaces for the extension; it will change later. */
        strcat(outfile_only, ".ext");
        
-       strcpy( batchname_and_path, data->output_dir );
-       strcat( batchname_and_path, data->filename_only );
+       strcpy( batchname_and_path, data->output_directory );
+       strcat( batchname_and_path, data->file_name_only );
        strcat( batchname_and_path, ".bat" );
 
        batch = fopen( batchname_and_path, "wb+" );
@@ -153,7 +153,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
              }
            return FALSE;
 	      }
-       /*Write some header information to the batchfile.*/
+       /* Write some header information to the batchfile. */
        writeln_dostextfile( batch, "@Echo Off" );
        write_dostextfile( batch, "Echo " );
        write_dostextfile( batch, PACKAGE );
@@ -164,19 +164,18 @@ gboolean split(GtkWidget *tmp, session_data *data)
        write_dostextfile( batch, "Echo Original File Name:  " );
        writeln_dostextfile( batch, original_name );
        write_dostextfile( batch, "Echo Creating " );
-       writeln_dostextfile( batch, data->filename_only );
+       writeln_dostextfile( batch, data->file_name_only );
        write_dostextfile( batch, "copy /b " );
-       /*End of header information*/
+       /* End of header information */
      }
    /*---Done with setting up the batcfhile.-------------------------------------------------------------*/
 
 
-   /*Setup the outfile array.*/
-   strcpy( outfile, data->output_dir );
-   strcat( outfile, data->filename_only );
+   /* Setup the outfile array. */
+   strcpy( outfile, data->output_directory );
+   strcat( outfile, data->file_name_only );
    strcat( outfile, "." );
    strcat( outfile, ext );
-   /*outfile is setup.*/
 
    /*Create an md5sum of the selected file, if desired.*/
    //if ( data->verify )
@@ -184,10 +183,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
        //if (do_progress )
          //progress_window_set_status_text( progress->status, "Generating MD5 checksum.." );
        
-       //create_sum( data->filename_and_path, data->fp_length, data->output_dir );
+       //create_sum( data->file_name_and_path, data->fp_length, data->output_directory );
      //} 
      
-   /*Open the selected file.*/
+   /* Open the selected file. */
    in = fopen( infile, "rb" );
    if ( in == NULL )
      {
@@ -204,7 +203,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        return FALSE;
      }
 
-   /*Open the first outfile.*/
+   /* Open the first outfile. */
    out = fopen( outfile, "wb+" );
    if ( out == NULL )
      {
@@ -222,12 +221,12 @@ gboolean split(GtkWidget *tmp, session_data *data)
        return FALSE;
      }
 
-   /*The actual split process.*/
+   /* The actual split process. */
    for ( file_count = 1; file_count <= files_to_split; file_count++ )
      {
-       if ( do_progress )  /*Display the file name we are creating.*/
+       if ( do_progress )  /* Display the file name we are creating. */
          progress_window_set_status_text( progress->status, outfile );
-       /*The leftover file. (?)*/
+       /* The leftover file. (?) */
        if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( files_to_split ) ) )
          {
            for ( byte_count = 1; ( byte_count <= size_of_leftover_file ); byte_count++ )
@@ -246,7 +245,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                  }
              }
          }
-       else  /*Even files. (?)*/
+       else  /* Even files. (?) */
          {
            for ( byte_count = 1; ( byte_count <= data->chunk_size ); byte_count++ )
              {
@@ -265,7 +264,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
              }
          }
 
-       /*Copy the outfile name to the batch file.*/
+       /* Copy the outfile name to the batch file. */
        if ( data->create_batchfile )
          {
            if ( strcmp( ext, "001" ) != 0 )
@@ -277,8 +276,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
            write_dostextfile( batch, outfile_only );
          }
 
-       /*Increment the extension.
-         Remember, the extension looks like this: [.] [0] [1] [2]*/
+       /* Increment the extension.
+          Remember, the extension looks like this: [.] [0] [1] [2] */
        if ( ext[2] != '9' )
          ext[2]++;
        else
@@ -293,16 +292,16 @@ gboolean split(GtkWidget *tmp, session_data *data)
              }
          }
 
-       /*Insure that all data is written to disk before we quit.*/
+       /* Insure that all data is written to disk before we quit. */
        fflush( out );
-       /*Close the split file.*/
+       /* Close the split file. */
        if ( fclose( out ) == EOF )
          {
            display_error( "\nsplit.c:  Could not close an output file.\n", TRUE );
            fclose( in );
            if ( data->create_batchfile )
              {
-               fclose( batch );;
+               fclose( batch );
              }
           if ( do_progress )
             {
@@ -312,10 +311,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
           return FALSE;
          }
 
-       /*Start a new outfile.*/
+       /* Start a new outfile. */
        if ( bytes_read != file_size )
          {
-            /*Setup a new outfile.*/
+            /* Setup a new outfile. */
            outfile[strlen( outfile ) - 3] = '\0';
            strcat( outfile, ext );
 
@@ -337,9 +336,9 @@ gboolean split(GtkWidget *tmp, session_data *data)
              }
          }
      }
-     /*End of split process.*/
+     /* End of split process. */
 
-   /*Close the selected file.*/
+   /* Close the selected file. */
    if ( fclose( in ) == EOF )
      {
        display_error( "\nsplit.c:  Could not close the selected file.\n", FALSE );
@@ -355,17 +354,17 @@ gboolean split(GtkWidget *tmp, session_data *data)
        return TRUE;
      }
 
-   /*Finalize the batch file.*/
+   /* Finalize the batch file. */
    if ( data->create_batchfile )
      {
        write_dostextfile( batch, " " );
-       write_dostextfile( batch, data->filename_only );
+       write_dostextfile( batch, data->file_name_only );
 		 
-		 /*Write some footer information to the batchfile.*/
+		 /* Write some footer information to the batchfile. */
        writeln_dostextfile( batch, " > ~combine.tmp" );
        writeln_dostextfile( batch, "erase ~combine.tmp" );
        writeln_dostextfile( batch, "Echo Finished." );
-       /*End of footer information.*/
+       /* End of footer information. */
        
        if ( fclose( batch ) == EOF )
          {
@@ -379,7 +378,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
          }
      }
 
-   /*Free the progress window.*/
+   /* Free the progress window. */
    if ( do_progress )
      {
        gtk_widget_hide_all( progress->main_window );

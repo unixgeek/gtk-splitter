@@ -26,7 +26,7 @@
 #include <gtk/gtk.h>
 #include "globals.h"
 
-/*Combine the selected file.*/
+/* Combine the selected file. */
 gboolean combine(GtkWidget *, session_data *);
 
 #endif /* COMBINE_H */

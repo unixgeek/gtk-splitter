@@ -26,32 +26,34 @@
 #include "file_selection.h"
 #include "error.h"
 
-/*A dialog for getting a file from the user.*/
+/* A dialog for getting a file from the user. */
 void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
-   /*Set up a simple gtk file selection dialog.*/
-   gsw->selection_dialog = gtk_file_selection_new( "Choose a file." );
-   /*Default the dialog to the user's home directory.*/
-   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->selection_dialog ),
-                                    gsw->sdata->home_dir );
-   /*Hide the create, delete, and rename buttons.*/
-   gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->selection_dialog ) );
+   /* Set up a simple gtk file selection dialog. */
+   gsw->file_selection_dialog = gtk_file_selection_new( "Choose a file." );
+   
+   /* Default the dialog to the user's home directory. */
+   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
+                                    gsw->my_session_data.home_directory );
+   
+   /* Hide the create, delete, and rename buttons. */
+   gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
 
-   /*Connect some signals to the dialog.*/
-   gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->selection_dialog ) ->ok_button ),
+   /* Connect some signals to the dialog. */
+   gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->ok_button ),
 	                     "clicked", GTK_SIGNAL_FUNC( setfilename ), gsw );
-   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->selection_dialog ) ->ok_button ),
+   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->ok_button ),
 	                            "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
-                             ( gpointer ) gsw->selection_dialog);
-   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION( gsw->selection_dialog ) ->cancel_button ),
+                             ( gpointer ) gsw->file_selection_dialog);
+   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->cancel_button ),
 	                           "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
-                             ( gpointer ) gsw->selection_dialog );
+                             ( gpointer ) gsw->file_selection_dialog );
 
    /*Display the dialog.*/
-   gtk_widget_show( gsw->selection_dialog );
+   gtk_widget_show( gsw->file_selection_dialog );
 }
 
-/*This function is called from choose_file() and sets the appropriate data members of session_data.*/
+/* This function is called from choose_file() and sets the appropriate data members of session_data. */
 void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    gchar *selcted_file;
@@ -61,33 +63,33 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    j = 0;
 
  
-   /*Get the selected file name from the dialog.*/
-   selcted_file = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->selection_dialog ) );
+   /* Get the selected file name from the dialog. */
+   selcted_file = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
 
    /* Copy the selected file name (full path). */
-   strcpy(gsw->sdata->filename_and_path, selcted_file);
+   strcpy(gsw->my_session_data.file_name_and_path, selcted_file);
 
-   /*The path only length is going to be AT MOST the length of the file name and path.*/
-   path_only_count = strlen( gsw->sdata->filename_and_path );
+   /* The path only length is going to be AT MOST the length of the file name and path. */
+   path_only_count = strlen( gsw->my_session_data.file_name_and_path );
 
-   /*Start at the end and count backwards till we find a '/'.*/
-   while ( gsw->sdata->filename_and_path[path_only_count] != '/' )
+   /* Start at the end and count backwards till we find a '/'. */
+   while ( gsw->my_session_data.file_name_and_path[path_only_count] != '/' )
      path_only_count--;
 
-   /*Add the count of the last '/'.*/
+   /* Add the count of the last '/'. */
    path_only_count++;
 
-   /*Copy the filename only.*/
-   for ( i = path_only_count; i != strlen( gsw->sdata->filename_and_path ); i++ )
+   /* Copy the file name only. */
+   for ( i = path_only_count; i != strlen( gsw->my_session_data.file_name_and_path ); i++ )
      {
-       gsw->sdata->filename_only[j] = gsw->sdata->filename_and_path[i];
+       gsw->my_session_data.file_name_only[j] = gsw->my_session_data.file_name_and_path[i];
        j++;
      }
 
-   /*Set the filename in the entry box.*/
-   gtk_entry_set_text( GTK_ENTRY( gsw->filename_box ), gsw->sdata->filename_only );
+   /* Set the filename in the entry box. */
+   gtk_entry_set_text( GTK_ENTRY( gsw->file_name_box ), gsw->my_session_data.file_name_only );
 
-   /*Set our gui so that all of our buttons active.*/
+   /* Set the gui so that all of the buttons active. */
    gtk_widget_set_sensitive( gsw->split_button, TRUE );
    gtk_widget_set_sensitive( gsw->combine_button, TRUE );
    gtk_widget_set_sensitive( gsw->batch_file_button, TRUE );
@@ -98,45 +100,48 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
 
 }
 
-/*A dialog for getting the output directory from the user.*/
+/* A dialog for getting the output directory from the user. */
 void choose_directory(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
-   /*Set up a simple gtk file selection dialog.*/
-   gsw->selection_dialog = gtk_file_selection_new( "Choose the output directory." );
-   /*Default the dialog to the last chosen output directory.
-     (On first run, output_dir is set to the user's home directory.)*/
-   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->selection_dialog ),
-                                    gsw->sdata->output_dir );
-   /*Hide the create, delete, and rename buttons.*/
-   gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->selection_dialog ) );
+   /* Set up a simple gtk file selection dialog. */
+   gsw->file_selection_dialog = gtk_file_selection_new( "Choose the output directory." );
+   
+   /* Default the dialog to the last chosen output directory.
+      (On first run, output_directory is set to the user's home directory.) */
+   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
+                                    gsw->my_session_data.output_directory );
+   
+   /* Hide the create, delete, and rename buttons. */
+   gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
 
-   /*Disable the ability to select files.*/
-   gtk_widget_set_sensitive( GTK_FILE_SELECTION( gsw->selection_dialog )->file_list, FALSE );
-   /*Connect some signals to the dialog.*/
-   gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->selection_dialog )->ok_button ),
+   /* Disable the ability to select files. */
+   gtk_widget_set_sensitive( GTK_FILE_SELECTION( gsw->file_selection_dialog )->file_list, FALSE );
+   
+   /* Connect some signals to the dialog. */
+   gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->ok_button ),
 	                     "clicked", GTK_SIGNAL_FUNC( setdirname ), gsw);
-   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->selection_dialog )->ok_button ),
+   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->ok_button ),
 	                            "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
-                              ( gpointer ) gsw->selection_dialog );
-   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->selection_dialog )->cancel_button ),
+                              ( gpointer ) gsw->file_selection_dialog );
+   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->cancel_button ),
 	                            "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
-                              ( gpointer ) gsw->selection_dialog );
+                              ( gpointer ) gsw->file_selection_dialog );
 
-   /*Display the dialog.*/
-   gtk_widget_show( gsw->selection_dialog );
+   /* Display the dialog. */
+   gtk_widget_show( gsw->file_selection_dialog );
 }
 
-/*This function is called from choose_dir() and sets the output directory in session_data.*/
+/* This function is called from choose_dir() and sets the output directory in session_data. */
 void setdirname(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    gchar *selected_dir;
 
    /* Get the selected directory name from the user using the standard GTK+ file selection dialog. */
-   selected_dir = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->selection_dialog ) );
+   selected_dir = gtk_file_selection_get_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
 
-   /* Set output_dir to selected_dir. */
-   strcpy( gsw->sdata->output_dir, selected_dir );
+   /* Set output_directory to selected_dir. */
+   strcpy( gsw->my_session_data.output_directory, selected_dir );
 
    /* Display the new directory in the main window. */
-   gtk_entry_set_text( GTK_ENTRY( gsw->output_box ), gsw->sdata->output_dir );
+   gtk_entry_set_text( GTK_ENTRY( gsw->output_box ), gsw->my_session_data.output_directory );
 }

@@ -25,7 +25,7 @@
 
 void create_progress_window(progress_window *pwindow, gchar *title)
 {
-   /*Set up the widgets for the progress window.*/
+   /* Set up the widgets for the progress window. */
    pwindow->main_window = gtk_window_new( GTK_WINDOW_DIALOG );
    gtk_window_set_title( GTK_WINDOW( pwindow->main_window ), title );
    pwindow->vbox = gtk_vbox_new( TRUE, 0 );
@@ -33,7 +33,7 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    pwindow->total_progress = gtk_progress_bar_new();
    pwindow->status = gtk_statusbar_new();
 
-   /*Add the widgets to the dialog.*/
+   /* Add the widgets to the dialog. */
    gtk_container_add( GTK_CONTAINER( pwindow->main_window ), pwindow->vbox );
    gtk_box_pack_start( GTK_BOX( pwindow->vbox ), pwindow->current_progress, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( pwindow->vbox ), pwindow->total_progress, TRUE, TRUE, 0 );
@@ -51,8 +51,8 @@ void progress_window_set_status_text(GtkWidget *sbar, gchar *text)
    while ( g_main_iteration( FALSE ) );
 }
 
-void progress_window_set_percentage(GtkWidget *p, gfloat percentage)
+void progress_window_set_percentage(GtkWidget *pbar, gfloat percentage)
 {
-   gtk_progress_set_percentage( GTK_PROGRESS( p ), percentage );
+   gtk_progress_set_percentage( GTK_PROGRESS( pbar ), percentage );
    while ( g_main_iteration( FALSE ) );
 }
