@@ -71,10 +71,11 @@ gboolean split(GtkWidget *tmp, session_data *data)
    
    /* The size the file should be split into. */
    gulong chunk_size;
+
+   /* The return value of generate_md5_sum( ) */
+   generate_md5_exit_status md5_return;
+
    
-   pid_t pid;
-
-
    /* Setup the infile string. */
    strcpy( infile, data->file_name_and_path );
    
@@ -193,11 +194,51 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /* Create an md5sum of the selected file, if desired. */
    if ( data->verify )
      {
-       //pid = fork( );
+       if ( do_progress )
+          progress_window_set_message_text( progress.message, "Generating md5 sum." );
        
-       //if ( pid == 0 )
-         //create_sum( data->file_name_and_path, data->output_directory );
-
+       md5_return = generate_md5_sum( data->file_name_and_path, data->output_directory );
+       
+       /* See if the return was okay first. */
+       if ( md5_return != GENERATE_MD5_MD5SUM_EXIT_OK )
+         {
+           switch ( md5_return )
+             {
+               case GENERATE_MD5_STAT_FAILED:
+                  
+                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_STAT_FAILED)" );
+                  break;
+               
+               case GENERATE_MD5_CHDIR_FAILED:
+                  
+                  display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_CHDIR_FAILED)" );
+                  break;
+                  
+               case GENERATE_MD5_SYSTEM_FORK_FAILED:
+                  
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_FORK_FAILED)" );
+                  break;
+               
+               case GENERATE_MD5_SYSTEM_SH_NOT_FOUND:
+                  
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_SH_NOT_FOUND)" ); 
+                  break;
+               
+               case GENERATE_MD5_MD5SUM_EXIT_OK:
+                  
+                  break;
+               
+               case GENERATE_MD5_MD5SUM_EXIT_FAILURE:  
+                  
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_MD5SUM_EXIT_FAILURE)" );
+                  break;
+               
+               case GENERATE_MD5_EXIT_STATUS_UNKNOWN:
+                  
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_EXIT_STATUS_UNKNOWN)" );
+                  break;
+             }
+         }
      } 
      
    /* Open the selected file. */

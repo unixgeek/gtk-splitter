@@ -1,7 +1,7 @@
 /*
  * md5.c
  *
- * Copyright 2001 Gunter Wambaugh
+ * Copyright 2002 Gunter Wambaugh
  *
  * This file is part of gtk-splitter.
  *
@@ -20,20 +20,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "md5.h"
 
 
-void create_sum(const char *file_name_and_path, const char *output_directory)
+generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const char *output_directory)
 {
    char sh_argument[PATH_MAX];
    char file_path[PATH_MAX];
    char file_name_only[PATH_MAX];
-   int i, j, length;
-
+   int i, j, length, return_value;
+   struct stat file_info;
+   generate_md5_exit_status exit_status;
+   
+   
+   if ( stat( file_name_and_path, &file_info ) == -1 )
+      return GENERATE_MD5_STAT_FAILED;
+   
+   if ( stat( output_directory, &file_info ) == -1 )
+      return GENERATE_MD5_STAT_FAILED;
+   
    strcpy( file_path, file_name_and_path );
    
    length = strlen( file_path );
@@ -55,9 +67,8 @@ void create_sum(const char *file_name_and_path, const char *output_directory)
      
    /*
       Setup the command-line argument for sh.
-      Full Command: 
-      chdir {file_path}
-      md5sum "{file_name_only}" > "{output_directory}{filename_only}.md5"{NULL}
+      Argument:
+      md5sum "{file_name_only}" > "{output_directory}{file_name_only}.md5"{NULL}'
    */
   
    strcpy( sh_argument, "md5sum " );
@@ -69,16 +80,49 @@ void create_sum(const char *file_name_and_path, const char *output_directory)
    strcat( sh_argument, ".md5\"" );
    strcat( sh_argument, "\0" );
      
-   chdir( file_path );
-   execl( "/bin/sh", "sh", "-c", sh_argument, NULL);
+   /* WD = {file_path} */
+   if ( chdir( file_path ) == -1 )
+      return GENERATE_MD5_CHDIR_FAILED;
+
+   /* Execute command. */
+   return_value = system( sh_argument );
+   
+   switch ( return_value )
+   {
+      case -1:
+               exit_status = GENERATE_MD5_SYSTEM_FORK_FAILED;
+               break;
+      case 127:
+               exit_status = GENERATE_MD5_SYSTEM_SH_NOT_FOUND;
+               break;
+      case 1:  
+               exit_status = GENERATE_MD5_MD5SUM_EXIT_FAILURE;
+               break;
+      case 0:
+               exit_status = GENERATE_MD5_MD5SUM_EXIT_OK;
+               break;
+      default:
+               exit_status = GENERATE_MD5_EXIT_STATUS_UNKNOWN;
+               break;
+   }
+   
+   return exit_status;
 }
              
-int verify_file(const char *file_name_and_path )
+verify_file_exit_status verify_file(const char *file_name_and_path, const char *md5sum_and_path)
 {
    char sh_argument[PATH_MAX];
    char file_path[PATH_MAX];
-   char file_name_only[PATH_MAX];
-   int i, j, length, exit_status;
+   int i, length, return_value;
+   struct stat file_info;
+   verify_file_exit_status exit_status;
+
+   
+   if ( stat( file_name_and_path, &file_info ) == -1 )
+      return VERIFY_FILE_STAT_FAILED;
+   
+   if ( stat( md5sum_and_path, &file_info ) == -1 )
+      return VERIFY_FILE_STAT_FAILED;
    
    strcpy( file_path, file_name_and_path );
    
@@ -90,28 +134,43 @@ int verify_file(const char *file_name_and_path )
      i--;
    i++;
    
-   /* Copy the file name from file_path into file_name_only. */
-   for ( j = 0; i != length; j++, i++ )
-     {
-       file_name_only[j] = file_path[i];
-       file_path[i] = '\0';
-     }
-   file_name_only[j] = '\0';
-
-   /*
-      Setup the sh_argument to execute.
-      Full Command: 
-      chdir {root_of_open_file}
-      md5sum --status -c "{filename_only}.md5"{NULL}
-   */
+   file_path[i] = '\0';
      
-   strcpy( sh_argument, "md5sum --status -c \"" );
-   strcat( sh_argument, file_name_only );
-   strcat( sh_argument, ".md5\"" );
-   strcat( sh_argument, "\0" );
+   /*
+      Setup the command-line argument for sh.
+      Argument:
+      'md5sum --status -c "md5sum_and_path" &> /dev/null{NULL}'
+   */
    
-   chdir( file_path );
-   exit_status = system( sh_argument );
-       
-   return ( exit_status );  
+   strcpy( sh_argument, "md5sum --status -c \"" );
+   strcat( sh_argument, md5sum_and_path );
+   strcat( sh_argument, "\" &> /dev/null" );
+   strcat( sh_argument, "\0" );
+
+   /* WD = {file_path} */
+   if ( chdir( file_path ) == -1 )
+      return VERIFY_FILE_CHDIR_FAILED;
+   
+   return_value = system( sh_argument );
+   
+   switch ( return_value )
+   {
+      case -1:
+               exit_status = VERIFY_FILE_SYSTEM_FORK_FAILED;
+               break;
+      case 127:
+               exit_status = VERIFY_FILE_SYSTEM_SH_NOT_FOUND;
+               break;
+      case 0:  
+               exit_status = VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL;
+               break;
+      case 1:
+               exit_status = VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL;
+               break;
+      default:
+               exit_status = VERIFY_FILE_EXIT_STATUS_UNKNOWN;
+               break;
+   }
+   
+   return exit_status;
 }

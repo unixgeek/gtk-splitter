@@ -28,6 +28,7 @@
 #include "error.h"
 #include "globals.h"
 #include "progress.h"
+#include "verify_dialog.h"
 
 gboolean combine(GtkWidget *tmp, session_data *data)
 {
@@ -53,7 +54,9 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    
    struct stat file_info;
 
-
+   /* The return value of verify( ). */
+   verify_file_exit_status md5_return;
+   
    /* Setup the infile string. */
    strcpy( infile, data->file_name_and_path );
    
@@ -215,11 +218,46 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Verify if desired. */
    if ( data->verify )
      {
-       //if ( do_progress ) 
-         //progress_window_set_message_text( progress->message, "Verifying file..." );
-       
-       //if ( verify_file( outfile, data->fp_length ) != 0 )
-          //display_error( "\ncombine.c:  File verification failed!\n", FALSE );
+       infile[strlen( infile ) - 4] = '\0';
+       strcat( infile, ".md5" );
+       md5_return = verify_file( outfile, infile );
+       switch ( md5_return )
+       {
+          case VERIFY_FILE_STAT_FAILED:
+             
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_STAT_FAILED)" );
+             break;
+          
+          case VERIFY_FILE_CHDIR_FAILED:
+             
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_CHDIR_FAILED)" );
+             break;
+                  
+          case VERIFY_FILE_SYSTEM_FORK_FAILED:
+                  
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_FORK_FAILED)" );
+             break;
+               
+          case VERIFY_FILE_SYSTEM_SH_NOT_FOUND:
+                  
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_SH_NOT_FOUND)" ); 
+             break;
+               
+          case VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL:
+                  
+             display_verify_dialog( TRUE );
+             break;
+               
+          case VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL:  
+                  
+             display_verify_dialog( FALSE );
+             break;
+               
+          case VERIFY_FILE_EXIT_STATUS_UNKNOWN:
+                  
+             display_error( "combine.c:   Could not verify file.  (VERIFY_FILE_EXIT_STATUS_UNKNOWN)" );
+             break;
+       }
      }
    
    if ( do_progress )

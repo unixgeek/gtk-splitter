@@ -1,7 +1,7 @@
 /*
  * md5.h
  *
- * Copyright 2001 Gunter Wambaugh
+ * Copyright 2002 Gunter Wambaugh
  *
  * This file is part of gtk-splitter.
  *
@@ -23,8 +23,30 @@
 #ifndef MD5_H
 #define MD5_H
 
-void create_sum(const char *, const char *);
+typedef enum 
+{
+   GENERATE_MD5_STAT_FAILED,
+   GENERATE_MD5_CHDIR_FAILED,
+   GENERATE_MD5_SYSTEM_FORK_FAILED, 
+   GENERATE_MD5_SYSTEM_SH_NOT_FOUND, 
+   GENERATE_MD5_MD5SUM_EXIT_OK,
+   GENERATE_MD5_MD5SUM_EXIT_FAILURE,
+   GENERATE_MD5_EXIT_STATUS_UNKNOWN
+} generate_md5_exit_status;
 
-int verify_file(const char *);
+typedef enum 
+{
+   VERIFY_FILE_STAT_FAILED,
+   VERIFY_FILE_CHDIR_FAILED,
+   VERIFY_FILE_SYSTEM_FORK_FAILED, 
+   VERIFY_FILE_SYSTEM_SH_NOT_FOUND, 
+   VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL,
+   VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL,
+   VERIFY_FILE_EXIT_STATUS_UNKNOWN
+} verify_file_exit_status;
+
+generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const char *output_directory);
+
+verify_file_exit_status verify_file(const char *file_name_and_path, const char *location_of_md5sum);
 
 #endif /* MD5_H */

@@ -37,7 +37,7 @@ void display_verify_dialog(gboolean verified)
    else
       dialog = gtk_message_dialog_new( NULL,
                                        GTK_DIALOG_MODAL,
-                                       GTK_MESSAGE_ERROR,
+                                       GTK_MESSAGE_WARNING,
                                        GTK_BUTTONS_CLOSE,
                                        "File verification unsuccessful" );
                                     
