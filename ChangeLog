@@ -1,3 +1,11 @@
+2002-08-06  gunter  <techgunter@yahoo.com>
+	* src/Makefile.am
+	Added '-lglib' flag to fix a compilation error on Solaris 8 (and maybe others).
+	Thanks to Emmanuel Halbwachs for the report.
+
+	* configure.in
+	Removed an unnecessary check.
+
 2002-04-16  gunter  <techgunter@yahoo.com>
 
 	* gtk-splitter.{png/xpm}
@@ -71,7 +79,7 @@
 	Fixed an oversight in the license information.
 
 	* dostextfile.c, dostextfile.h, Makefile, split.c:
-	Made the necessary adjustments to accomodate the change of batchfile to dostextfile.
+	Made the necessary adjustments to accommodate the change of batchfile to dostextfile.
 
 	* batchfile.c, batchfile.h, dostextfile.c, dostextfile.h:
 	Changed the name of the batchfile module to a more fitting name:  dostextfile.
@@ -89,7 +97,7 @@
         file_selection.c is a bit more proprietary and thus not as re-usable.
 
 	* progress.c:
-	Removed an unecessary include directive.
+	Removed an unnecessary include directive.
 
 	* gtk-splitter.desktop:
 	Added a 'Comment' descriptor.
@@ -162,7 +170,7 @@
 2002-01-31  gunter  <techgunter@yahoo.com>
 
 	* batchfile.c, globals.h, gtk-splitter.c:
-	Fixed some typos.  Changed version delcaration from an array to a preprocessor definition.
+	Fixed some typos.  Changed version declaration from an array to a preprocessor definition.
 
 	* combine.c, progress.c, progress.h, split.c:
 	Changed member of progress_window from file_progress to current_progress

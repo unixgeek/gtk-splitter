@@ -19,4 +19,4 @@ gtk_splitter_SOURCES = \
   split.c              \
   split.h      
 
-gtk_splitter_LDADD = -lgtk -lgdk
+gtk_splitter_LDADD = -lgtk -lgdk -lglib

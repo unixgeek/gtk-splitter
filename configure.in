@@ -17,9 +17,6 @@ AC_PROG_CPP
 dnl -- Check for a BSD compatible installer. --
 AC_PROG_INSTALL
 
-dnl -- Check for sys/stat.h.  --
-AC_HAVE_HEADERS(sys/stat.h)
-
 dnl -- Check for GTK+. --
 AM_PATH_GTK(1.2.10)
 
