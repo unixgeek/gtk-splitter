@@ -56,9 +56,9 @@ int main(int argc, char *argv[])
 	
    strcat(home_dir, "/");
 	
-   strcpy(version, "gtk-splitter 0.9a - Gunter Wambaugh");
-   version[35] = '\0';
-   fprintf(stderr, "%s\n", version);
+   //strcpy(version, "gtk-splitter 0.9a - Gunter Wambaugh");
+   //version[35] = '\0';
+   fprintf(stderr, "%s\n", GTK_SPLITTER_VERSION);
 
    /*Initialize gtk.*/
    gtk_init(&argc, &argv);

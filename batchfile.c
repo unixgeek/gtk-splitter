@@ -20,11 +20,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-#include "batchfile.h"
-#include "globals.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include "batchfile.h"
+#include "globals.h"
 
 void write_batchfile(FILE *b, gchar *tmp)
 {
@@ -44,7 +43,7 @@ void initialize_batchfile(FILE *b, gchar *tmp)
 {
    writeln_batchfile(b, "@Echo Off");
    write_batchfile(b, "Echo ");
-   writeln_batchfile(b, version);
+   writeln_batchfile(b, GTK_SPLITTER_VERSION);
    write_batchfile(b, "Echo Creating ");
    writeln_batchfile(b, tmp);
    write_batchfile(b, "copy /b ");

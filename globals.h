@@ -29,11 +29,13 @@
 
 #define UPDATE_INTERVAL 1024
 
+#define GTK_SPLITTER_VERSION "gtk-splitter-0.9a Gunter Wambaugh"
+
 GtkWidget *split_button, *combine_button, *start_button, *filename_box, *chunk_size_units,
 	  *bytesopt, *kbytesopt, *mbytesopt, *size_input, *file_selector, *batch_file_button;	
 GtkAdjustment *size_input_adj;
 
-gchar *home_dir, version[36];
+gchar *home_dir;
 enum {BYTES, KBYTES, MBYTES};
 
 typedef struct
