@@ -79,13 +79,12 @@ int main(int argc, char *argv[])
    /* Setup widgets for inputing and displaying the selected
       file and selected output directory. */
    main_window.open_button = gtk_button_new_from_stock( GTK_STOCK_OPEN );
-   //main_window.output_button = gtk_button_new_with_label( "Output" );
    main_window.output_button = gtk_button_new_from_stock( GTK_STOCK_SAVE );
    main_window.file_name_box = gtk_entry_new( );
    main_window.output_box = gtk_entry_new( );
    gtk_entry_set_editable( GTK_ENTRY( main_window.file_name_box ), FALSE );
    gtk_entry_set_editable( GTK_ENTRY( main_window.output_box ), FALSE );
-   gtk_entry_set_text(GTK_ENTRY( main_window.output_box ), main_window.my_session_data.home_directory );
+   gtk_entry_set_text( GTK_ENTRY( main_window.output_box ), main_window.my_session_data.home_directory );
 
    /* Radio buttons for the split and combine options. */
    main_window.split_button = gtk_radio_button_new_with_label( NULL, "Split" );
@@ -106,14 +105,14 @@ int main(int argc, char *argv[])
 
    /* Widgets for inputing the chunk size. */
    main_window.size_input = gtk_spin_button_new( main_window.size_input_adj, 1.0, 2 );
-   main_window.chunk_size_units = gtk_option_menu_new();
-   main_window.units_menu = gtk_menu_new();
+   main_window.chunk_size_units = gtk_option_menu_new( );
+   main_window.units_menu = gtk_menu_new( );
    main_window.unit_bytes = gtk_menu_item_new_with_label( "Bytes" );
    main_window.unit_kilobytes = gtk_menu_item_new_with_label( "Kilobytes" );
    main_window.unit_megabytes = gtk_menu_item_new_with_label( "Megabytes" );
-   gtk_menu_append( GTK_MENU( main_window.units_menu), main_window.unit_bytes );
-   gtk_menu_append( GTK_MENU( main_window.units_menu), main_window.unit_kilobytes );
-   gtk_menu_append( GTK_MENU( main_window.units_menu), main_window.unit_megabytes );
+   gtk_menu_append( GTK_MENU( main_window.units_menu ), main_window.unit_bytes );
+   gtk_menu_append( GTK_MENU( main_window.units_menu ), main_window.unit_kilobytes );
+   gtk_menu_append( GTK_MENU( main_window.units_menu ), main_window.unit_megabytes );
    gtk_option_menu_set_menu( GTK_OPTION_MENU( main_window.chunk_size_units ), main_window.units_menu );
 
    /* The button that starts the split or combine process. */
