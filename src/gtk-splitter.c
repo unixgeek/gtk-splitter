@@ -205,7 +205,6 @@ int main(int argc, char *argv[])
          }
      }
 
-
    /* Run the main loop of gtk. */
    gtk_main();
 
