@@ -1,7 +1,10 @@
-2003-01-10  gunter  <techgunter@yahoo.com>
+2003-03-14  gunter  <techgunter@yahoo.com>
 
-	* clean.sh, configure.in, build_deb.sh.in:
-	Created a script for creating a debian package.
+	* callbacks.c, callbacks.h, combine.c, combine.h, file_selection.c, 
+	  globals.h, gtk-splitter.c, split.c, split.h:
+	Fixed a bug in copying the user's home directory.
+	Fixed a nasty bug that was uncovered with gtk+ 2.2.1.
+	Switched from gtk_signal to g_signal for better performance.
 
 2003-01-09  gunter  <techgunter@yahoo.com>
 
