@@ -1,3 +1,20 @@
+2002-11-07  techgunter  <techgunter@yahoo.com>
+
+	* combine.c, split.c:
+	Removed dynamic memory allocation for the progress window.
+
+	* combine.c:
+	Refactored combine.c.
+
+	* error.c:
+	Changed the format of errors printed to stderr.
+
+	* callbacks.c, globals.h, split.c:
+	Refactored split.c.  
+	split.c no longer modifies data in the session_data struct.  This should leave
+	the struct in a well known state if and when errors occur in split.c.  
+	Made some other minute changes.
+
 2002-11-06  gunter  <techgunter@yahoo.com>
 
 	* split.c, combine.c, gtk-splitter.c, file_selection.c, error.c:
