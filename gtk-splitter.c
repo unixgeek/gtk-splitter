@@ -28,6 +28,7 @@
 #include "globals.h"
 #include "callbacks.h"
 #include "error.h"
+#include "file_selection.h"
 
 
 int main(int argc, char *argv[])

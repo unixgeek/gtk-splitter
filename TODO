@@ -3,3 +3,4 @@ Check the opening of files.
 Re-arrange split.c and combine.c for better design.
 More effecient way to update the progress bar?
 Add the original file name to the batchfile.
+Verify the necessity of includes.

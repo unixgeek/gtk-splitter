@@ -26,14 +26,6 @@
 #include <gtk/gtk.h>
 #include "globals.h"
 
-/*Sets the filename in session_data.*/
-void setfilename(GtkWidget *, gtk_splitter_window *);
-
-/*For choosing a file with the gtk open dialog.*/
-void choose_file(GtkWidget *, gtk_splitter_window *);
-
-void choose_directory(GtkWidget *, gtk_splitter_window *);
-
 /*Tell our program which units to use: bytes, kilobytes, or megabytes.*/
 void set_bytes(GtkWidget *, session_data *);
 

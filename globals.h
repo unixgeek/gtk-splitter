@@ -28,7 +28,7 @@
 #include <gtk/gtk.h>
 
 #define UPDATE_INTERVAL 1024
-#define GTK_SPLITTER_VERSION "gtk-splitter-0.9b Gunter Wambaugh"
+#define GTK_SPLITTER_VERSION "gtk-splitter-1.0b Gunter Wambaugh"
 
 /*Session_data is a struct used to store information related the selected file.*/
 typedef struct
@@ -73,8 +73,7 @@ typedef struct
     GtkWidget *output_box;
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;
-    GtkWidget *file_selector;
-    GtkWidget *dir_selector;
+    GtkWidget *selection_dialog;
     session_data *sdata;
   } gtk_splitter_window;
 

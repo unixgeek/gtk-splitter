@@ -3,15 +3,16 @@ BIN_DIR = /usr/bin
 
 CC = gcc
 LIBS = -lgtk -lgdk
-OBJ = callbacks.o split.o combine.o error.o batchfile.o progress.o
+OBJ = callbacks.o split.o combine.o error.o batchfile.o progress.o file_selection.o
 LIBS_DIR = -L/usr/lib -L/usr/X11R6/lib
 FLAGS = -Wall
 
 all: gtk-splitter
 
 gtk-splitter: gtk-splitter.c $(OBJ)
-	$(CC) gtk-splitter.c $(OBJ) -o gtk-splitter\
-	$(FLAGS) `gtk-config --cflags` $(LIBS_DIR) $(LIBS) 
+	$(CC) -o gtk-splitter gtk-splitter.c\
+	$(FLAGS) `gtk-config --cflags` $(LIBS_DIR) $(LIBS)\
+	$(OBJ)
 
 callbacks.o: callbacks.c
 	$(CC) -c callbacks.c $(FLAGS) `gtk-config --cflags`
@@ -30,6 +31,9 @@ batchfile.o: batchfile.c
 
 progress.o: progress.c
 	$(CC) -c progress.c $(FLAGS) `gtk-config --cflags`
+
+file_selection.o: file_selection.c
+	$(CC) -c file_selection.c $(FLAGS) `gtk-config --cflags`
 
 clean: 
 	rm -f *.o core gtk-splitter a.out
