@@ -27,6 +27,6 @@
 #include "globals.h"
 
 /* Split the selected file. */
-gboolean split(GtkWidget *, session_data *);
+gboolean gtk_splitter_split_file(GtkWidget *, session_data *);
 
 #endif /* SPLIT_H */

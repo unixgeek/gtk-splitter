@@ -55,6 +55,6 @@ void initialize_session_data(session_data *);
 void initialize_splitter_window(gtk_splitter_window *);
 
 /* Start the split/combine process. */
-void start(GtkWidget *, gtk_splitter_window *);
+void start_split_or_combine(GtkWidget *, gtk_splitter_window *);
 
 #endif /* CALLBACKS_H */

@@ -29,11 +29,11 @@
 #include "file_selection.h"
 
 /* For choosing a file with the gtk open dialog. */ //remove file_selection_dialog
-void get_file_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
+void get_file_name_dialog(GtkWidget *main_window, gtk_splitter_window *gsw)
 {
    /* Set up a simple gtk file selection dialog. */
    gsw->file_selection_dialog = gtk_file_selection_new( "Select a file." );
-   
+
    /* Default the dialog to the user's home directory. */
    gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
                                     gsw->my_session_data.home_directory );
@@ -42,13 +42,15 @@ void get_file_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
 
    /* Connect some signals to the dialog. */
-   gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->ok_button ),
-	                     "clicked", GTK_SIGNAL_FUNC( get_file_name ), gsw );
-   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->ok_button ),
-	                            "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
+   g_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->ok_button ),
+	                  "clicked", G_CALLBACK( get_file_name ), ( gpointer ) gsw );
+   
+   g_signal_connect_swapped( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->ok_button ),
+	                          "clicked", G_CALLBACK( gtk_widget_destroy ),
                              ( gpointer ) gsw->file_selection_dialog);
-   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->cancel_button ),
-	                           "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
+   
+   g_signal_connect_swapped( GTK_OBJECT(GTK_FILE_SELECTION( gsw->file_selection_dialog ) ->cancel_button ),
+	                          "clicked", G_CALLBACK( gtk_widget_destroy ),
                              ( gpointer ) gsw->file_selection_dialog );
 
    /*Display the dialog.*/
@@ -134,14 +136,16 @@ void get_directory_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_widget_set_sensitive( GTK_FILE_SELECTION( gsw->file_selection_dialog )->file_list, FALSE );
    
    /* Connect some signals to the dialog. */
-   gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->ok_button ),
-	                     "clicked", GTK_SIGNAL_FUNC( get_directory_name ), gsw);
-   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->ok_button ),
-	                            "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
-                              ( gpointer ) gsw->file_selection_dialog );
-   gtk_signal_connect_object( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->cancel_button ),
-	                            "clicked", GTK_SIGNAL_FUNC( gtk_widget_destroy ),
-                              ( gpointer ) gsw->file_selection_dialog );
+   g_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->ok_button ),
+	                  "clicked", G_CALLBACK( get_directory_name ), ( gpointer ) gsw);
+   
+   g_signal_connect_swapped( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->ok_button ),
+	                          "clicked", G_CALLBACK( gtk_widget_destroy ),
+                             ( gpointer ) gsw->file_selection_dialog );
+                             
+   g_signal_connect_swapped( GTK_OBJECT( GTK_FILE_SELECTION( gsw->file_selection_dialog )->cancel_button ),
+	                          "clicked", G_CALLBACK( gtk_widget_destroy ),
+                             ( gpointer ) gsw->file_selection_dialog );
 
    /* Display the dialog. */
    gtk_widget_show( gsw->file_selection_dialog );

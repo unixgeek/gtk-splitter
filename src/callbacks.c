@@ -145,7 +145,7 @@ void toggle_verify(GtkWidget *tmp, session_data *data)
 }
 
 /* Start either the split or combine process. */
-void start(GtkWidget *tmp, gtk_splitter_window *gsw)
+void start_split_or_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    gboolean do_initialization;
 
@@ -155,9 +155,9 @@ void start(GtkWidget *tmp, gtk_splitter_window *gsw)
    /* split() and combine() return a boolean value.
       This is used to recover from non-critical errors that may occur in split() or combine(). */
    if ( gsw->my_session_data.split )
-     do_initialization = split( tmp, &gsw->my_session_data );
+     do_initialization = gtk_splitter_split_file( tmp, &gsw->my_session_data );
    else
-     do_initialization = combine( tmp, &gsw->my_session_data );
+     do_initialization = gtk_splitter_combine_files( tmp, &gsw->my_session_data );
 
    /* If split or combine return TRUE, then reset the session_data and the main window. */
    if ( do_initialization )

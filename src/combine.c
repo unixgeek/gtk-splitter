@@ -30,7 +30,7 @@
 #include "progress.h"
 #include "verify_dialog.h"
 
-gboolean combine(GtkWidget *tmp, session_data *data)
+gboolean gtk_splitter_combine_files(GtkWidget *tmp, session_data *data)
 {
    /* Progress window stuff. */
    progress_window progress;

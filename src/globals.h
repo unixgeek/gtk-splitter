@@ -40,7 +40,7 @@ typedef struct
     enum {BYTES, KILOBYTES, MEGABYTES} unit;
     gboolean split;
     gboolean create_batchfile;
-    gchar *home_directory;
+    gchar home_directory[PATH_MAX];
     gchar output_directory[PATH_MAX];
     gboolean verify;
   } session_data;

@@ -32,7 +32,7 @@
 #include "progress.h"
 #include "dostextfile.h"
 
-gboolean split(GtkWidget *tmp, session_data *data)
+gboolean gtk_splitter_split_file(GtkWidget *tmp, session_data *data)
 {
    /* Progress window stuff. */
    progress_window progress;

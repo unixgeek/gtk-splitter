@@ -35,8 +35,9 @@ int main(int argc, char *argv[])
 {
    /* Used to automatically detect whether a file name read from
       the command-line should be split or combined. */
-   gchar ext[4];
+   char ext[4];
    char *ptr;
+   char *home;
    char resolved_name[PATH_MAX];
    
    /* gtk_splitter_window is a struct containing all the widgets
@@ -47,8 +48,8 @@ int main(int argc, char *argv[])
    gtk_init( &argc, &argv );
 
    /* Store the path to the user's home directory. */
-   main_window.my_session_data.home_directory = getenv( "HOME" );
-   if ( main_window.my_session_data.home_directory == NULL )
+   home = getenv( "HOME" );
+   if ( home == NULL )
      {
        display_error( "Could not determine home directory.\n"
                       "Check environment variables for $HOME." );
@@ -56,8 +57,12 @@ int main(int argc, char *argv[])
        /* Default to '/' as the user's home directory. */ 
        strcpy( main_window.my_session_data.home_directory, "/" );
      }
-   strcat( main_window.my_session_data.home_directory, "/" );
-   
+   else
+     {
+       strcpy( main_window.my_session_data.home_directory, home );
+       strcat( main_window.my_session_data.home_directory, "/" );
+     }
+
    /* Set the default output directory to the user's home directory. */
    strcpy( main_window.my_session_data.output_directory, main_window.my_session_data.home_directory );
 
@@ -171,33 +176,41 @@ int main(int argc, char *argv[])
 
    /* Different signals the gui listens for.*/
    /* Most callbacks listed here are defined in callbacks.h */
-   gtk_signal_connect( GTK_OBJECT( main_window.base_window), "destroy",
-                       GTK_SIGNAL_FUNC( gtk_main_quit ), NULL);
+   g_signal_connect( GTK_OBJECT( main_window.base_window), "destroy",
+                     G_CALLBACK( gtk_main_quit ), NULL);
 
-   gtk_signal_connect( GTK_OBJECT( main_window.split_button ), "clicked",
-                       GTK_SIGNAL_FUNC( toggle_split), &main_window );
-   gtk_signal_connect( GTK_OBJECT( main_window.combine_button ), "clicked",
-                       GTK_SIGNAL_FUNC( toggle_combine ), &main_window );
-   gtk_signal_connect( GTK_OBJECT( main_window.size_input_adj ), "value_changed",
-                       GTK_SIGNAL_FUNC(set_data), &main_window );
-   gtk_signal_connect( GTK_OBJECT( main_window.custom_start_button ), "clicked",
-                       GTK_SIGNAL_FUNC( start ), &main_window );
-   gtk_signal_connect( GTK_OBJECT( main_window.open_button ), "clicked",
-                       GTK_SIGNAL_FUNC( get_file_name_dialog ), &main_window );
-   gtk_signal_connect( GTK_OBJECT( main_window.output_button ), "clicked",
-                       GTK_SIGNAL_FUNC( get_directory_name_dialog ), &main_window );
+   g_signal_connect( GTK_OBJECT( main_window.split_button ), "clicked",
+                     G_CALLBACK( toggle_split), ( gpointer ) &main_window );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.combine_button ), "clicked",
+                     G_CALLBACK( toggle_combine ), ( gpointer ) &main_window );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.size_input_adj ), "value_changed",
+                     G_CALLBACK(set_data), ( gpointer ) &main_window );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.custom_start_button ), "clicked",
+                     G_CALLBACK( start_split_or_combine ), ( gpointer ) &main_window );
 
-   gtk_signal_connect( GTK_OBJECT( main_window.batch_file_button ), "toggled",
-                       GTK_SIGNAL_FUNC( toggle_batch ), &main_window.my_session_data );
-   gtk_signal_connect( GTK_OBJECT( main_window.verify_button ), "toggled",
-                       GTK_SIGNAL_FUNC( toggle_verify ), &main_window.my_session_data );
+   g_signal_connect( GTK_OBJECT( main_window.open_button ), "clicked",
+                     G_CALLBACK( get_file_name_dialog ), ( gpointer ) &main_window );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.output_button ), "clicked",
+                     G_CALLBACK( get_directory_name_dialog ), ( gpointer ) &main_window );
+
+   g_signal_connect( GTK_OBJECT( main_window.batch_file_button ), "toggled",
+                     G_CALLBACK( toggle_batch ), ( gpointer ) &main_window.my_session_data );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.verify_button ), "toggled",
+                     G_CALLBACK( toggle_verify ), ( gpointer ) &main_window.my_session_data );
                        
-   gtk_signal_connect( GTK_OBJECT( main_window.unit_bytes ), "activate",
-                       GTK_SIGNAL_FUNC( set_unit_bytes ), &main_window.my_session_data );
-   gtk_signal_connect( GTK_OBJECT( main_window.unit_kilobytes ), "activate",
-                       GTK_SIGNAL_FUNC( set_unit_kilobytes ), &main_window.my_session_data );
-   gtk_signal_connect( GTK_OBJECT( main_window.unit_megabytes ), "activate",
-                       GTK_SIGNAL_FUNC( set_unit_megabytes ), &main_window.my_session_data );
+   g_signal_connect( GTK_OBJECT( main_window.unit_bytes ), "activate",
+                     G_CALLBACK( set_unit_bytes ), ( gpointer ) &main_window.my_session_data );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.unit_kilobytes ), "activate",
+                     G_CALLBACK( set_unit_kilobytes ), ( gpointer ) &main_window.my_session_data );
+                     
+   g_signal_connect( GTK_OBJECT( main_window.unit_megabytes ), "activate",
+                     G_CALLBACK( set_unit_megabytes ), ( gpointer ) &main_window.my_session_data );
    /* End of callbacks. */
 
    /* Display the gui on the screen. */
