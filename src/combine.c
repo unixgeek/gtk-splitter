@@ -20,15 +20,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <gtk/gtk.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "globals.h"
-#include "error.h"
-#include "progress.h"
+#include <gtk/gtk.h>
+#include <sys/stat.h>
 #include "md5.h"
+#include "error.h"
+#include "globals.h"
+#include "progress.h"
 
 gboolean combine(GtkWidget *tmp, session_data *data)
 {
@@ -113,7 +112,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Make sure the files don't exceed our limit. */
    if ( files_to_combine > 999 )
      {
-       display_error( "combine.c:  Exceeded maximum number of files (999).", FALSE );
+       display_error( "combine.c:  Exceeded maximum number of files (999)." );
        return FALSE;
      }
 
@@ -126,7 +125,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    out = fopen( outfile, "wb+" );
    if ( out == NULL )
      {
-       display_error( "combine.c:  Could not create an output file.", TRUE );
+       display_error( "combine.c:  Could not create an output file." );
        return FALSE;
      }
 
@@ -150,7 +149,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        in = fopen( infile, "rb" );
        if ( in == NULL )
          {
-           display_error( "combine.c:  Could not open one of the files to be combined.", FALSE );
+           display_error( "combine.c:  Could not open one of the files to be combined." );
            if ( do_progress )
               destroy_progress_window( &progress );
            fclose( out );
@@ -192,7 +191,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        /* Move on to the next file. */
        if ( fclose( in ) == EOF )
          {
-           display_error( "combine.c:  Could not open one of the files to be combined.", FALSE );
+           display_error( "combine.c:  Could not open one of the files to be combined." );
            if ( do_progress )
               destroy_progress_window( &progress );
            fclose( out );
@@ -207,7 +206,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Close our newly combined file. */
    if ( fclose( out ) == EOF )
      {
-       display_error( "combine.c:  Could not close the combined file.", FALSE );
+       display_error( "combine.c:  Could not close the combined file." );
        if ( do_progress )
           destroy_progress_window( &progress );
        return TRUE;

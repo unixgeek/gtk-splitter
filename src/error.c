@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include "error.h"
 
-void display_error(gchar *error, gboolean quit)
+void display_error(gchar *error)
 {
    GtkWidget *dialog;
 

@@ -75,7 +75,7 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
    
    if ( stat( file_name_to_set, &file_information )  == -1 )
    {
-       display_error( "file_selection.c:  File doesn't exist, or you do not have the proper permissions.", FALSE );
+       display_error( "file_selection.c:  File doesn't exist, or you do not have the proper permissions." );
    }
    /* Copy the selected file name (full path). */
    strcpy(gsw->my_session_data.file_name_and_path, file_name_to_set);

@@ -25,6 +25,6 @@
 
 #include <gtk/gtk.h>
 
-void display_error(gchar *, gboolean);
+void display_error(gchar *);
 
 #endif /* ERROR_H */
