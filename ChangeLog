@@ -1,3 +1,19 @@
+2003-06-13  gunter  <techgunter@yahoo.com>
+
+	* build_rpm.sh.in, gtk-splitter.desktop, gtk-splitter.spec.in,
+	  Makefile.am:
+	Fixed the rpm build script so it wouldn't overwrite a previous
+	rpmmacro file.
+	Modified the desktop file.	
+	Modified the description field of the RPM spec file.
+	Modified the installation target of the desktop file.
+	
+	* callbacks.c, combine.c, gtk-splitter.c, interface.c, /progress.c,
+	  src/split.c:
+	Added ifdefs around the mhash header file.
+	Replace g_sprintf with sprintf because g_sprintf has only been availabe
+	since GTK+ 2.2.
+	
 2003-06-08  gunter  <techgunter@yahoo.com>
 
 	* split.c, combine.c, callbacks.c, interface.c, file_selection.c,
