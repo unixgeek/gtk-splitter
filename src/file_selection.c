@@ -108,7 +108,7 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
    gtk_widget_set_sensitive( gsw->batch_file_button, TRUE );
    gtk_widget_set_sensitive( gsw->size_input, TRUE );
    gtk_widget_set_sensitive( gsw->chunk_size_units, TRUE );
-   gtk_widget_set_sensitive( gsw->start_button, TRUE );
+   gtk_widget_set_sensitive( gsw->custom_start_button, TRUE );
    gtk_widget_set_sensitive( gsw->verify_button, TRUE );
 
 }

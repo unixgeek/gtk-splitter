@@ -33,6 +33,7 @@
 
 int main(int argc, char *argv[])
 {
+
    /* Used to automatically detect whether a file name read from
       the command-line should be split or combined. */
    gchar ext[4];
@@ -40,6 +41,9 @@ int main(int argc, char *argv[])
    /* gtk_splitter_window is a struct containing all the widgets
       for the main window of gtk-splitter. */
    gtk_splitter_window main_window;
+
+   /* Initialize gtk. */
+   gtk_init( &argc, &argv );
 
    /* Store the path to the user's home directory. */
    main_window.my_session_data.home_directory = getenv( "HOME" );
@@ -57,9 +61,6 @@ int main(int argc, char *argv[])
    strcpy( main_window.my_session_data.output_directory, main_window.my_session_data.home_directory );
 
    printf( "%s-%s Gunter Wambaugh\n", PACKAGE, VERSION );
-
-   /* Initialize gtk. */
-   gtk_init( &argc, &argv );
 
    /* Create a new top-level window. */
    main_window.base_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
@@ -116,8 +117,17 @@ int main(int argc, char *argv[])
    gtk_option_menu_set_menu( GTK_OPTION_MENU( main_window.chunk_size_units ), main_window.units_menu );
 
    /* The button that starts the split or combine process. */
-   //main_window.start_button = gtk_button_new_with_label( "Start" );
-   main_window.start_button = gtk_button_new_from_stock( GTK_STOCK_EXECUTE );
+   main_window.custom_start_button = gtk_button_new( );
+   main_window.custom_start_button_alignment = gtk_alignment_new( 0.5, 0.5, 0, 0 );
+   main_window.custom_start_button_box = gtk_hbox_new( FALSE, 2 );
+   main_window.custom_start_button_image = gtk_image_new_from_stock( GTK_STOCK_JUMP_TO, GTK_ICON_SIZE_BUTTON );
+   main_window.custom_start_button_label = gtk_label_new_with_mnemonic( "S_tart" );
+   gtk_container_add( GTK_CONTAINER( main_window.custom_start_button ), main_window.custom_start_button_alignment );
+   gtk_container_add( GTK_CONTAINER( main_window.custom_start_button_alignment ), main_window.custom_start_button_box );
+   gtk_box_pack_start( GTK_BOX( main_window.custom_start_button_box ), main_window.custom_start_button_image, FALSE, FALSE, 0 );
+   gtk_box_pack_start( GTK_BOX( main_window.custom_start_button_box ), main_window.custom_start_button_label, FALSE, FALSE, 0 );
+   gtk_label_set_justify( GTK_LABEL( main_window.custom_start_button_label ), GTK_JUSTIFY_LEFT );
+   
 
    gtk_window_set_title( GTK_WINDOW( main_window.base_window ), "gtk-splitter" );
    gtk_container_set_border_width( GTK_CONTAINER( main_window.base_window ), 5 );
@@ -146,7 +156,7 @@ int main(int argc, char *argv[])
    gtk_box_pack_start( GTK_BOX( main_window.box3 ), main_window.size_input, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( main_window.box3 ), main_window.chunk_size_units, TRUE, TRUE, 0 );
 
-   gtk_box_pack_start( GTK_BOX( main_window.box4 ), main_window.start_button, TRUE, TRUE, 50 );
+   gtk_box_pack_start( GTK_BOX( main_window.box4 ), main_window.custom_start_button, TRUE, TRUE, 20 );
    /* The end of putting the gui together. */
 
    /* Initialize session data. */
@@ -164,7 +174,7 @@ int main(int argc, char *argv[])
                        GTK_SIGNAL_FUNC( toggle_combine ), &main_window );
    gtk_signal_connect( GTK_OBJECT( main_window.size_input_adj ), "value_changed",
                        GTK_SIGNAL_FUNC(set_data), &main_window );
-   gtk_signal_connect( GTK_OBJECT( main_window.start_button ), "clicked",
+   gtk_signal_connect( GTK_OBJECT( main_window.custom_start_button ), "clicked",
                        GTK_SIGNAL_FUNC( start ), &main_window );
    gtk_signal_connect( GTK_OBJECT( main_window.open_button ), "clicked",
                        GTK_SIGNAL_FUNC( get_file_name_dialog ), &main_window );
