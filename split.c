@@ -49,15 +49,14 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    struct stat file_info;
 
-   /*Doing this in callbacks doesn't work...(?)*/
    switch (data->unit)
      {
-       case BYTES   :  data->chunk_size = data->entry;
-                       break;
-       case KBYTES  :  data->chunk_size = (data->entry * 1024);
-			              break;
-       case MBYTES  :  data->chunk_size = (data->entry * 1024 * 1024);
-			              break;
+       case BYTES      :  data->chunk_size = data->entry;
+                          break;
+       case KILOBYTES  :  data->chunk_size = (data->entry * 1024);
+			                 break;
+       case MEGABYTES  :  data->chunk_size = (data->entry * 1024 * 1024);
+			                 break;
      }
 
    infile_length = data->fp_length;
@@ -94,7 +93,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        return FALSE;
      }
 
-   if (file_size <= (UPDATE_INTERVAL * 4))
+   if (file_size <= UPDATE_INTERVAL)
      do_progress = FALSE;
    else
      do_progress = TRUE;

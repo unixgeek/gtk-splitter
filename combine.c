@@ -130,7 +130,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
      }
 
 
-   if (file_size <= (UPDATE_INTERVAL * 4))
+   if (file_size <= UPDATE_INTERVAL)
      do_progress = FALSE;
    else
      do_progress = TRUE;

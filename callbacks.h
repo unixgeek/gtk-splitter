@@ -45,9 +45,10 @@ void toggle_combine(GtkWidget *, gtk_splitter_window *);
 /*Toggle whether or not we will create a dos batch file.*/
 void toggle_batch(GtkWidget *, session_data *);
 
-/*Initialize our data.*/
+/*Initial settings for session_data.*/
 void initialize_session_data(session_data *);
 
+/*Initial settings for the main window.*/
 void initialize_splitter_window(gtk_splitter_window *);
 
 /*Start the split/combine process.*/
