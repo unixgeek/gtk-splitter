@@ -1,3 +1,28 @@
+2002-11-08  techgunter  <techgunter@yahoo>
+
+	* gtk-splitter.c:
+	If the check for $HOME fails, defalut to '/' as the home directory.
+
+	* split.c, error.c, error.h, file_selection.c, gtk-splitter.c, combine.c:
+	Changed the function parameters for display_error( )--removed the 'quit' 
+	parameter.
+
+	* error.c:
+	Errors are now displayed using a GTK+-2.0 stock message dialog.
+	Removed changes I made yesterday with printing errors to stderr. :)
+
+	* gtk-splitter.c:
+	Use the new stock items in GTK+-2.0.
+
+	* progress.c:
+	Changed the way the progress bar is updated per the GTK+-2.0 recommendation.
+
+	* Makefile.am, file_selection.c, progress.c:
+	Made some changes to compile with GTK+-2.0.
+
+	* Makefile.am, configure.in, src/Makefile.am:
+	Modified the autoconf and automake files for compilation with GTK+2.0.
+
 2002-11-07  techgunter  <techgunter@yahoo.com>
 
 	* combine.c, split.c:
