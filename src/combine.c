@@ -59,12 +59,12 @@ gboolean gtk_splitter_combine_files( GtkSplitterSessionData *data )
 #ifdef HAVE_LIBMHASH
    /* For mhash. */
    unsigned char hash[16];
-   char hashchar;
+   int hashchar;
    MHASH thread;
    gchar md5_file[PATH_MAX];
    gboolean verified;
    FILE *md5;
-   unsigned char hashtemp[3];
+   unsigned char hashtemp[3] = {'\0'};
    unsigned char new_hash[33] = {'\0'};
    unsigned char given_hash[33] = {'\0'};
    int i;
@@ -231,7 +231,7 @@ gboolean gtk_splitter_combine_files( GtkSplitterSessionData *data )
    if ( data->verify )
      {
        verified = TRUE;
-       hashchar = '0';
+       hashchar = '\0';
        if ( do_progress )
           gtk_label_set_text( GTK_LABEL( progress_window->message ), "Verifying file..." );
      
@@ -276,7 +276,7 @@ gboolean gtk_splitter_combine_files( GtkSplitterSessionData *data )
              {
                 hashchar = fgetc( md5 );
                 if ( hashchar != EOF )
-                   strcat( given_hash, &hashchar );
+                   strcat( given_hash, ( char * ) &hashchar );
              }
              fclose( md5 );
 
