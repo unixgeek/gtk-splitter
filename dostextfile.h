@@ -20,16 +20,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef BATCHFILE_H
-#define BATCHFILE_H
+#ifndef DOSTEXTFILE_H
+#define DOSTEXTFILE_H
 
 #include <stdio.h>
 #include <gtk/gtk.h>
 
-void write_batchfile(FILE *, gchar *);  /*Does not include eoln characters.*/
+/*write_dostextfile() and writeln_dostextfile() assume that the FILE
+  is opened for writing in BINARY mode and the array is NULL terminated.*/
 
-void writeln_batchfile(FILE *, gchar *);
+/*Write text to a file without the eoln characters.*/
+void write_dostextfile(FILE *, gchar *);
 
+/*Write text to a file with the eoln characters.*/
+void writeln_dostextfile(FILE *, gchar *);
+
+/*Convert a long file name to a dos file name.
+  This function assumes that the array is at least 13 characters long--12 characters
+  for the file name and 1 character for the NULL terminator.
+  It will do little good to call this function with a file name that is already 12 
+  characters long.*/
 void dosify_filename(gchar *, gushort);
 
-#endif /* BATCHFILE_H */
+#endif /* DOSTEXTFILE_H */

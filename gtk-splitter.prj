@@ -59,7 +59,7 @@ module.include.name=.
 module.include.type=
 module.include.expanded=1
 module.include.files=\
-	batchfile.h\
+	dostextfile.h\
 	callbacks.h\
 	combine.h\
 	error.h\
@@ -72,7 +72,7 @@ module.source.name=.
 module.source.type=
 module.source.expanded=1
 module.source.files=\
-	batchfile.c\
+	dostextfile.c\
 	callbacks.c\
 	combine.c\
 	error.c\

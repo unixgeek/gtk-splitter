@@ -22,17 +22,20 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include "batchfile.h"
+#include "dostextfile.h"
+
+/*write_dostextfile() and writeln_dostextfile() assume that the FILE
+  is opened for writing in BINARY mode and the array is NULL terminated.*/
 
 /*Write a string to the file pointed to by b without the eoln.*/
-void write_batchfile(FILE *b, gchar *tmp)
+void write_dostextfile(FILE *b, gchar *tmp)
 {
    fprintf( b, tmp );
    fflush( b );
 }
 
 /*Write a string to the file pointed to by b with the eoln.*/
-void writeln_batchfile(FILE *b, gchar *tmp)
+void writeln_dostextfile(FILE *b, gchar *tmp)
 {
    fprintf( b, tmp );
    fputc( 0x0d, b );
@@ -40,7 +43,11 @@ void writeln_batchfile(FILE *b, gchar *tmp)
    fflush( b );
 }
 
-/*Modify the file name so that it is compatible with DOS.*/
+/*Convert a long file name to a dos file name.
+  This function assumes that the array is at least 13 characters long--12 characters
+  for the file name and 1 character for the NULL terminator.
+  It will do little good to call this function with a file name that is already 12 
+  characters long.*/
 void dosify_filename(gchar *tmp, gushort length)
 {
    gushort i;

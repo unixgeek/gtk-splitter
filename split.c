@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <string.h>
 
-#include "batchfile.h"
+#include "dostextfile.h"
 #include "globals.h"
 #include "error.h"
 #include "progress.h"
@@ -176,12 +176,12 @@ gboolean split(GtkWidget *tmp, session_data *data)
            return FALSE;
 	 }
        /*Write some header information to the batchfile.*/
-       writeln_batchfile( batch, "@Echo Off" );
-       write_batchfile( batch, "Echo " );
-       writeln_batchfile( batch, GTK_SPLITTER_VERSION );
-       write_batchfile( batch, "Echo Creating " );
-       writeln_batchfile( batch, data->filename_only );
-       write_batchfile( batch, "copy /b " );
+       writeln_dostextfile( batch, "@Echo Off" );
+       write_dostextfile( batch, "Echo " );
+       writeln_dostextfile( batch, GTK_SPLITTER_VERSION );
+       write_dostextfile( batch, "Echo Creating " );
+       writeln_dostextfile( batch, data->filename_only );
+       write_dostextfile( batch, "copy /b " );
        /*End of header information*/
      }
    /*END OF BATCH FILE*/
@@ -297,11 +297,11 @@ gboolean split(GtkWidget *tmp, session_data *data)
        if (data->create_batchfile)
          {
            if (strcmp(ext, "001") != 0)
-             write_batchfile(batch, "+");
+             write_dostextfile(batch, "+");
            outfile_only[strlen(outfile_only) - 4] = '\0';
            strcat(outfile_only, ".");
            strcat(outfile_only, ext);
-           write_batchfile(batch, outfile_only);
+           write_dostextfile(batch, outfile_only);
          }
 
        /*Increment the extension.
@@ -394,13 +394,13 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    if (data->create_batchfile)
      {
-       write_batchfile(batch, " ");
-       write_batchfile(batch, data->filename_only);
+       write_dostextfile(batch, " ");
+       write_dostextfile(batch, data->filename_only);
 		 
 		 /*Write some footer information to the batchfile.*/
-       writeln_batchfile( batch, " > ~combine.tmp" );
-       writeln_batchfile( batch, "erase ~combine.tmp" );
-       writeln_batchfile( batch, "Echo Finished." );
+       writeln_dostextfile( batch, " > ~combine.tmp" );
+       writeln_dostextfile( batch, "erase ~combine.tmp" );
+       writeln_dostextfile( batch, "Echo Finished." );
        /*End of footer information.*/
        
 		 g_free(batchname_and_path);

@@ -3,7 +3,7 @@ BIN_DIR = /usr/bin
 
 CC = gcc
 LIBS = -lgtk -lgdk
-OBJ = callbacks.o split.o combine.o error.o batchfile.o progress.o file_selection.o
+OBJ = callbacks.o split.o combine.o error.o dostextfile.o progress.o file_selection.o
 LIBS_DIR = -L/usr/lib -L/usr/X11R6/lib
 FLAGS = -Wall
 
@@ -26,8 +26,8 @@ combine.o: combine.c
 error.o: error.c
 	$(CC) -c error.c $(FLAGS) `gtk-config --cflags`
 
-batchfile.o: batchfile.c
-	$(CC) -c batchfile.c $(FLAGS) `gtk-config --cflags`
+dostextfile.o: dostextfile.c
+	$(CC) -c dostextfile.c $(FLAGS) `gtk-config --cflags`
 
 progress.o: progress.c
 	$(CC) -c progress.c $(FLAGS) `gtk-config --cflags`
