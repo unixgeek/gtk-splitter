@@ -5,6 +5,12 @@ RunInTerminal=false
 [Project DBase]
 ShowLocals=true
 
+[filenumbers]
+0=1
+
+[filemarkers]
+0=
+
 [replace_text]
 0=dostextfile
 
