@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
    strcpy( gtk_s_window->sdata->output_dir, gtk_s_window->sdata->home_dir );
    gtk_s_window->sdata->output_dir[strlen( gtk_s_window->sdata->output_dir )] = '\0';
 
-   fprintf( stderr, "%s\n", GTK_SPLITTER_VERSION );
+   printf( "%s-%s Gunter Wambaugh\n", PACKAGE, VERSION );
 
    /*Initialize gtk.*/
    gtk_init( &argc, &argv );
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
    gtk_s_window->batch_file_button = gtk_check_button_new_with_label(" Create DOS batch file." );
 
    /*Toggle button to verfiy a file.*/
-   gtk_s_window->verify_button = gtk_check_button_new_with_label(" Verify (md5sum)" );
+   gtk_s_window->verify_button = gtk_check_button_new_with_label(" Verify with md5sum.  (beta)" );
 
    /*1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4
     (or so they say--depends on the FS) so (1.39 * 1048576) = 1457664. */

@@ -28,7 +28,6 @@
 #include <gtk/gtk.h>
 
 #define UPDATE_INTERVAL 32768  /*Update the progress bar every 32k.*/
-#define GTK_SPLITTER_VERSION "gtk-splitter-1.0 Gunter Wambaugh"
 
 /*Session_data is a struct used to store information related the selected file.*/
 typedef struct

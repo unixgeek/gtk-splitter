@@ -216,7 +216,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
        /*Write some header information to the batchfile.*/
        writeln_dostextfile( batch, "@Echo Off" );
        write_dostextfile( batch, "Echo " );
-       writeln_dostextfile( batch, GTK_SPLITTER_VERSION );
+       write_dostextfile( batch, PACKAGE );
+       write_dostextfile( batch, "-" );
+       write_dostextfile( batch, VERSION );
+       writeln_dostextfile( batch, " Gunter Wambaugh" );
        writeln_dostextfile( batch, "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
        write_dostextfile( batch, "Echo Original File Name:  " );
        writeln_dostextfile( batch, original_name );
