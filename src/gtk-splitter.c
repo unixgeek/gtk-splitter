@@ -145,11 +145,13 @@ int main(int argc, char *argv[])
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->batch_file_button, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( gtk_s_window->base_box ), gtk_s_window->box4, TRUE, TRUE, 0 );
 
-   gtk_box_pack_start( GTK_BOX( gtk_s_window->box1 ), gtk_s_window->open_button, TRUE, TRUE, 7 );
-   gtk_box_pack_start( GTK_BOX( gtk_s_window->box1 ), gtk_s_window->filename_box, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX( gtk_s_window->box1 ), gtk_s_window->open_button, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX( gtk_s_window->box1 ), gtk_s_window->filename_box, FALSE, TRUE, 0 );
+   gtk_box_set_spacing( GTK_BOX( gtk_s_window->box1 ), 5 );
 
-   gtk_box_pack_start( GTK_BOX( gtk_s_window->box5 ), gtk_s_window->output_button, TRUE, TRUE, 4 );
-   gtk_box_pack_start( GTK_BOX( gtk_s_window->box5 ), gtk_s_window->output_box, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX( gtk_s_window->box5 ), gtk_s_window->output_button, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX( gtk_s_window->box5 ), gtk_s_window->output_box, FALSE, TRUE, 0 );
+   gtk_box_set_spacing( GTK_BOX( gtk_s_window->box5 ), 5 );
 
    gtk_box_pack_start( GTK_BOX( gtk_s_window->box2 ), gtk_s_window->split_button, TRUE, TRUE, 10 );
    gtk_box_pack_start( GTK_BOX( gtk_s_window->box2 ), gtk_s_window->combine_button, TRUE, TRUE, 10 );

@@ -1,7 +1,19 @@
+2002-04-10  gunter  <techgunter@yahoo.com>
+
+	* gtk-splitter.c
+	Enhanced the GUI a little bit:  Made 'Open' and 'Output' buttons the same size and added space
+	between the buttons and their respective text entry boxes. 
+
+	* dostextfile.c
+	Added more characters to filter out when dosifying a file name.
+
 2002-04-08  gunter  <techgunter@yahoo.com>
+
 	* dostextfile.c
 	'+' is now converted to underscore when dosifying a file name.
+
 2002-04-06  gunter  <techgunter@yahoo.com>
+
 	* file_selection.c
 	Disabled the ability to choose a file when selecting the output directory.
 
