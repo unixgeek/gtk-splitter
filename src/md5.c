@@ -56,6 +56,9 @@ generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const 
    if ( S_ISDIR( file_info.st_mode ) == 0 )
       return GENERATE_MD5_NOT_A_DIRECTORY;
 
+   if ( system( NULL ) == 0 )
+      return GENERATE_MD5_SYSTEM_SH_NOT_AVAILABLE;
+   
    strcpy( file_path, file_name_and_path );
    
    length = strlen( file_path );
@@ -100,20 +103,29 @@ generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const 
    switch ( return_value )
    {
       case -1:
-               exit_status = GENERATE_MD5_SYSTEM_FORK_FAILED;
-               break;
+         
+         exit_status = GENERATE_MD5_SYSTEM_ERROR;
+         break;
+      
       case 127:
-               exit_status = GENERATE_MD5_SYSTEM_SH_NOT_FOUND;
-               break;
+         
+         exit_status = GENERATE_MD5_SYSTEM_SH_EXEC_ERROR;
+         break;
+      
       case 1:  
-               exit_status = GENERATE_MD5_MD5SUM_EXIT_FAILURE;
-               break;
+         
+         exit_status = GENERATE_MD5_MD5SUM_EXIT_FAILURE;
+         break;
+      
       case 0:
-               exit_status = GENERATE_MD5_MD5SUM_EXIT_OK;
-               break;
+         
+         exit_status = GENERATE_MD5_MD5SUM_EXIT_OK;
+         break;
+      
       default:
-               exit_status = GENERATE_MD5_EXIT_STATUS_UNKNOWN;
-               break;
+      
+         exit_status = GENERATE_MD5_EXIT_STATUS_UNKNOWN;
+         break;
    }
    
    return exit_status;
@@ -144,6 +156,9 @@ verify_file_exit_status verify_file(const char *file_name_and_path, const char *
    if ( S_ISREG( file_info.st_mode ) == 0 )
       return VERIFY_FILE_NOT_A_REGULAR_FILE;
    
+   if ( system( NULL ) == 0 )
+      return VERIFY_FILE_SYSTEM_SH_NOT_AVAILABLE;
+      
    strcpy( file_path, file_name_and_path );
    
    length = strlen( file_path );
@@ -176,20 +191,29 @@ verify_file_exit_status verify_file(const char *file_name_and_path, const char *
    switch ( return_value )
    {
       case -1:
-               exit_status = VERIFY_FILE_SYSTEM_FORK_FAILED;
-               break;
+         
+         exit_status = VERIFY_FILE_SYSTEM_ERROR;
+         break;
+      
       case 127:
-               exit_status = VERIFY_FILE_SYSTEM_SH_NOT_FOUND;
-               break;
+         
+         exit_status = VERIFY_FILE_SYSTEM_SH_EXEC_ERROR;
+         break;
+      
       case 0:  
-               exit_status = VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL;
-               break;
+         
+         exit_status = VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL;
+         break;
+      
       case 1:
-               exit_status = VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL;
-               break;
+         
+         exit_status = VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL;
+         break;
+      
       default:
-               exit_status = VERIFY_FILE_EXIT_STATUS_UNKNOWN;
-               break;
+      
+         exit_status = VERIFY_FILE_EXIT_STATUS_UNKNOWN;
+         break;
    }
    
    return exit_status;

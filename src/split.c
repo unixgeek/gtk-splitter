@@ -229,14 +229,19 @@ gboolean split(GtkWidget *tmp, session_data *data)
                   display_error( "split.c:  Could not generate md5 sum.  (GENERATE_MD5_CHDIR_FAILED)" );
                   break;
                   
-               case GENERATE_MD5_SYSTEM_FORK_FAILED:
+               case GENERATE_MD5_SYSTEM_ERROR:
                   
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_FORK_FAILED)" );
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_ERROR)" );
                   break;
                
-               case GENERATE_MD5_SYSTEM_SH_NOT_FOUND:
+               case GENERATE_MD5_SYSTEM_SH_NOT_AVAILABLE:
                   
-                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_SH_NOT_FOUND)" ); 
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_SH_NOT_AVAILABLE)" ); 
+                  break;
+               
+               case GENERATE_MD5_SYSTEM_SH_EXEC_ERROR:
+                 
+                  display_error( "split.c:   Could not generate md5 sum.  (GENERATE_MD5_SYSTEM_SH_EXEC_ERROR)" ); 
                   break;
                
                case GENERATE_MD5_MD5SUM_EXIT_OK:

@@ -244,14 +244,19 @@ gboolean combine(GtkWidget *tmp, session_data *data)
              display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_CHDIR_FAILED)" );
              break;
                   
-          case VERIFY_FILE_SYSTEM_FORK_FAILED:
+          case VERIFY_FILE_SYSTEM_ERROR:
                   
-             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_FORK_FAILED)" );
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_ERROR)" );
              break;
                
-          case VERIFY_FILE_SYSTEM_SH_NOT_FOUND:
+          case VERIFY_FILE_SYSTEM_SH_NOT_AVAILABLE:
                   
-             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_SH_NOT_FOUND)" ); 
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_SH_NOT_AVAILABLE)" ); 
+             break;
+          
+          case VERIFY_FILE_SYSTEM_SH_EXEC_ERROR:
+                  
+             display_error( "combine.c:  Could not verify file.  (VERIFY_FILE_SYSTEM_SH_EXEC_ERROR)" ); 
              break;
                
           case VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL:
