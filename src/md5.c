@@ -27,17 +27,18 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include "md5.h"
 
 
-generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const char *output_directory)
+generate_md5_return_type generate_md5_sum(const char *file_name_and_path, const char *output_directory)
 {
    char sh_argument[PATH_MAX];
    char file_path[PATH_MAX];
    char file_name_only[PATH_MAX];
-   int i, j, length, return_value;
+   int i, j, length, exit_status;
    struct stat file_info;
-   generate_md5_exit_status exit_status;
+   generate_md5_return_type return_type;
    
    
    if ( ( strlen( file_name_and_path ) > ( PATH_MAX + 1 ) ) ||
@@ -98,51 +99,51 @@ generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const 
       return GENERATE_MD5_CHDIR_FAILED;
 
    /* Execute command. */
-   return_value = system( sh_argument );
+   exit_status = system( sh_argument );
    
-   switch ( return_value )
+   switch ( WEXITSTATUS( exit_status ) )
    {
       case -1:
          
-         exit_status = GENERATE_MD5_SYSTEM_ERROR;
+         return_type = GENERATE_MD5_SYSTEM_ERROR;
          break;
       
       case 127:
          
-         exit_status = GENERATE_MD5_SYSTEM_SH_EXEC_ERROR;
+         return_type = GENERATE_MD5_SYSTEM_SH_EXEC_ERROR;
          break;
       
       case 1:  
          
-         exit_status = GENERATE_MD5_MD5SUM_EXIT_FAILURE;
+         return_type = GENERATE_MD5_MD5SUM_EXIT_FAILURE;
          break;
       
       case 0:
          
-         exit_status = GENERATE_MD5_MD5SUM_EXIT_OK;
+         return_type = GENERATE_MD5_MD5SUM_EXIT_OK;
          break;
       
       default:
       
-         exit_status = GENERATE_MD5_EXIT_STATUS_UNKNOWN;
+         return_type = GENERATE_MD5_EXIT_STATUS_UNKNOWN;
          break;
    }
    
-   return exit_status;
+   return return_type;
 }
              
-verify_file_exit_status verify_file(const char *file_name_and_path, const char *md5sum_and_path)
+verify_file_return_type verify_file(const char *file_name_and_path, const char *md5sum_and_path)
 {
    char sh_argument[PATH_MAX];
    char file_path[PATH_MAX];
-   int i, length, return_value;
+   int i, length, exit_status;
    struct stat file_info;
-   verify_file_exit_status exit_status;
+   verify_file_return_type return_type;
 
    
    if ( ( strlen( file_name_and_path ) > ( PATH_MAX + 1 ) ) ||
-        ( strlen( md5sum_and_path ) > ( PATH_MAX + 1) ) )
-      return GENERATE_MD5_OVERFLOW_ERROR;
+        ( strlen( md5sum_and_path ) > ( PATH_MAX + 1 ) ) )
+      return VERIFY_FILE_OVERFLOW_ERROR;
    
    if ( stat( file_name_and_path, &file_info ) == -1 )
       return VERIFY_FILE_STAT_FAILED;
@@ -174,10 +175,10 @@ verify_file_exit_status verify_file(const char *file_name_and_path, const char *
    /*
       Setup the command-line argument for sh.
       Argument:
-      'md5sum --status -c "md5sum_and_path" &> /dev/null{NULL}'
+      'md5sum --status --check "md5sum_and_path" &> /dev/null{NULL}'
    */
    
-   strcpy( sh_argument, "md5sum --status -c \"" );
+   strcpy( sh_argument, "md5sum --status --check \"" );
    strcat( sh_argument, md5sum_and_path );
    strcat( sh_argument, "\" &> /dev/null" );
    strcat( sh_argument, "\0" );
@@ -185,36 +186,36 @@ verify_file_exit_status verify_file(const char *file_name_and_path, const char *
    /* WD = {file_path} */
    if ( chdir( file_path ) == -1 )
       return VERIFY_FILE_CHDIR_FAILED;
-   
-   return_value = system( sh_argument );
-   
-   switch ( return_value )
+
+   exit_status = system( sh_argument );
+
+   switch ( WEXITSTATUS( exit_status ) )
    {
       case -1:
          
-         exit_status = VERIFY_FILE_SYSTEM_ERROR;
+         return_type = VERIFY_FILE_SYSTEM_ERROR;
          break;
       
       case 127:
          
-         exit_status = VERIFY_FILE_SYSTEM_SH_EXEC_ERROR;
+         return_type = VERIFY_FILE_SYSTEM_SH_EXEC_ERROR;
          break;
       
       case 0:  
          
-         exit_status = VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL;
+         return_type = VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL;
          break;
       
       case 1:
          
-         exit_status = VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL;
+         return_type = VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL;
          break;
       
       default:
       
-         exit_status = VERIFY_FILE_EXIT_STATUS_UNKNOWN;
+         return_type = VERIFY_FILE_EXIT_STATUS_UNKNOWN;
          break;
    }
    
-   return exit_status;
+   return return_type;
 }

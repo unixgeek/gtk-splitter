@@ -55,7 +55,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    struct stat file_info;
 
    /* The return value of verify( ). */
-   verify_file_exit_status md5_return;
+   verify_file_return_type md5_return;
    
    /* Setup the infile string. */
    strcpy( infile, data->file_name_and_path );

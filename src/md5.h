@@ -36,7 +36,7 @@ typedef enum
    GENERATE_MD5_MD5SUM_EXIT_OK,
    GENERATE_MD5_MD5SUM_EXIT_FAILURE,
    GENERATE_MD5_EXIT_STATUS_UNKNOWN
-} generate_md5_exit_status;
+} generate_md5_return_type;
 
 typedef enum 
 {
@@ -50,10 +50,10 @@ typedef enum
    VERIFY_FILE_MD5SUM_VERIFY_SUCCESSFUL,
    VERIFY_FILE_MD5SUM_VERIFY_UNSUCCESSFUL,
    VERIFY_FILE_EXIT_STATUS_UNKNOWN
-} verify_file_exit_status;
+} verify_file_return_type;
 
-generate_md5_exit_status generate_md5_sum(const char *file_name_and_path, const char *output_directory);
+generate_md5_return_type generate_md5_sum(const char *file_name_and_path, const char *output_directory);
 
-verify_file_exit_status verify_file(const char *file_name_and_path, const char *location_of_md5sum);
+verify_file_return_type verify_file(const char *file_name_and_path, const char *location_of_md5sum);
 
 #endif /* MD5_H */

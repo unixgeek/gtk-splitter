@@ -73,7 +73,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    gulong chunk_size;
 
    /* The return value of generate_md5_sum( ) */
-   generate_md5_exit_status md5_return;
+   generate_md5_return_type md5_return;
 
    
    /* Setup the infile string. */
