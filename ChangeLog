@@ -1,3 +1,6 @@
+2002-04-08  gunter  <techgunter@yahoo.com>
+	* dostextfile.c
+	'+' is now converted to underscore when dosifying a file name.
 2002-04-06  gunter  <techgunter@yahoo.com>
 	* file_selection.c
 	Disabled the ability to choose a file when selecting the output directory.
