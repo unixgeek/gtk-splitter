@@ -20,7 +20,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
 #include "dostextfile.h"
@@ -29,14 +28,14 @@
   is opened for writing in BINARY mode and the array is NULL terminated.*/
 
 /*Write a string to the file pointed to by b without the eoln.*/
-void write_dostextfile(FILE *b, gchar *tmp)
+void write_dostextfile(FILE *b, char *tmp)
 {
    fprintf( b, tmp );
    fflush( b );
 }
 
 /*Write a string to the file pointed to by b with the eoln.*/
-void writeln_dostextfile(FILE *b, gchar *tmp)
+void writeln_dostextfile(FILE *b, char *tmp)
 {
    fprintf( b, tmp );
    fputc( 0x0d, b );
@@ -49,10 +48,10 @@ void writeln_dostextfile(FILE *b, gchar *tmp)
   long--12 characters for the file name and 1 character for the NULL terminator.
   It will do little good to call this function with a file name that is at most 12 
   characters long.*/
-void dosify_filename(gchar *tmp)
+void dosify_filename(char *tmp)
 {
-   gushort i, length;
-   gchar ext[3];
+   unsigned short i, length;
+   char ext[3];
 
    length = strlen( tmp );
 

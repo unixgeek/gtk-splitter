@@ -24,22 +24,21 @@
 #define DOSTEXTFILE_H
 
 #include <stdio.h>
-#include <gtk/gtk.h>
 
 /*write_dostextfile() and writeln_dostextfile() assume that the FILE
   is opened for writing in BINARY mode and the array is NULL terminated.*/
 
 /*Write text to a file without the eoln characters.*/
-void write_dostextfile(FILE *, gchar *);
+void write_dostextfile(FILE *, char *);
 
 /*Write text to a file with the eoln characters.*/
-void writeln_dostextfile(FILE *, gchar *);
+void writeln_dostextfile(FILE *, char *);
 
 /*Convert a long file name to a dos file name.
   This function assumes that the array is NULL terminated and at least 13 characters
   long--12 characters for the file name and 1 character for the NULL terminator.
   It will do little good to call this function with a file name that is at most 12 
   characters long.*/
-void dosify_filename(gchar *);
+void dosify_filename(char *);
 
 #endif /* DOSTEXTFILE_H */

@@ -22,7 +22,6 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
 
@@ -199,7 +198,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        strcat( batchname_and_path, data->filename_only );
        strcat( batchname_and_path, ".bat");
 
-       batch = fopen( batchname_and_path, "w+" );
+       batch = fopen( batchname_and_path, "wb+" );
        if ( batch == NULL )
          {
            display_error( "\nsplit.c:  Could not create the batch file.\n", TRUE );

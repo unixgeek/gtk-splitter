@@ -24,6 +24,7 @@
 #include "callbacks.h"
 #include "split.h"
 #include "combine.h"
+#include "globals.h"
 
 /*Set the units to 'bytes'.*/
 void set_bytes(GtkWidget *tmp, session_data *data)

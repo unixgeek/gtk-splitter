@@ -2,11 +2,11 @@
 # TODO #
 ########
 
-[ ]Decide on whether to use dynamic array allocation or fixed allocation.
-[ ]Check the opening of files.
+[X]Decide on whether to use dynamic array allocation or fixed allocation.
+[X]Check the opening of files.
 [ ]More effecient way to update the progress bar?
 [X]Add the original file name to the batchfile.
-[ ]Verify the necessity of includes.
+[X]Verify the necessity of includes.
 [ ]Use the -DPACKAGE and -DVERSION macros inside the source.
 [ ]Modify the configure stuff to check for gnome before installing the menu shortcut and icon.
 [ ]Create scripts for building an RPM.
