@@ -47,7 +47,9 @@ int main(int argc, char *argv[])
      {
        display_error( "Could not determine home directory.\n"
                       "Check environment variables for $HOME." );
-       return 0;
+       
+       /* Default to '/' as the user's home directory. */ 
+       strcpy( main_window.my_session_data.home_directory, "/" );
      }
    strcat( main_window.my_session_data.home_directory, "/" );
    
