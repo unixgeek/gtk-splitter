@@ -25,8 +25,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "globals.h"
-#include "file_selection.h"
 #include "error.h"
+#include "file_selection.h"
 
 /* For choosing a file with the gtk open dialog. */ //remove file_selection_dialog
 void get_file_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
@@ -75,7 +75,7 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
    
    if ( stat( file_name_to_set, &file_information )  == -1 )
    {
-       display_error( "file_selection.c:  File doesn't exist, or you do not have the proper permissions." );
+       display_error( "file_selection.c:  Could not stat file." );
    }
    /* Copy the selected file name (full path). */
    strcpy(gsw->my_session_data.file_name_and_path, file_name_to_set);
