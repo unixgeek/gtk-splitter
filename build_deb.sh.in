@@ -1,0 +1,101 @@
+#!/bin/sh
+#
+# [ 1.5.03 | Gunter Wambaugh ]
+# Script for building a binary and source debian package (.deb). 
+
+# The package name.
+PACKAGE=@PACKAGE@
+
+# The current version.
+VERSION=@VERSION@
+
+# The architecture.
+ARCH=i386
+
+# The build/package version.
+BUILD=1
+
+# The current directory.
+CWD=`pwd`
+
+# Path to temporary storage.
+if [ "$TMP" = "" ]
+then
+    TMP=/tmp
+fi
+
+# Generate a distribution tarball.
+./configure
+make dist
+
+# Unpack the distribution tarball.
+cd $TMP
+tar -xzvf $CWD/$PACKAGE-$VERSION.tar.gz
+
+# Compile.
+cd $PACKAGE-$VERSION
+CFLAGS="-O2 -march=i386 -mcpu=i686" \
+./configure \
+  --prefix=/usr
+make
+
+##### Set up the package. #####
+
+# Copy the executable. 
+mkdir -p --verbose $TMP/debian/$PACKAGE/usr/bin
+cp -f --verbose src/gtk-splitter $TMP/debian/$PACKAGE/usr/bin/
+chmod --verbose 755 $TMP/debian/$PACKAGE/usr/bin/gtk-splitter
+strip $TMP/debian/$PACKAGE/usr/bin/gtk-splitter
+
+# Copy the icon.
+mkdir -p --verbose $TMP/debian/$PACKAGE/usr/share/pixmaps
+cp -f --verbose gtk-splitter.png $TMP/debian/$PACKAGE/usr/share/pixmaps/
+chmod --verbose 644 $TMP/debian/$PACKAGE/usr/share/pixmaps/gtk-splitter.png
+
+# Copy the desktop launcher.
+mkdir -p --verbose $TMP/debian/$PACKAGE/usr/share/gnome/apps/Utilities
+cp -f --verbose gtk-splitter.desktop $TMP/debian/$PACKAGE/usr/share/gnome/apps/Utilities/gtk-splitter.desktop
+chmod --verbose 644 $TMP/debian/$PACKAGE/usr/share/gnome/apps/Utilities/gtk-splitter.desktop
+
+# Copy the GNU Documents.
+mkdir -p --verbose $TMP/debian/$PACKAGE/usr/doc/$PACKAGE-$VERSION
+cp -f --verbose ChangeLog AUTHORS COPYING HOSTS INSTALL README TODO NEWS $TMP/debian/$PACKAGE/usr/doc/$PACKAGE-$VERSION/
+chmod --verbose 644 $TMP/debian/$PACKAGE/usr/doc/$PACKAGE-$VERSION/*
+
+# Create the package control file.
+mkdir -p --verbose $TMP/debian/$PACKAGE/DEBIAN
+echo "" > $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Source: $PACKAGE" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Section: x11" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Priority: optional" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Maintainer: Gunter Wambaugh <techgunter@yahoo.com>" >> $TMP/debian/$PACKAGE/DEBIAN/control
+# Build-Depends: debhelper (>> 3.0.0)
+echo "Package: $PACKAGE" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Version: $VERSION" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Architecture: $ARCH" >> $TMP/debian/$PACKAGE/DEBIAN/control
+#Depends: ${shlibs:Depends}
+echo "Depends:" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo "Description: A GTK+ file splitter." >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo " gtk-splitter can split files into smaller pieces and combine them back together. It can also generate" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo " a DOS batch file so that the split files can be combined on DOS/Windows systems. gtk-splitter is good" >> $TMP/debian/$PACKAGE/DEBIAN/control
+echo " for working around file limitations with floppy disks, email attachments, etc." >> $TMP/debian/$PACKAGE/DEBIAN/control
+
+##### End of package setup. #####
+
+# Build the package:
+cd $TMP/debian
+fakeroot dpkg-deb --build $PACKAGE
+mv -f --verbose $PACKAGE.deb $PACKAGE-$VERSION-$ARCH-$BUILD.deb
+# Put the package in this directory.
+mv -f --verbose $PACKAGE-$VERSION-$ARCH-$BUILD.deb $CWD
+
+# Remove the build environment.
+rm -fr --verbose $TMP/$PACKAGE-$VERSION
+rm -fr --verbose $TMP/debian/$PACKAGE
+rm -f --verbose $CWD/$PACKAGE-$VERSION.tar.gz
+
+echo
+echo "********************************************************************"
+echo "If you have just built a package for an architecture that was not"
+echo "already available, then please email it to me <techgunter@yahoo.com>"
+echo "and I will post it on the project web site."

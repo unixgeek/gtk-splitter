@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/sh
 #
 # [ 1.5.03 | Gunter Wambaugh ]
 # Script for building a binary slackware package (.tgz). 
@@ -34,13 +34,12 @@ tar -xzvf $CWD/$PACKAGE-$VERSION.tar.gz
 
 # Compile.
 cd $PACKAGE-$VERSION
-CXXFLAGS="-O2 -march=i386 -mcpu=i686" \
 CFLAGS="-O2 -march=i386 -mcpu=i686" \
 ./configure \
   --prefix=/usr
 make
 
-##### Set up the package. ####
+##### Set up the package. #####
 
 # Copy the executable. 
 mkdir -p --verbose $TMP/package-$PACKAGE/usr/bin
@@ -75,7 +74,7 @@ echo "chown root:root --verbose /usr/share/gnome/apps/Utilities/gtk-splitter.des
 echo "chown root:root --verbose /usr/doc/$PACKAGE-$VERSION/*" >> $TMP/package-$PACKAGE/install/doinst.sh
 chmod --verbose 755 $TMP/package-$PACKAGE/install/doinst.sh
 
-#### End of package setup. ####
+##### End of package setup. #####
 
 # Build the package:
 cd $TMP/package-$PACKAGE
