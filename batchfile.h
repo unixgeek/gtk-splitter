@@ -30,10 +30,6 @@ void write_batchfile(FILE *, gchar *);  /*Does not include eoln characters.*/
 
 void writeln_batchfile(FILE *, gchar *);
 
-void initialize_batchfile(FILE *, gchar *);
-
-void finalize_batchfile(FILE *);
-
 void dosify_filename(gchar *, gushort);
 
 #endif /* BATCHFILE_H */

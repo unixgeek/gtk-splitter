@@ -54,11 +54,10 @@ gboolean split(GtkWidget *tmp, session_data *data)
      {
        case BYTES   :  data->chunk_size = data->entry;
                        break;
-       case KBYTES	:  data->chunk_size = (data->entry * 1024);
-			   break;
+       case KBYTES  :  data->chunk_size = (data->entry * 1024);
+			              break;
        case MBYTES  :  data->chunk_size = (data->entry * 1024 * 1024);
-			   break;
-       default		:  break;
+			              break;
      }
 
    infile_length = data->fp_length;
@@ -138,7 +137,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
        if ((data->f_length - 1) > 12)
          {
            dosify_filename(data->filename_only, data->f_length);
-           data->f_length = 13;
+			  data->f_length = 13;
+			  g_realloc(data->filename_only, data->f_length);
          }
        strcpy(outfile_only, data->filename_only);
        /*Reserve four spaces for the extension; it will change later.*/
@@ -176,8 +176,14 @@ gboolean split(GtkWidget *tmp, session_data *data)
            g_free(infile);
            return FALSE;
 	 }
-
-       initialize_batchfile(batch, data->filename_only);
+       /*Write some header information to the batchfile.*/
+       writeln_batchfile( batch, "@Echo Off" );
+       write_batchfile( batch, "Echo " );
+       writeln_batchfile( batch, GTK_SPLITTER_VERSION );
+       write_batchfile( batch, "Echo Creating " );
+       writeln_batchfile( batch, data->filename_only );
+       write_batchfile( batch, "copy /b " );
+       /*End of header information*/
      }
    /*END OF BATCH FILE*/
 
@@ -391,8 +397,14 @@ gboolean split(GtkWidget *tmp, session_data *data)
      {
        write_batchfile(batch, " ");
        write_batchfile(batch, data->filename_only);
-       finalize_batchfile(batch);
-       g_free(batchname_and_path);
+		 
+		 /*Write some footer information to the batchfile.*/
+       writeln_batchfile( batch, " > ~combine.tmp" );
+       writeln_batchfile( batch, "erase ~combine.tmp" );
+       writeln_batchfile( batch, "Echo Finished." );
+       /*End of footer information.*/
+       
+		 g_free(batchname_and_path);
        g_free(outfile_only);
        if (fclose(batch) == EOF)
          {

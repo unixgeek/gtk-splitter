@@ -23,7 +23,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include "batchfile.h"
-#include "globals.h"
 
 /*Write a string to the file pointed to by b without the eoln.*/
 void write_batchfile(FILE *b, gchar *tmp)
@@ -41,32 +40,10 @@ void writeln_batchfile(FILE *b, gchar *tmp)
    fflush( b );
 }
 
-/*Write some header information to the batchfile.*/
-void initialize_batchfile(FILE *b, gchar *tmp)
-{
-   writeln_batchfile( b, "@Echo Off" );
-
-   write_batchfile( b, "Echo " );
-   writeln_batchfile( b, GTK_SPLITTER_VERSION );
-
-   write_batchfile( b, "Echo Creating " );
-   writeln_batchfile( b, tmp );
-
-   write_batchfile( b, "copy /b " );
-}
-
-/*Write some footer information to the batchfile.*/
-void finalize_batchfile(FILE *b)
-{
-   writeln_batchfile( b, " > ~combine.tmp" );
-   writeln_batchfile( b, "erase ~combine.tmp" );
-   writeln_batchfile( b, "Echo Finished." );
-}
-
 /*Modify the file name so that it is compatible with DOS.*/
 void dosify_filename(gchar *tmp, gushort length)
 {
-   gushort j;
+   gushort i;
 
    /*Preserve the original file name's extension.*/
    tmp[11] = tmp[length - 2];
@@ -75,13 +52,10 @@ void dosify_filename(gchar *tmp, gushort length)
    tmp[8] = '.';
 
    /*Truncate the file name and convert spaces to underscores.*/
-   for ( j = 0; j <= 7; j++ )
+   for ( i = 0; i <= 7; i++ )
      {
-       if ( tmp[j] == ' ' )
-         tmp[j] = '_';
+       if ( tmp[i] == ' ' )
+         tmp[i] = '_';
      }
    tmp[12] = '\0';
-
-   /*Resize the array.*/
-   g_realloc( tmp, 13 );
 }
