@@ -55,8 +55,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    outfile = g_malloc( outfile_length  * sizeof(gchar) );
    if (outfile == NULL)
      {
-       fprintf(stderr, "combine.c:  (outfile) Could not allocate any memory.\n");
-       display_error("Could not allocate any memory.", TRUE);
+       fprintf(stderr, "combine.c:  Could not allocate memory for outfile string.\n");
+       display_error("\ncombine.c:  Could not allocate memory for outfile string.\n", TRUE);
        return FALSE;
      }
    /*Setup the infile.*/
@@ -64,8 +64,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    infile = g_malloc( data->fp_length * sizeof(gchar) );
    if (infile == NULL)
      {
-       fprintf(stderr, "combine.c:  (infile) Could not allocate any memory.\n");
-       display_error("Could not allocate any memory.", TRUE);
+       fprintf(stderr, "combine.c:  Could not allocate memory for infile string.\n");
+       display_error("\ncombine.c:  Could not allocate memory for infile string.\n", TRUE);
        g_free(outfile);
        return FALSE;
      }
@@ -135,8 +135,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
 
    if (files_to_combine > 999)
      {
-       fprintf(stderr, "combine.c:  Exceeded maximum number of files.  (>999)\n");
-       display_error("Exceeded maximum number of files.  (>999)", FALSE);
+       fprintf(stderr, "combine.c:  Exceeded maximum number of files (999).\n");
+       display_error("\ncombine.c:  Exceeded maximum number of files (999).\n", FALSE);
        g_free(infile);
        g_free(outfile);
        return FALSE;
@@ -155,8 +155,8 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    out = fopen(outfile, "wb+");
    if (out == NULL) 
      {
-       fprintf(stderr, "combine.c:  Error creating %s.\n", outfile);
-       display_error("Could not open output file.", TRUE);
+       fprintf(stderr, "combine.c:  Could not create an output file.\n");
+       display_error("\ncombine.c:  Could not create an output file.\n", TRUE);
        g_free(infile);
        g_free(outfile);
        return FALSE;
@@ -171,7 +171,15 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    if (do_progress) 
      {
        progress = g_malloc(sizeof(progress_window));
-       create_progress_window(progress, "Combine Progress");
+       if (progress == NULL)
+         {
+           fprintf(stderr, "combine.c:  Could not allocate memory for a progress window.\n");
+           display_error("\ncombine.c:  Could not allocate memory for a progress window.\n", FALSE);
+           /*Try to go on without it.*/
+           do_progress = FALSE;
+         }
+       else
+         create_progress_window(progress, "Combine Progress");
      }
 
    /*Now DO the combine.*/
@@ -180,6 +188,20 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        if (do_progress)
          gtk_statusbar_push(GTK_STATUSBAR (progress->status), 1, outfile);
        in = fopen(infile, "rb");
+       if (in == NULL)
+         {
+           fprintf(stderr, "combine.c:  Could not open one of the files to be combined.\n");
+           display_error("\ncombine.c:  Could not open one of the files to be combined.\n", FALSE);
+           if (do_progress)
+             {
+               destroy_progress_window(progress);
+               g_free(progress);
+             }
+           fclose(out);
+           g_free(infile);
+           g_free(outfile);
+           return FALSE;
+         }
        stat(infile, &file_info);
        for (byte_count = 0; byte_count != file_info.st_size; byte_count++) 
          {
@@ -215,7 +237,20 @@ gboolean combine(GtkWidget *tmp, session_data *data)
          }
                	
        /*Move on to the next file.*/
-       fclose(in);
+       if (fclose(in) == EOF)
+         {
+           fprintf(stderr, "combine.c:  Could not open one of the files to be combined.\n");
+           display_error("\ncombine.c:  Could not open one of the files to be combined.\n", FALSE);
+           if (do_progress)
+             {
+               destroy_progress_window(progress);
+               g_free(progress);
+             }
+           fclose(out);
+           g_free(infile);
+           g_free(outfile);
+           return FALSE;
+         }
        infile[strlen(infile) - 3] = '\0';
        strcat(infile, ext);
      } 
@@ -224,11 +259,16 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /*Close our newly combined file.*/
    if (fclose(out) == EOF) 
      {
-       fprintf(stderr, "combine.c:  Could not close %s properly.\n", outfile);
-       display_error("Could not close the combined file.", TRUE);
+       fprintf(stderr, "combine.c:  Could not close the combined file.\n");
+       display_error("\ncombine.c:  Could not close the combined file.\n", FALSE);
+       if (do_progress)
+         {
+           destroy_progress_window(progress);
+           g_free(progress);
+         }
        g_free(infile);
        g_free(outfile);
-       return FALSE;
+       return TRUE;
      }
 
    g_free(infile);

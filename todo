@@ -1,3 +1,2 @@
-add commandline use
-remove unecessary x_length variables
-re-organize for good design
+Remove debug code?
+Try and clean up 'clean up code' as well as malloc code.

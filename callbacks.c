@@ -43,9 +43,9 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gsw->sdata->filename_and_path = g_malloc( gsw->sdata->fp_length * sizeof(gchar) );
    if (gsw->sdata->filename_and_path == NULL)
      {
-       fprintf(stderr, "callbacks.c:  (filename_and_path) Could not allocate any memory.\n");
-       display_error("Could not allocate any memory.", TRUE);
-     }
+       fprintf(stderr, "callbacks.c:  Could not allocate memory for file_name_and_path string.\n");
+       display_error("\ncallbacks.c:  Could not allocate memory for file_name_and_path string.\n", TRUE);
+     } /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
 
 #if DEBUG
    fprintf(stderr, "callbacks.c:  Allocated %d bytes for sdata->filename_and_path.\n", gsw->sdata->fp_length);
@@ -70,9 +70,8 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gsw->sdata->filename_only = g_malloc( gsw->sdata->f_length * sizeof(gchar));
    if (gsw->sdata->filename_only == NULL)
      {
-       fprintf(stderr, "callbacks.c:  (filename_only) Could not allocate any memory.\n");
-       display_error("Could not allocate any memory.", TRUE);
-     }
+       fprintf(stderr, "callbacks.c:  Could not allocate memory for file_name_only string.\n");
+       display_error("\ncallbacks.c:  Could not allocate memory for file_name_only string.\n", TRUE);            } /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
    gsw->sdata->filename_only[gsw->sdata->f_length -1] = '\0';
    
 #if DEBUG

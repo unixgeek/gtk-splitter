@@ -31,6 +31,7 @@
 
 #define GTK_SPLITTER_VERSION "gtk-splitter-0.9b Gunter Wambaugh"
 
+/*Session_data is a structure used to store info on the selected file.*/
 typedef struct
   {
     gchar *filename_and_path;
@@ -76,10 +77,9 @@ typedef struct
 /*Widgets for inputing chunk size.*/
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;
-/*Widget for inputing a file name.*/
+/*Widget for inputing a file name and a directory.*/
     GtkWidget *file_selector;
     GtkWidget *dir_selector;
-/*Session_data is a structure used to store info on the selected file.*/
     session_data *sdata;
   } gtk_splitter_window;
 

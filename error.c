@@ -22,14 +22,18 @@
 
 #include <gtk/gtk.h>
 
+/*Error messages are also sent to stderr before calling this function.
+  This is just incase some memory problems occur and an error dialog
+  becomes impossible.*/
+
 void display_error(char *error, gboolean quit)
 {
-
   GtkWidget *dialog, *label, *okay_button;
   
   dialog = gtk_dialog_new();
   gtk_window_set_modal(GTK_WINDOW (dialog), TRUE);  
   gtk_window_set_policy(GTK_WINDOW (dialog), FALSE, FALSE, TRUE);
+  gtk_window_set_title(GTK_WINDOW (dialog), "Error");
 
   label = gtk_label_new (error);
   okay_button = gtk_button_new_with_label("Okay");
@@ -41,8 +45,8 @@ void display_error(char *error, gboolean quit)
      gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
                                 GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT (dialog));
 
-
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), okay_button);    
+  gtk_box_pack_start(GTK_BOX (GTK_DIALOG(dialog)->action_area), okay_button, FALSE, FALSE, 0);
+  //gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), okay_button);    
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
    
   gtk_widget_show_all (dialog);
