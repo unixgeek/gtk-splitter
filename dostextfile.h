@@ -36,10 +36,10 @@ void write_dostextfile(FILE *, gchar *);
 void writeln_dostextfile(FILE *, gchar *);
 
 /*Convert a long file name to a dos file name.
-  This function assumes that the array is at least 13 characters long--12 characters
-  for the file name and 1 character for the NULL terminator.
-  It will do little good to call this function with a file name that is already 12 
+  This function assumes that the array is NULL terminated and at least 13 characters
+  long--12 characters for the file name and 1 character for the NULL terminator.
+  It will do little good to call this function with a file name that is at most 12 
   characters long.*/
-void dosify_filename(gchar *, gushort);
+void dosify_filename(gchar *);
 
 #endif /* DOSTEXTFILE_H */

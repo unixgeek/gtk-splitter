@@ -135,7 +135,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
        if ((data->f_length - 1) > 12)
          {
-           dosify_filename(data->filename_only, data->f_length);
+           dosify_filename(data->filename_only);
 			  data->f_length = 13;
 			  g_realloc(data->filename_only, data->f_length);
          }
