@@ -1,0 +1,9 @@
+
+[Desktop Entry]
+Name=gtk-splitter
+Name[en_US.ISO8859-1]=gtk-splitter
+Exec=gtk-splitter
+Icon=/usr/share/pixmaps/gtk-splitter.xpm
+Terminal=false
+MultipleArgs=false
+Type=Application

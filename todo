@@ -1,0 +1,3 @@
+add commandline use
+remove unecessary x_length variables
+re-organize for good design

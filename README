@@ -1,0 +1,7 @@
+This is a simple gtk+ c program that is capable of splitting/combining large files.
+GNU C, make, and gtk+-devel are required.
+Edit the Makefile if necessary.
+Simply type 'make' and then, as root, type 'make install'.
+To uninstall, type 'make uninstall'.
+
+Report any bugs to techgunter@yahoo.com
