@@ -195,7 +195,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( data->verify )
      {
        if ( do_progress )
-          progress_window_set_message_text( progress.message, "Generating md5 sum." );
+          progress_window_set_message_text( progress.message, "Generating md5 sum..." );
        
        md5_return = generate_md5_sum( data->file_name_and_path, data->output_directory );
        
