@@ -51,8 +51,8 @@ void progress_window_set_status_text(GtkWidget *sbar, gchar *text)
    while ( g_main_iteration( FALSE ) );
 }
 
-void progress_window_set_percentage(GtkWidget *pbar, gfloat percentage)
+void progress_window_set_percentage(GtkWidget *pbar, gfloat fraction)
 {
-   gtk_progress_set_percentage( GTK_PROGRESS( pbar ), percentage );
+   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( pbar ), fraction );
    while ( g_main_iteration( FALSE ) );
 }
