@@ -1,12 +1,12 @@
 
-[replace_text]
-0=dostextfile
-
-[find_text]
-0=batchfile
-
 [executer]
 RunInTerminal=false
 
 [Project DBase]
 ShowLocals=true
+
+[replace_text]
+0=dostextfile
+
+[find_text]
+0=batchfile

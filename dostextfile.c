@@ -1,5 +1,5 @@
 /*
- * batchfile.c
+ * dostextfile.c
  *
  * Copyright 2001 Gunter Wambaugh
  *
