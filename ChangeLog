@@ -1,3 +1,11 @@
+2002-11-16  techgunter  <techgunter@solace>
+
+	* progress.c:
+	Tweaked the progress window.
+
+	*callbacks.c, file_selection.c, globals.h, gtk-splitter.c:
+	Added widgets to change the start button to a button with a stock icon and custom text.
+
 2002-11-08  techgunter  <techgunter@yahoo>
 
 	* gtk-splitter.c:
