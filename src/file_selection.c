@@ -55,7 +55,7 @@ void get_file_name_dialog(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_widget_show( gsw->file_selection_dialog );
 }
 
-/* Gets the file name from get_file_name_dialog(). */ //gsw
+/* Gets the file name from get_file_name_dialog(). */
 void get_file_name(GtkWidget *tmp, gtk_splitter_window *gsw )
 {
    gchar *selected_file;
@@ -66,7 +66,7 @@ void get_file_name(GtkWidget *tmp, gtk_splitter_window *gsw )
    set_file_name( gsw, selected_file );
 }
 
-/* Sets the file name in the GUI and session_data struct. */ //stat
+/* Sets the file name in the GUI and session_data struct. */
 void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
 {
    
@@ -99,6 +99,9 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
        j++;
      }
 
+   /* Add the null terminator. */
+   gsw->my_session_data.file_name_only[j] = '\0';
+     
    /* Set the filename in the entry box. */
    gtk_entry_set_text( GTK_ENTRY( gsw->file_name_box ), gsw->my_session_data.file_name_only );
 
