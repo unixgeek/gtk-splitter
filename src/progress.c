@@ -31,16 +31,16 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    gtk_window_set_resizable( GTK_WINDOW( pwindow->main_window ), FALSE );
    
    /* Set up the table. */
-   pwindow->table = gtk_table_new( 4, 2, FALSE );
+   pwindow->table = gtk_table_new( 4, 2, TRUE );
    
    /* Set up the progress bars. */
    pwindow->current_progress = gtk_progress_bar_new( );
    pwindow->total_progress = gtk_progress_bar_new( );
    
    /* Set up the labels. */
-   pwindow->file_label = gtk_label_new( "File:" );
-   pwindow->current_progress_label = gtk_label_new( "Current Progress:" );
-   pwindow->total_progress_label = gtk_label_new( "Total Progress:" );
+   pwindow->file_label = gtk_label_new( "File:  " );
+   pwindow->current_progress_label = gtk_label_new( "Current Progress:  " );
+   pwindow->total_progress_label = gtk_label_new( "Total Progress:  " );
    pwindow->message = gtk_label_new( "" );
 
    /* Set up a separator. */
