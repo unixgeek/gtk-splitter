@@ -28,17 +28,21 @@
 typedef struct
   {
     GtkWidget *main_window;
-    GtkWidget *vbox;
+    GtkWidget *table;
     GtkWidget *current_progress;
     GtkWidget *total_progress;
-    GtkWidget *status;
+    GtkWidget *file_label;
+    GtkWidget *current_progress_label;
+    GtkWidget *total_progress_label;
+    GtkWidget *message;
+    GtkWidget *separator;
   } progress_window;
 
 void create_progress_window(progress_window *, gchar *);
 
 void destroy_progress_window(progress_window *);
 
-void progress_window_set_status_text(GtkWidget *, gchar *);
+void progress_window_set_message_text(GtkWidget *, gchar *);
 
 void progress_window_set_percentage(GtkWidget *, gfloat);
 

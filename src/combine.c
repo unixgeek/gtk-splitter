@@ -145,7 +145,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    for ( file_count = 0; file_count != files_to_combine; file_count++ )
      {
        if ( do_progress )
-         progress_window_set_status_text( progress.status, outfile );
+         progress_window_set_message_text( progress.message, outfile );
        in = fopen( infile, "rb" );
        if ( in == NULL )
          {
@@ -216,7 +216,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    if ( data->verify )
      {
        //if ( do_progress ) 
-         //progress_window_set_status_text( progress->status, "Verifying file..." );
+         //progress_window_set_message_text( progress->message, "Verifying file..." );
        
        //if ( verify_file( outfile, data->fp_length ) != 0 )
           //display_error( "\ncombine.c:  File verification failed!\n", FALSE );

@@ -234,7 +234,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    for ( file_count = 1; file_count <= number_of_parts; file_count++ )
      {
        if ( do_progress )  /* Display the file name we are creating. */
-         progress_window_set_status_text( progress.status, outfile );
+         progress_window_set_message_text( progress.message, outfile );
        /* The leftover file. (?) */
        if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( number_of_parts ) ) )
          {
