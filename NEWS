@@ -1,0 +1,5 @@
+1.0pre1 ( ):
+
+	* Now uses autoconf and automake to ease compilation.
+	* When combining files with a batchfile, the original file name is displayed.
+        * A few bugfixes.
