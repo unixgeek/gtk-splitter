@@ -10,6 +10,7 @@ gtk_splitter_SOURCES =		\
   combine.c			\
   combine.h			\
   dostextfile.c			\
+  dostextfile.h			\
   file_selection.c		\
   file_selection.h		\
   progress.c			\

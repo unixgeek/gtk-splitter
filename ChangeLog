@@ -1,4 +1,4 @@
-2003-06-09  gunter  <techgunter@yahoo.com>
+2003-06-08  gunter  <techgunter@yahoo.com>
 
 	* split.c, combine.c, callbacks.c, interface.c, file_selection.c,
 	  configure.in, md5.c, md5.h:

@@ -1,3 +1,8 @@
+2.2	(2003-06-11):
+
+	* File verification is now provided by the mhash library.
+	* Lots of code cleanup and bug fixes.
+	
 2.1	(2003-03-17):
 	
 	* Fixed a bug in copying the user's home directory.
