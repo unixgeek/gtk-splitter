@@ -218,10 +218,14 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Verify if desired. */
    if ( data->verify )
      {
-       progress_window_set_message_text( progress.message, "Verifying file..." );
+       if ( do_progress )
+          progress_window_set_message_text( progress.message, "Verifying file..." );
+       
        infile[strlen( infile ) - 4] = '\0';
        strcat( infile, ".md5" );
+       
        md5_return = verify_file( outfile, infile );
+       
        switch ( md5_return )
        {
           case VERIFY_FILE_OVERFLOW_ERROR:

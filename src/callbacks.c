@@ -67,8 +67,8 @@ void initialize_session_data(session_data *data)
    data->split = TRUE;
 
    /* Set the default chunk_size. (1.44MB) */
-   data->entry = 1457664;
-   data->unit = BYTES;
+   //data->entry = 1457664;
+   //data->unit = BYTES;
    
    /* Don't create a dos batch file by default. */
    data->create_batchfile = FALSE;
@@ -77,15 +77,18 @@ void initialize_session_data(session_data *data)
    data->verify = TRUE;
 }
 
-/*Initial settings for the main window.*/
+/* Initial settings for the main window.*/
 void initialize_splitter_window(gtk_splitter_window *gsw)
 {
    /* Insure that the split button is clicked. */
    gtk_button_clicked( GTK_BUTTON( gsw->split_button ) );
    
    /* Set the display to the default chunk size. (1.44MB) */
-   gtk_adjustment_set_value( gsw->size_input_adj , 1457664 );
+   //gtk_adjustment_set_value( gsw->size_input_adj , 1457664 );
 
+   /* The default unit is bytes. */
+   //gtk_menu_item_select( GTK_MENU_ITEM( gsw->unit_bytes ) );
+   
    /* Don't create a dos batch file by default. */
    gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( gsw->batch_file_button ), FALSE );
 
@@ -159,8 +162,8 @@ void start(GtkWidget *tmp, gtk_splitter_window *gsw)
    /* If split or combine return TRUE, then reset the session_data and the main window. */
    if ( do_initialization )
      {
-       initialize_session_data( &gsw->my_session_data );
        initialize_splitter_window( gsw );
+       initialize_session_data( &gsw->my_session_data );
      }
 
    /* Show the main window. */

@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=gtk-splitter
+Name=File Splitter
 Name[en_US.ISO8859-1]=gtk-splitter
 Comment=GTK+ File Splitter
 Exec=gtk-splitter

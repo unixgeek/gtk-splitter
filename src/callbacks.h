@@ -45,6 +45,9 @@ void toggle_combine(GtkWidget *, gtk_splitter_window *);
 /* Toggle whether or not we will create a dos batch file. */
 void toggle_batch(GtkWidget *, session_data *);
 
+/* Toggle whether or not we will verify the file. */
+void toggle_verify(GtkWidget *, session_data *);
+
 /* Initial settings for session_data. */
 void initialize_session_data(session_data *);
 

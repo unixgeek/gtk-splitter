@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <limits.h>
 #include "globals.h"
 #include "callbacks.h"
 #include "error.h"
@@ -36,6 +36,8 @@ int main(int argc, char *argv[])
    /* Used to automatically detect whether a file name read from
       the command-line should be split or combined. */
    gchar ext[4];
+   char *ptr;
+   char resolved_name[PATH_MAX];
    
    /* gtk_splitter_window is a struct containing all the widgets
       for the main window of gtk-splitter. */
@@ -104,7 +106,8 @@ int main(int argc, char *argv[])
    /* 1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4
       (or so they say--depends on the FS) so (1.39 * 1048576) = 1457664. */
    main_window.size_input_adj = GTK_ADJUSTMENT( gtk_adjustment_new( 1457664, 1, G_MAXFLOAT, 1, 5, 5 ) );
-
+   main_window.my_session_data.entry = 1457664;
+   main_window.my_session_data.unit = BYTES;
    /* We can split up to 4 GB max? 4294967296-1 */
 
    /* Widgets for inputing the chunk size. */
@@ -186,6 +189,8 @@ int main(int argc, char *argv[])
 
    gtk_signal_connect( GTK_OBJECT( main_window.batch_file_button ), "toggled",
                        GTK_SIGNAL_FUNC( toggle_batch ), &main_window.my_session_data );
+   gtk_signal_connect( GTK_OBJECT( main_window.verify_button ), "toggled",
+                       GTK_SIGNAL_FUNC( toggle_verify ), &main_window.my_session_data );
                        
    gtk_signal_connect( GTK_OBJECT( main_window.unit_bytes ), "activate",
                        GTK_SIGNAL_FUNC( set_unit_bytes ), &main_window.my_session_data );
@@ -202,21 +207,26 @@ int main(int argc, char *argv[])
       the command-line should be split or combined. */
    if ( argc == 2 )
      { 
-       set_file_name( &main_window, argv[1] );
-
-       if ( strlen( argv[1] ) >= 3 )
+       ptr = realpath( argv[1], resolved_name );
+        
+       if ( ptr != NULL )
          {
-           /* Copy the file's extension. */
-           ext[0] = argv[1][strlen( argv[1] ) - 3];
-           ext[1] = argv[1][strlen( argv[1] ) - 2];
-           ext[2] = argv[1][strlen( argv[1] ) - 1];
-           ext[3] = '\0';
-           /* Check to see if the extension is '001'. */
-           if ( strcmp( ext, "001" ) == 0 )
+           set_file_name( &main_window, resolved_name );
+
+           if ( strlen( resolved_name ) >= 3 )
              {
-               /* Start with the combine button selected. */
-               gtk_button_clicked( GTK_BUTTON( main_window.combine_button ) );
-             } 
+               /* Copy the file's extension. */
+               ext[0] = resolved_name[strlen( resolved_name ) - 3];
+               ext[1] = resolved_name[strlen( resolved_name ) - 2];
+               ext[2] = resolved_name[strlen( resolved_name ) - 1];
+               ext[3] = '\0';
+               /* Check to see if the extension is '001'. */
+               if ( strcmp( ext, "001" ) == 0 )
+                 {
+                   /* Start with the combine button selected. */
+                   gtk_button_clicked( GTK_BUTTON( main_window.combine_button ) );
+                 } 
+             }
          }
      }
 

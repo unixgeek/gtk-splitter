@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <stdio.h>
+#include <stdio.h>  // Take this out later.
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -40,7 +40,7 @@ generate_md5_return_type generate_md5_sum(const char *file_name_and_path, const 
    struct stat file_info;
    generate_md5_return_type return_type;
    
-   
+
    if ( ( strlen( file_name_and_path ) > ( PATH_MAX + 1 ) ) ||
         ( strlen( output_directory ) > ( PATH_MAX + 1) ) )
       return GENERATE_MD5_OVERFLOW_ERROR;
