@@ -28,19 +28,25 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    /* Set up the window. */
    pwindow->main_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
    gtk_window_set_title( GTK_WINDOW( pwindow->main_window ), title );
-   gtk_window_set_resizable( GTK_WINDOW( pwindow->main_window ), FALSE );
+   //gtk_window_set_resizable( GTK_WINDOW( pwindow->main_window ), FALSE );
    
    /* Set up the table. */
-   pwindow->table = gtk_table_new( 4, 2, TRUE );
+   pwindow->table = gtk_table_new( 4, 2, FALSE );
    
    /* Set up the progress bars. */
    pwindow->current_progress = gtk_progress_bar_new( );
    pwindow->total_progress = gtk_progress_bar_new( );
    
    /* Set up the labels. */
-   pwindow->file_label = gtk_label_new( "File:  " );
+   pwindow->file_label = gtk_label_new( "Current File:  " );
+   gtk_misc_set_alignment( GTK_MISC( pwindow->file_label ), 0, 0.5 );
+   
    pwindow->current_progress_label = gtk_label_new( "Current Progress:  " );
+   gtk_misc_set_alignment( GTK_MISC( pwindow->current_progress_label ), 0, 0.5 );
+   
    pwindow->total_progress_label = gtk_label_new( "Total Progress:  " );
+   gtk_misc_set_alignment( GTK_MISC( pwindow->total_progress_label ), 0, 0.5 );
+   
    pwindow->message = gtk_label_new( "" );
 
    /* Set up a separator. */
