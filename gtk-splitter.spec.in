@@ -38,7 +38,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 
-%doc ChangeLog AUTHORS COPYING HOSTS INSTALL README TODO
+%doc ChangeLog AUTHORS COPYING HOSTS INSTALL README TODO NEWS
 %{_bindir}/*
 %{_prefix}/share/gnome/apps/*/*
 %{_datadir}/pixmaps/*

@@ -1,7 +1,9 @@
 #!/bin/sh
 
 make clean
-rm -f config.status config.cache config.log configure Makefile.in Makefile aclocal.m4 confdefs.h gtk-splitter.spec
+rm -f config.status config.cache config.log configure Makefile.in Makefile aclocal.m4 confdefs.h gtk-splitter.spec build_rpm.sh build_tgz.sh
+rm -f *.rpm
+rm -f *.tgz
 rm -f src/Makefile.in
 rm -f src/Makefile
 rm -fr src/.deps

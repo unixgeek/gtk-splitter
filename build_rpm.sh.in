@@ -1,0 +1,47 @@
+	#!/bin/sh
+#
+# [ 1.4.03 | Gunter Wambaugh ]
+# Script for building a binary and source rpm. 
+
+# The package name.
+PACKAGE=@PACKAGE@
+
+# The current version.
+VERSION=@VERSION@
+
+# Path to temporary storage.
+if [ "$TMP" = "" ]
+then
+    TMP=/tmp
+fi    
+
+# Create a temporary local RPM build environment.
+mkdir -p --verbose $TMP/$PACKAGE-rpms/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+mkdir -p --verbose $TMP/$PACKAGE-rpms/RPMS/{athlon,i386,i486,i586,i686,noarch}
+echo "%_topdir $TMP/$PACKAGE-rpms" > ~/.rpmmacros
+
+# Generate a distribution tarball.
+./configure
+make dist
+
+# Build the RPMs.
+rpm -ta --clean $PACKAGE-$VERSION.tar.gz
+
+# Put the RPMs in this directory.
+mv -f --verbose $TMP/$PACKAGE-rpms/RPMS/athlon/* .
+mv -f --verbose $TMP/$PACKAGE-rpms/RPMS/i386/* .
+mv -f --verbose $TMP/$PACKAGE-rpms/RPMS/i486/* .
+mv -f --verbose $TMP/$PACKAGE-rpms/RPMS/i586/* .
+mv -f --verbose $TMP/$PACKAGE-rpms/RPMS/i686/* .
+mv -f --verbose $TMP/$PACKAGE-rpms/RPMS/noarch/* .
+mv -f --verbose $TMP/$PACKAGE-rpms/SRPMS/* .
+
+# Remove the RPM build environment.
+rm -fr --verbose $TMP/$PACKAGE-rpms
+rm -f --verbose $PACKAGE-$VERSION.tar.gz
+
+echo
+echo "********************************************************************"
+echo "If you have just built a package for an architecture that was not"
+echo "already available, then please email it to me <techgunter@yahoo.com>"
+echo "and I will post it on the project web site."

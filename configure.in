@@ -17,20 +17,23 @@ AC_PROG_CPP
 dnl -- Check for a BSD compatible installer. --
 AC_PROG_INSTALL
 
-dnl -- Set the path to the icon.
-AC_DEFINE_UNQUOTED(ICON_AND_PATH, "${prefix}/share/pixmaps/gtk-splitter.png" )
+dnl -- Set the path to the icon. --
+AC_DEFINE_UNQUOTED(ICON_AND_PATH, "${prefix}/share/pixmaps/gtk-splitter.png")
 
 dnl -- Check for GTK+2.0 and pkg-config. --
 PKG_CHECK_MODULES(GTK,"gtk+-2.0") 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
+dnl -- Create package building scripts. --
+AC_CONFIG_FILES(build_rpm.sh, chmod +x build_rpm.sh)
+AC_CONFIG_FILES(build_tgz.sh, chmod +x build_tgz.sh)
+
 dnl -- Create the Makefiles. --
 AC_OUTPUT([ Makefile
             gtk-splitter.spec
             src/Makefile
           ])
-
 
 dnl -- Dislpay some information. --
 AC_MSG_RESULT(--------------------------------------------------------)
