@@ -142,7 +142,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
 
    /* Now DO the combine. */
    bytes_read = 0;
-   for (file_count = 0; file_count != files_to_combine; file_count++)
+   for ( file_count = 0; file_count != files_to_combine; file_count++ )
      {
        if ( do_progress )
          progress_window_set_status_text( progress.status, outfile );

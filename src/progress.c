@@ -28,6 +28,7 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    /* Set up the widgets for the progress window. */
    pwindow->main_window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
    gtk_window_set_title( GTK_WINDOW( pwindow->main_window ), title );
+   gtk_window_set_decorated( GTK_WINDOW( pwindow-
    pwindow->vbox = gtk_vbox_new( TRUE, 0 );
    pwindow->current_progress = gtk_progress_bar_new();
    pwindow->total_progress = gtk_progress_bar_new();
