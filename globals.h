@@ -1,4 +1,4 @@
-/* 
+/*
  * globals.h
  *
  * Copyright 2001 Gunter Wambaugh
@@ -25,11 +25,12 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#define UPDATE_INTERVAL 1024
+#include <gtk/gtk.h>
 
+#define UPDATE_INTERVAL 1024
 #define GTK_SPLITTER_VERSION "gtk-splitter-0.9b Gunter Wambaugh"
 
-/*Session_data is a structure used to store info on the selected file.*/
+/*Session_data is a struct used to store information related the selected file.*/
 typedef struct
   {
     gchar *filename_and_path;
@@ -45,37 +46,33 @@ typedef struct
     gchar *output_dir;
   } session_data;
 
+/*gtk_splitter_window is a struct for storing widgets related to the main
+  window of gtk-splitter.*/
 typedef struct
   {
-/*Widgets for storing visible widgets.*/
     GtkWidget *base_window;
     GtkWidget *base_box;
     GtkWidget *box1;
-    GtkWidget *box5; //Need to place in proper order.
     GtkWidget *box2;
     GtkWidget *box3;
     GtkWidget *box4;
-/*Various buttons.*/
+    GtkWidget *box5;
     GtkWidget *open_button;
     GtkWidget *output_button;
     GtkWidget *batch_file_button;
     GtkWidget *split_button;
     GtkWidget *combine_button;
     GtkWidget *start_button;
-/*Widgets for a menu containing bytes, kilobytes, and megabytes.*/
     GtkWidget *chunk_size_units;
     GtkWidget *units_menu;
     GtkWidget *bytesopt;
     GtkWidget *kbytesopt;
     GtkWidget *mbytesopt;
     enum {BYTES, KBYTES, MBYTES};
-/*Widgets to display the filename and output directory.*/
     GtkWidget *filename_box;
     GtkWidget *output_box;
-/*Widgets for inputing chunk size.*/
     GtkAdjustment *size_input_adj;
     GtkWidget *size_input;
-/*Widget for inputing a file name and a directory.*/
     GtkWidget *file_selector;
     GtkWidget *dir_selector;
     session_data *sdata;

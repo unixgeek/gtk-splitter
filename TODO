@@ -1,3 +1,5 @@
 Try and clean up 'clean up code' as well as malloc code.
 Check the opening of files.
 Re-arrange split.c and combine.c for better design.
+More effecient way to update the progress bar?
+Add the original file name to the batchfile.
