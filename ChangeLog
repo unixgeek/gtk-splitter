@@ -1,3 +1,7 @@
+2002-04-06  gunter  <techgunter@yahoo.com>
+	* file_selection.c
+	Disabled the ability to choose a file when selecting the output directory.
+
 2002-03-11  gunter  <techgunter@yahoo.com>
 
 	* AUTHORS, configure.in, Makefile.am, README, src/Makefile.am, TODO:
