@@ -5,9 +5,7 @@
 [ Description ]
 gtk-splitter can split files into smaller pieces and combine them back together. It can also generate
 a DOS batch file so that the split files can be combined on DOS/Windows systems. gtk-splitter is good
-for working around file limitations with floppy disks, email attachments, etc. gtk-splitter is coded
-and tested on Linux, but should work on other POSIX systems. 
-
+for working around file limitations with floppy disks, email attachments, etc.
 
 [ Submitting bugs and feature requests ]
 E-mail me at techgunter@yahoo.com
@@ -59,9 +57,7 @@ SEE INSTALL
 
 -Procedure:
  + >./autogen.sh
- + >./configure
- + >make dist
- + >rpmbuild -ta gtk-splitter-VERSION.tar.gz (as root)
+ + >./build_rpm.sh
 
 [ Building an RPM package from source ]
 
@@ -73,7 +69,7 @@ SEE INSTALL
  +rpm
 
 -Procedure:
- + >rpmbuild -ta gtk-splitter-VERSION.tar.gz (as root)
+ + >./build_rpm.sh
 
 [ Installing the RPM package ]
 

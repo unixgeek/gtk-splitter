@@ -3,6 +3,7 @@ EXTRA_DIST = gtk-splitter.spec		\
              gtk-splitter.desktop		\
              gtk-splitter.png			\
              depcomp				\
+	     build_rpm.sh				\
              HOSTS                
 
 gnome_menudir=$(prefix)/share/gnome/apps/Utilities
