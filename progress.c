@@ -22,7 +22,6 @@
 
 #include <gtk/gtk.h>
 #include "progress.h"
-#include <stdio.h>
 
 void create_progress_window(progress_window *pwindow, gchar *title)
 {
