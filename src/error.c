@@ -22,16 +22,23 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <string.h>
 #include "error.h"
 
 void display_error(gchar *error, gboolean quit)
 {
    GtkWidget *dialog, *label, *okay_button;
+   gchar message[256];
 
+   /* Format the error message. */
+   strcpy( message, "\n" );
+   strcat( message, error );
+   strcat( message, "\n\n" );
+   
    /* Error messages are also sent to stderr before setting up this function.
       This is just incase some unexpected problems occur and an error dialog
       becomes impossible. */
-   fprintf( stderr, error );
+   fprintf( stderr, "%s", message );
 
    /* Use a GTK+ stock error dialog. */
    dialog = gtk_dialog_new();
@@ -48,7 +55,10 @@ void display_error(gchar *error, gboolean quit)
    gtk_window_set_title( GTK_WINDOW( dialog ), "Error" );
 
    /* Add the error message to the dialog. */
-   label = gtk_label_new( error );
+   label = gtk_label_new( message );
+   
+   /* Let the label wrape text. */
+   gtk_label_set_line_wrap( GTK_LABEL( label ), TRUE );
 
    okay_button = gtk_button_new_with_label( "Okay" );
 
@@ -62,7 +72,7 @@ void display_error(gchar *error, gboolean quit)
       the 'okay' button. */
    if ( quit )
      gtk_signal_connect_object(GTK_OBJECT( okay_button ), "clicked",
-                               GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+                               GTK_SIGNAL_FUNC(gtk_main_quit), NULL );
    else
      gtk_signal_connect_object(GTK_OBJECT( okay_button ), "clicked",
                                GTK_SIGNAL_FUNC( gtk_widget_destroy ),

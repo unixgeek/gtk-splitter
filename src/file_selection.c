@@ -20,8 +20,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <gtk/gtk.h>
 #include <string.h>
+#include <gtk/gtk.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "globals.h"
 #include "file_selection.h"
 #include "error.h"
@@ -69,11 +71,12 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
 {
    
    gushort i, j, path_only_count;
-
-   i = 0;
-   j = 0;
-
-
+   struct stat file_information;
+   
+   if ( stat( file_name_to_set, &file_information )  == -1 )
+   {
+       display_error( "file_selection.c:  File doesn't exist, or you do not have the proper permissions.", FALSE );
+   }
    /* Copy the selected file name (full path). */
    strcpy(gsw->my_session_data.file_name_and_path, file_name_to_set);
 
@@ -89,6 +92,7 @@ void set_file_name(gtk_splitter_window *gsw, gchar *file_name_to_set)
      path_only_count++;
 
    /* Copy the file name only. */
+   j = 0;
    for ( i = path_only_count; i != strlen( gsw->my_session_data.file_name_and_path ); i++ )
      {
        gsw->my_session_data.file_name_only[j] = gsw->my_session_data.file_name_and_path[i];

@@ -1,3 +1,11 @@
+2002-11-06  gunter  <techgunter@yahoo.com>
+
+	* split.c, combine.c, gtk-splitter.c, file_selection.c, error.c:
+	Changed the format of error messages.
+
+	* file_selection.c:
+	Check for a file's existence/permissions when a file is selected.
+
 2002-11-02  gunter  <techgunter@yahoo.com>
 
 	* file_selection.c, file_selection.h, gtk-splitter.c:

@@ -88,7 +88,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /* Make sure we are not trying to split the file into pieces larger than itself. */
    if ( data->chunk_size >= file_size )
      {
-       display_error( "\nsplit.c:  Chunk size is greater than or equal to the file size.\n", FALSE );
+       display_error( "split.c:  Chunk size is greater than or equal to the file size.", FALSE );
        return FALSE;
      }
 
@@ -97,7 +97,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
       998 files.  (001 - 999) */
    if ( files_to_split > 999 )
      {
-       display_error( "\nsplit.c:  Exceeded maximum number of files (999).\n", FALSE );
+       display_error( "split.c:  Exceeded maximum number of files (999).", FALSE );
        return FALSE;
      }
 
@@ -110,7 +110,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        progress = g_malloc( sizeof ( progress_window ) );
        if ( progress == NULL )
          {
-           display_error( "\nsplit.c:  Could not allocate memory for a progress window.\n", FALSE );
+           display_error( "split.c:  Could not allocate memory for a progress window.", FALSE );
            /* Try to go on without it. */
            do_progress = FALSE;
          }
@@ -149,7 +149,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        batch = fopen( batchname_and_path, "wb+" );
        if ( batch == NULL )
          {
-           display_error( "\nsplit.c:  Could not create the batch file.\n", TRUE );
+           display_error( "split.c:  Could not create the batch file.", TRUE );
            if ( do_progress )
              {
                destroy_progress_window( progress );
@@ -195,7 +195,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    in = fopen( infile, "rb" );
    if ( in == NULL )
      {
-       display_error( "\nsplit.c:  Could not open the selected file.\n", TRUE );
+       display_error( "split.c:  Could not open the selected file.", TRUE );
        if ( data->create_batchfile )
          {
            fclose( batch );
@@ -212,7 +212,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    out = fopen( outfile, "wb+" );
    if ( out == NULL )
      {
-       display_error( "\nsplit.c:  Could not create an output file.\n", FALSE );
+       display_error( "split.c:  Could not create an output file.", FALSE );
        fclose( in );
        if ( data->create_batchfile )
          {
@@ -302,7 +302,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        /* Close the split file. */
        if ( fclose( out ) == EOF )
          {
-           display_error( "\nsplit.c:  Could not close an output file.\n", TRUE );
+           display_error( "split.c:  Could not close an output file.", TRUE );
            fclose( in );
            if ( data->create_batchfile )
              {
@@ -326,7 +326,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            out = fopen( outfile, "wb+" );
            if ( out == NULL )
              {
-               display_error( "\nsplit.c:  Could not create an output file.\n", TRUE );
+               display_error( "split.c:  Could not create an output file.", TRUE );
                fclose( in );
                if ( data->create_batchfile )
                  {
@@ -346,7 +346,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /* Close the selected file. */
    if ( fclose( in ) == EOF )
      {
-       display_error( "\nsplit.c:  Could not close the selected file.\n", FALSE );
+       display_error( "split.c:  Could not close the selected file.", FALSE );
        if ( data->create_batchfile )
          {
            fclose( batch );
@@ -373,7 +373,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        
        if ( fclose( batch ) == EOF )
          {
-           display_error( "\nsplit.c:  Could not close the batch file.\n", FALSE );
+           display_error( "split.c:  Could not close the batch file.", FALSE );
            if ( do_progress )
              {
                destroy_progress_window( progress );

@@ -100,7 +100,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Make sure the files don't exceed our limit. */
    if ( files_to_combine > 999 )
      {
-       display_error( "\ncombine.c:  Exceeded maximum number of files (999).\n", FALSE );
+       display_error( "combine.c:  Exceeded maximum number of files (999).", FALSE );
        return FALSE;
      }
 
@@ -113,7 +113,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    out = fopen( outfile, "wb+" );
    if ( out == NULL )
      {
-       display_error( "\ncombine.c:  Could not create an output file.\n", TRUE );
+       display_error( "combine.c:  Could not create an output file.", TRUE );
        return FALSE;
      }
 
@@ -126,7 +126,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        progress = g_malloc( sizeof( progress_window ) );
        if ( progress == NULL )
          {
-           display_error( "\ncombine.c:  Could not allocate memory for a progress window.\n", FALSE );
+           display_error( "combine.c:  Could not allocate memory for a progress window.", FALSE );
            /* Try to go on without it. */
            do_progress = FALSE;
          }
@@ -146,7 +146,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        in = fopen( infile, "rb" );
        if ( in == NULL )
          {
-           display_error( "\ncombine.c:  Could not open one of the files to be combined.\n", FALSE );
+           display_error( "combine.c:  Could not open one of the files to be combined.", FALSE );
            if ( do_progress )
              {
                destroy_progress_window( progress );
@@ -191,7 +191,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        /* Move on to the next file. */
        if ( fclose( in ) == EOF )
          {
-           display_error( "\ncombine.c:  Could not open one of the files to be combined.\n", FALSE );
+           display_error( "combine.c:  Could not open one of the files to be combined.", FALSE );
            if ( do_progress )
              {
                destroy_progress_window( progress );
@@ -208,7 +208,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    /* Close our newly combined file. */
    if ( fclose( out ) == EOF )
      {
-       display_error( "\ncombine.c:  Could not close the combined file.\n", FALSE );
+       display_error( "combine.c:  Could not close the combined file.", FALSE );
        if ( do_progress )
          {
            destroy_progress_window( progress );

@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
    if ( main_window.my_session_data.home_directory == NULL )
      {
        display_error( "Could not determine home directory.\n"
-                      "Check environment variables for $HOME.\n", TRUE );
+                      "Check environment variables for $HOME.", TRUE );
        return 0;
      }
    strcat( main_window.my_session_data.home_directory, "/" );
