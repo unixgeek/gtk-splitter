@@ -218,7 +218,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        write_dostextfile( batch, "Echo " );
        writeln_dostextfile( batch, GTK_SPLITTER_VERSION );
        writeln_dostextfile( batch, "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
-       write_dostextfile( batch, "Echo Original file name ->  ");
+       write_dostextfile( batch, "Echo Original File Name:  ");
        writeln_dostextfile( batch, original_name );
        write_dostextfile( batch, "Echo Creating " );
        writeln_dostextfile( batch, data->filename_only );
