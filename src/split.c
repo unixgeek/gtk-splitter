@@ -20,18 +20,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <gtk/gtk.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-
-#include "dostextfile.h"
-#include "globals.h"
-#include "error.h"
-#include "progress.h"
+#include <gtk/gtk.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "md5.h"
+#include "error.h"
+#include "globals.h"
+#include "progress.h"
+#include "dostextfile.h"
 
 gboolean split(GtkWidget *tmp, session_data *data)
 {
@@ -41,61 +40,107 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    /* FILE streams. */
    FILE *in, *out, *batch;
+
+   /* The name of the file to be split (including the path). */
+   gchar infile[PATH_MAX];
+
+   /* The name of the file part (including the path). */
+   gchar outfile[PATH_MAX]; 
    
-   /* Various character array pointers. */
-   gchar infile[PATH_MAX], outfile[PATH_MAX], batchname_and_path[PATH_MAX], outfile_only[PATH_MAX], original_name[PATH_MAX], ext[] = {"001"};
-  
+   /* The name of the batch file (including the path). 
+      This is used when creating a batchfile. */
+   gchar batchname_and_path[PATH_MAX];
+   
+   /* The name of the file part without the path. 
+      This is used when creating a batchfile. */
+   gchar outfile_only[PATH_MAX];
+   
+   /* The extension for file parts. */
+   gchar ext[] = {"001"};
+   
    /* For storing the character read in by fgetc(). */
    gint temp;
-
+   
    /* Various counters. */
-   guint number_of_even_files, file_count, files_to_split;
-
+   guint number_of_even_files, file_count, number_of_parts;
+   
    /* Variables for file sizes and progress tracking. */
    gulong file_size, size_of_leftover_file, byte_count, bytes_read;
+   
    struct stat file_info;
-      
+   
+   /* The size the file should be split into. */
+   gulong chunk_size;
+   
    pid_t pid;
 
-   bytes_read = 0;
-  
-   /* Determine the unit of measurement to evaluate the chunk_size.
-      FIX ME:  chunk_size should probably be moved from the struct to a local variable. */
-   switch ( data->unit )
-     {
-       case BYTES      :  data->chunk_size = data->entry;
-                          break;
-       case KILOBYTES  :  data->chunk_size = ( data->entry * 1024 );
-			                 break;
-       case MEGABYTES  :  data->chunk_size = ( data->entry * 1024 * 1024 );
-			                 break;
-     }
 
-   /* Set up the infile array. */
+   /* Setup the infile string. */
    strcpy( infile, data->file_name_and_path );
    
+   /* Setup the outfile string. */
+   strcpy( outfile, data->output_directory );
+   strcat( outfile, data->file_name_only );
+   strcat( outfile, "." );
+   strcat( outfile, ext );
+  
+   /* Setup strings used when creating a batch file. */
+   if ( data->create_batchfile )
+     {
+       /* Setup the outfile_only string.
+          If the file name is too long, truncate it.
+          Also, convert some characters to '_'. */
+       strcpy( outfile_only, data->file_name_only );
+       dosify_file_name( outfile_only );
+      
+       /* Re-setup the outfile string. */
+       strcpy( outfile, data->output_directory );
+       strcat( outfile, outfile_only );
+       strcat( outfile, "." );
+       strcat( outfile, ext );
+
+       /* Setup the batchname_and_path string. */ 
+       strcpy( batchname_and_path, data->output_directory );
+       strcat( batchname_and_path, outfile_only );
+       strcat( batchname_and_path, ".bat" ); 
+     }
+   
+   /* Determine chunk_size (bytes). */
+   switch ( data->unit )
+     {
+       case BYTES      :  chunk_size = data->entry;
+                          break;
+       case KILOBYTES  :  chunk_size = ( data->entry * 1024 );
+			                 break;
+       case MEGABYTES  :  chunk_size = ( data->entry * 1024 * 1024 );
+			                 break;
+     }
+  
    /* Figure out how many files to split the selected file into. */
    stat( infile, &file_info );
    file_size = file_info.st_size;
-   number_of_even_files = ( gint ) file_info.st_size/data->chunk_size;
-   size_of_leftover_file = file_size - ( number_of_even_files * data->chunk_size );
+     
+   /* Check to see if the file will be evenly split.
+      If not, there will be one file with a smaller size. */
+   number_of_even_files = ( gint ) file_info.st_size / chunk_size;
+   size_of_leftover_file = file_size - ( number_of_even_files * chunk_size );
 
+   /* The number pieces to split the file into. */
    if ( size_of_leftover_file == 0 )
-     files_to_split = number_of_even_files;
+     number_of_parts = number_of_even_files;
    else
-     files_to_split = number_of_even_files + 1;
+     number_of_parts = number_of_even_files + 1;
 
    /* Make sure we are not trying to split the file into pieces larger than itself. */
-   if ( data->chunk_size >= file_size )
+   if ( chunk_size >= file_size )
      {
        display_error( "split.c:  Chunk size is greater than or equal to the file size.", FALSE );
        return FALSE;
      }
 
-
    /* Don't create more than 999 files.  Actually, since we are starting at 1, the limit is really
       998 files.  (001 - 999) */
-   if ( files_to_split > 999 )
+   if ( number_of_parts > 999 )
      {
        display_error( "split.c:  Exceeded maximum number of files (999).", FALSE );
        return FALSE;
@@ -126,26 +171,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( data->create_batchfile )
      {
  
-       strcpy( original_name, data->file_name_only );
-
-       /* If the file name is too long, truncate it.
-          Also, convert some characters to '_'. */
-       dosify_file_name( data->file_name_only );
-
-       /* dosify_filename() will truncate the file name if it is longer than 12 characters. */
-       if ( strlen( data->file_name_only ) > 12 )
-         {
-			  data->file_name_only[13] = '\0';
-         }
-
-       strcpy( outfile_only, data->file_name_only );
-       /* Reserve four spaces for the extension; it will change later. */
-       strcat(outfile_only, ".ext");
-       
-       strcpy( batchname_and_path, data->output_directory );
-       strcat( batchname_and_path, data->file_name_only );
-       strcat( batchname_and_path, ".bat" );
-
        batch = fopen( batchname_and_path, "wb+" );
        if ( batch == NULL )
          {
@@ -166,28 +191,25 @@ gboolean split(GtkWidget *tmp, session_data *data)
        writeln_dostextfile( batch, " Gunter Wambaugh" );
        writeln_dostextfile( batch, "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
        write_dostextfile( batch, "Echo Original File Name:  " );
-       writeln_dostextfile( batch, original_name );
-       write_dostextfile( batch, "Echo Creating " );
        writeln_dostextfile( batch, data->file_name_only );
+       write_dostextfile( batch, "Echo Creating " );
+       writeln_dostextfile( batch, outfile_only );
        write_dostextfile( batch, "copy /b " );
        /* End of header information */
+         
+       /* Reserve four spaces for the extension; it will change later. */
+       strcat(outfile_only, ".ext"); /* Potential BUG. */
      }
    /*---Done with setting up the batcfhile.-------------------------------------------------------------*/
 
 
-   /* Setup the outfile array. */
-   strcpy( outfile, data->output_directory );
-   strcat( outfile, data->file_name_only );
-   strcat( outfile, "." );
-   strcat( outfile, ext );
-
    /* Create an md5sum of the selected file, if desired. */
    if ( data->verify )
      {
-       pid = fork( );
+       //pid = fork( );
        
-       if ( pid == 0 )
-         create_sum( data->file_name_and_path, data->output_directory );
+       //if ( pid == 0 )
+         //create_sum( data->file_name_and_path, data->output_directory );
 
      } 
      
@@ -225,14 +247,15 @@ gboolean split(GtkWidget *tmp, session_data *data)
          }
        return FALSE;
      }
-
+   
+   bytes_read = 0;
    /* The actual split process. */
-   for ( file_count = 1; file_count <= files_to_split; file_count++ )
+   for ( file_count = 1; file_count <= number_of_parts; file_count++ )
      {
        if ( do_progress )  /* Display the file name we are creating. */
          progress_window_set_status_text( progress->status, outfile );
        /* The leftover file. (?) */
-       if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( files_to_split ) ) )
+       if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( number_of_parts ) ) )
          {
            for ( byte_count = 1; ( byte_count <= size_of_leftover_file ); byte_count++ )
              {
@@ -252,7 +275,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
          }
        else  /* Even files. (?) */
          {
-           for ( byte_count = 1; ( byte_count <= data->chunk_size ); byte_count++ )
+           for ( byte_count = 1; ( byte_count <= chunk_size ); byte_count++ )
              {
                temp = fgetc( in );
                fputc( temp, out );
@@ -261,7 +284,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
                  {
                    progress_window_set_percentage( progress->current_progress,
 							                            ( ( gfloat ) byte_count ) / 
-                                                 ( ( gfloat ) data->chunk_size ) );
+                                                 ( ( gfloat ) chunk_size ) );
                    progress_window_set_percentage( progress->total_progress,
 							                            ( ( gfloat ) bytes_read ) /
                                                  ( ( gfloat ) file_size ) );
@@ -275,8 +298,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            if ( strcmp( ext, "001" ) != 0 )
              write_dostextfile( batch, "+" );
 
-           outfile_only[strlen( outfile_only ) - 4] = '\0';
-           strcat( outfile_only, "." );
+           outfile_only[strlen( outfile_only ) - 3] = '\0';
            strcat( outfile_only, ext );
            write_dostextfile( batch, outfile_only );
          }
@@ -363,7 +385,8 @@ gboolean split(GtkWidget *tmp, session_data *data)
    if ( data->create_batchfile )
      {
        write_dostextfile( batch, " " );
-       write_dostextfile( batch, data->file_name_only );
+       outfile_only[strlen( outfile_only ) - 4] = '\0';
+       write_dostextfile( batch, outfile_only );
 		 
 		 /* Write some footer information to the batchfile. */
        writeln_dostextfile( batch, " > ~combine.tmp" );

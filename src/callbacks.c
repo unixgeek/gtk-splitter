@@ -68,7 +68,6 @@ void initialize_session_data(session_data *data)
 
    /* Set the default chunk_size. (1.44MB) */
    data->entry = 1457664;
-   data->chunk_size = 1457664;
    
    /* Don't create a dos batch file by default. */
    data->create_batchfile = FALSE;

@@ -37,7 +37,6 @@ typedef struct
     gchar file_name_and_path[PATH_MAX];
     gchar file_name_only[PATH_MAX];
     gfloat entry;
-    gulong chunk_size;
     enum {BYTES, KILOBYTES, MEGABYTES} unit;
     gboolean split;
     gboolean create_batchfile;
