@@ -1,3 +1,9 @@
+1.1	(2002-09-04):
+
+	* A brand spanking new RPM!
+	* Added support for verifying files with md5sum.
+	  (This feature is still in the beta stages.)
+
 1.0	(2002-04-17):
 
 	* New icon.
