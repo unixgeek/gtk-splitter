@@ -1,3 +1,5 @@
+GNOME_LOC = /usr/share
+BIN_DIR = /usr/bin
 
 CC = gcc
 LIBS = -lgtk -lgdk
@@ -33,12 +35,12 @@ clean:
 	rm -f *.o core gtk-splitter a.out
 
 install:
-	install -s -m 755 gtk-splitter /usr/bin/
-	install -m 644 gtk-splitter.desktop /usr/share/gnome/apps/Utilities/
-	install -m 644 gtk-splitter.xpm /usr/share/pixmaps
+	install -s -m 755 gtk-splitter $(BIN_DIR)
+	install -m 644 gtk-splitter.desktop $(GNOME_LOC)/gnome/apps/Utilities/
+	install -m 644 gtk-splitter.xpm $(GNOME_LOC)/pixmaps
 
 uninstall:
-	rm -f /usr/bin/gtk-splitter
-	rm -f /usr/share/gnome/apps/Utilities/gtk-splitter.desktop
-	rm -f /usr/share/pixmaps/gtk-splitter.xpm
+	rm -f $(BIN_DIR)/gtk-splitter
+	rm -f $(GNOME_LOC)/gnome/apps/Utilities/gtk-splitter.desktop
+	rm -f $(GNOME_LOC)/pixmaps/gtk-splitter.xpm
 

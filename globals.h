@@ -25,8 +25,6 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#define DEBUG 0
-
 #define UPDATE_INTERVAL 1024
 
 #define GTK_SPLITTER_VERSION "gtk-splitter-0.9b Gunter Wambaugh"

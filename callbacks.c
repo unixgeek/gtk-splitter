@@ -46,10 +46,6 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
        fprintf(stderr, "callbacks.c:  Could not allocate memory for file_name_and_path string.\n");
        display_error("\ncallbacks.c:  Could not allocate memory for file_name_and_path string.\n", TRUE);
      } /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
-
-#if DEBUG
-   fprintf(stderr, "callbacks.c:  Allocated %d bytes for sdata->filename_and_path.\n", gsw->sdata->fp_length);
-#endif
    
    strcpy(gsw->sdata->filename_and_path, tmp_ptr);
    gsw->sdata->filename_and_path[gsw->sdata->fp_length - 1] = '\0';
@@ -74,10 +70,6 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
        display_error("\ncallbacks.c:  Could not allocate memory for file_name_only string.\n", TRUE);            } /*Could potentially continue through function before gtk_main_quit in error.c kills our app.*/
    gsw->sdata->filename_only[gsw->sdata->f_length -1] = '\0';
    
-#if DEBUG
-   fprintf(stderr, "callbacks.c:  Allocated %d bytes for sdata->filename_only.\n", gsw->sdata->f_length);
-#endif   
-	
    /*Copy the filename only.*/
    for (i = path_only_count; i != gsw->sdata->fp_length; i++) 
      {
@@ -95,20 +87,7 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_widget_set_sensitive(gsw->batch_file_button, TRUE);
    gtk_widget_set_sensitive(gsw->size_input, TRUE);
    gtk_widget_set_sensitive(gsw->chunk_size_units, TRUE);
-   gtk_widget_set_sensitive(gsw->start_button, TRUE);
-
-#if DEBUG 
-   fprintf(stderr, "callbacks.c:  filename_and_path: %s\n", gsw->sdata->filename_and_path);
-   fprintf(stderr, "callbacks.c:  Entire contents of filename_and_path array:\n\n");
-   for (i = 0; i != gsw->sdata->fp_length; i++)
-     fprintf(stderr, "{%c}", gsw->sdata->filename_and_path[i]);
-
-   fprintf(stderr, "\n\ncallbacks.c:  filename_only: %s\n", gsw->sdata->filename_only);
-   fprintf(stderr, "callbacks.c:  Entire contents of filename_only array:\n\n");
-   for (i = 0; i != gsw->sdata->f_length; i++)
-     fprintf(stderr, "{%c}", gsw->sdata->filename_only[i]);
-   fprintf(stderr, "\n\n");
-#endif  
+   gtk_widget_set_sensitive(gsw->start_button, TRUE); 
 }
 
 void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
@@ -270,11 +249,4 @@ void start(GtkWidget *tmp, gtk_splitter_window *gsw)
      }   
    
    gtk_widget_show_all(gsw->base_window);
-
-#if DEBUG
-   if (do_initialization)
-     fprintf(stderr, "callbacks.c:  split/combine returned stable.\n");
-   else
-     fprintf(stderr, "callbacks.c:  split/combine returned unstable.\n");
-#endif
 }

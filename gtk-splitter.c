@@ -75,16 +75,6 @@ int main(int argc, char *argv[])
 
    /*Initialize gtk.*/
    gtk_init(&argc, &argv);
-#if DEBUG 
-   fprintf(stderr, "\n**************\n");
-   fprintf(stderr, "* Debug Info *\n");
-   fprintf(stderr, "**************\n");
-   fprintf(stderr, "gtk-splitter.c:  Allocated %u bytes for session_data.\n", sizeof(session_data) );
-   fprintf(stderr, "gtk-splitter.c:  Allocated %u bytes for gtk_splitter_window.\n", 
-                    sizeof(gtk_splitter_window) );
-   fprintf(stderr, "gtk-splitter.c:  argc is %d.\n", argc);
-   fprintf(stderr, "gtk-splitter.c:  argv[1] is %s.\n", argv[1]);
-#endif
        
    /*Create a new window.*/
    gtk_s_window->base_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -164,10 +154,6 @@ int main(int argc, char *argv[])
 
    gtk_box_pack_start(GTK_BOX (gtk_s_window->box4), gtk_s_window->start_button, TRUE, TRUE, 50);
 
-#if DEBUG
-   fprintf(stderr, "gtk-splitter.c:  Initializing the data.\n");
-#endif
-
    /*Initialize our data.*/
    initialize_session_data(gtk_s_window->sdata);
    initialize_splitter_window(gtk_s_window);	
@@ -200,16 +186,8 @@ int main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(set_mbytes), gtk_s_window->sdata);
   /*End of callbacks.*/
 
-#if DEBUG
-   fprintf(stderr, "gtk-splitter.c:  Displaying widgets.\n");
-#endif
-
    /*Display the gui on the screen.*/
    gtk_widget_show_all(gtk_s_window->base_window);	
-
-#if DEBUG
-   fprintf(stderr, "gtk-splitter.c:  Running the gtk main loop.\n");
-#endif
 
    /*Run the main loop of gtk.*/
    gtk_main();

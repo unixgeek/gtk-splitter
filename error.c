@@ -39,14 +39,13 @@ void display_error(gchar *error, gboolean quit)
   okay_button = gtk_button_new_with_label("Okay");
 
   if (quit)   
-     gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
+    gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
                                 GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
   else
-     gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
+    gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
                                 GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT (dialog));
 
   gtk_box_pack_start(GTK_BOX (GTK_DIALOG(dialog)->action_area), okay_button, FALSE, FALSE, 0);
-  //gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), okay_button);    
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
    
   gtk_widget_show_all (dialog);

@@ -1,2 +1,2 @@
-Remove debug code?
 Try and clean up 'clean up code' as well as malloc code.
+Add a check to ensure the path selected by output is a directory.

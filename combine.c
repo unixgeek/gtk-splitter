@@ -44,9 +44,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    gushort outfile_length, infile_length;
 
    struct stat file_info;
-#if DEBUG
-   gushort i;
-#endif
  
    stat(data->filename_and_path, &file_info);  /*Not necessary?*/
 
@@ -71,27 +68,11 @@ gboolean combine(GtkWidget *tmp, session_data *data)
      }
    strcpy(infile, data->filename_and_path);
    infile[infile_length - 1] = '\0';
-#if DEBUG
-   fprintf(stderr, "combine.c:  Allocated %d bytes for infile.\n", infile_length);
-   fprintf(stderr, "combine.c:  Allocated %d bytes for outfile.\n", outfile_length);
-#endif
+
    strcpy(outfile, data->output_dir);
    strcat(outfile, data->filename_only);
    outfile[outfile_length - 5] = '\0';
  
-#if DEBUG
-    fprintf(stderr, "combine.c:  infile: %s\n", infile);
-    fprintf(stderr, "combine.c:  Entire contents of infile:\n\n");
-    for (i = 0; i != infile_length; i++)
-      fprintf(stderr, "{%c}", infile[i]);
-    fprintf(stderr, "\n\n");
-    fprintf(stderr, "combine.c:  outfile: %s\n", outfile);
-    fprintf(stderr, "combine.c:  Entire contents of outfile:\n\n");
-    for (i = 0; i != outfile_length; i++)
-      fprintf(stderr, "{%c}", outfile[i]);
-    fprintf(stderr, "\n\n");
-#endif
-
    /*Do some pre-combine calcualations.*/
    do
      {
@@ -102,10 +83,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
          {
            stat(infile, &file_info);
            files_to_combine++;
-#if DEBUG
-             fprintf(stderr, "combine.c:  File size of %s is %lu\n", infile,
-                     file_info.st_size);
-#endif
+
            file_size += file_info.st_size;
 
            /*Increment the extension.*/
@@ -145,12 +123,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    strcpy(ext, "001");
    infile[strlen(infile) - 3] = '\0';
    strcat(infile, ext);
-
-#if DEBUG
-   fprintf(stderr, "combine.c:  files_to_combine: %d\n", files_to_combine);
-   fprintf(stderr, "combine.c:  Combined file should be %lu bytes\n", file_size);
-   fprintf(stderr, "combine.c:  Begin of combine process.\n");
-#endif
 
    out = fopen(outfile, "wb+");
    if (out == NULL) 
@@ -279,11 +251,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
        destroy_progress_window(progress);
        g_free(progress);
      }
-   
-#if DEBUG 
-     fprintf(stderr, "\ncombine.c:  End of combine process.\n");
-     fprintf(stderr, "combine.c:  bytes_read: %lu\n", bytes_read);
-#endif
 
    return TRUE;
 }

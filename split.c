@@ -50,22 +50,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
 
    struct stat file_info;
 
-#if DEBUG 
-   gushort i;
-   fprintf(stderr, "split.c:  unit:  ");
-   switch (data->unit) 
-     {
-       case BYTES   :  fprintf(stderr, "bytes\n");
-                       break;
-       case KBYTES  :  fprintf(stderr, "kilobytes\n");
-                       break;
-       case MBYTES  :  fprintf(stderr, "megabytes\n");
-                       break;
-       default      :  fprintf(stderr, "unknown\n");
-                       break;
-     }
-#endif
-
    /*Doing this in callbacks doesn't work...(?)*/
    switch (data->unit) 
      {
@@ -77,9 +61,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
 			   break;
        default		:  break;
      }
-#if DEBUG
-   fprintf(stderr, "split.c:  chunksize: %lu\n", data->chunk_size);
-#endif
+
    infile_length = data->fp_length;
    infile = g_malloc( infile_length * sizeof(gchar) );
    if (infile == NULL)
@@ -121,12 +103,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
      do_progress = FALSE;
    else
      do_progress = TRUE;
-#if DEBUG 
-   if (do_progress)
-     fprintf(stderr, "split.c:  We are doing a progress bar.\n");
-   else
-     fprintf(stderr, "split.c:  We aren't doing a progress bar.\n");
-#endif
 
    if (do_progress) 
      {
@@ -160,9 +136,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            g_free(infile);
            return FALSE;
          }
-#if DEBUG
-       fprintf(stderr, "split.c:  Allocated %d bytes for outfile_only.\n", outfile_only_length);
-#endif
+
        if ((data->f_length - 1) > 12)
          {
            dosify_filename(data->filename_only, data->f_length);
@@ -186,24 +160,11 @@ gboolean split(GtkWidget *tmp, session_data *data)
            g_free(infile);
            return FALSE;
          }
-#if DEBUG
-       fprintf(stderr, "split.c:  Allocated %d bytes for batchname_and_path.\n", bp_length);
-#endif
+
        strcpy(batchname_and_path, data->output_dir);
        strcat(batchname_and_path, data->filename_only);
        strcat(batchname_and_path, ".bat");
-#if DEBUG 
-       fprintf(stderr, "split.c:  batchname_and_path: %s\n", batchname_and_path);
-       fprintf(stderr, "split.c:  Entire contents of batchname_and_path array:\n\n");
-       for (i = 0; i != strlen(batchname_and_path); i++)
-         fprintf(stderr, "{%c}", batchname_and_path[i]);
-	   
-       fprintf(stderr, "\n\nsplit.c:  outfile_only: %s\n", outfile_only);
-       fprintf(stderr, "split.c:  Entire contents of outfile_only array:\n\n");
-         for (i = 0; i != strlen(outfile_only); i++)
-       fprintf(stderr, "{%c}", outfile_only[i]);
-       fprintf(stderr, "\n\n");
-#endif
+
        batch = fopen(batchname_and_path, "w+");
        if (batch == NULL) 
          {
@@ -245,9 +206,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        g_free(infile);
        return FALSE;
      }
-#if DEBUG
-   fprintf(stderr, "split.c:  Allocated %d bytes for outfile.\n", outfile_length);
-#endif
+
    strcpy(outfile, data->output_dir);
    strcat(outfile, data->filename_only);
    strcat(outfile, ".");
@@ -297,18 +256,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
        g_free(infile);
        return FALSE;
      }
-
-#if DEBUG 
-   fprintf(stderr, "split.c:  Size of %s is %lu bytes.\n", data->filename_and_path, file_size);
-   fprintf(stderr, "split.c:  Creating %d files of %lu bytes.\n", number_of_even_files,
-           data->chunk_size);
-   if (size_of_leftover_file != 0)
-     fprintf(stderr, "split.c:  Also, 1 file of size %lu bytes\n", size_of_leftover_file);
-       
-   fprintf(stderr, "split.c:  Number of even files to create: %d\n", number_of_even_files);
-   fprintf(stderr, "split.c:  Number of files to create: %d\n", files_to_split);
-   fprintf(stderr, "split.c:  Start of split process.\n");
-#endif
 
    /*The actual split process.*/
    for (file_count = 1; file_count <= files_to_split; file_count++) 
@@ -474,11 +421,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
            return TRUE;
          }
      }
-	
-#if DEBUG
-   fprintf(stderr, "\nsplit.c:  bytes_read:  %lu\n", bytes_read);
-   fprintf(stderr, "split.c:  End of split process.\n");
-#endif   
+  
 
    g_free(infile);
    g_free(outfile);
