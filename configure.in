@@ -1,11 +1,42 @@
+dnl -- Initialize Autoconf. --
 AC_INIT(src/gtk-splitter.c)
+
+dnl -- Package information. --
 PACKAGE=gtk-splitter
 VERSION=1.0pre1
+
+dnl -- Initialize Automake. --
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+
+dnl -- Check for a C compiler. --
 AC_PROG_CC
+
+dnl -- Check for a C Pre-processor. --
+AC_PROG_CPP
+
+dnl -- Check for a BSD compatible installer. --
 AC_PROG_INSTALL
-AM_PATH_GTK(1.2.7)
-AC_CHECK_HEADERS(sys/stat.h)
+
+dnl -- Check for sys/stat.h.  --
+AC_HAVE_HEADERS(sys/stat.h)
+
+dnl -- Check for GTK+. --
+AM_PATH_GTK(1.2.10)
+
+dnl -- Create the Makefiles. --
 AC_OUTPUT([ Makefile
             src/Makefile
           ])
+
+
+dnl -- Dislpay some information. --
+AC_MSG_RESULT(--------------------------------------------------------)
+AC_MSG_RESULT()
+AC_MSG_RESULT(This is my first attempt at using automake and autoconf.)
+AC_MSG_RESULT(If this configure script fails to look for something)
+AC_MSG_RESULT(send me an email:  techgunter@yahoo.com)
+AC_MSG_RESULT()
+AC_MSG_RESULT(Type 'make' and then (as root) 'make install'.)
+AC_MSG_RESULT()
+AC_MSG_RESULT(--------------------------------------------------------)
+AC_MSG_RESULT()

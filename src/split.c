@@ -41,7 +41,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    FILE *in, *out, *batch;
    
    /*Various character array pointers.*/
-   gchar *infile, *outfile, *batchname_and_path, *outfile_only, ext[] = {"001"};
+   gchar *infile, *outfile, *batchname_and_path, *outfile_only, *original_name, ext[] = {"001"};
   
    /*Array length variables.*/
    gushort infile_length, outfile_length, bp_length, outfile_only_length;
@@ -149,6 +149,23 @@ gboolean split(GtkWidget *tmp, session_data *data)
            return FALSE;
          }
 
+       original_name = g_malloc( data->f_length * sizeof( gchar ) );
+       if ( original_name == NULL )
+         {
+           display_error( "\nsplit.c:  Could not allocate memory for original_name string.\n", TRUE );
+           if ( do_progress )
+             {
+               destroy_progress_window( progress );
+               g_free( progress );
+             }
+           g_free( outfile_only );
+           g_free( infile );
+           return FALSE;
+         }
+ 
+       strcpy( original_name, data->filename_only );
+       original_name[data->f_length - 1] = '\0';
+
        /*If the file name is too long, truncate it.
          Also, convert spaces to '_'.*/
        dosify_filename( data->filename_only );
@@ -200,10 +217,17 @@ gboolean split(GtkWidget *tmp, session_data *data)
        writeln_dostextfile( batch, "@Echo Off" );
        write_dostextfile( batch, "Echo " );
        writeln_dostextfile( batch, GTK_SPLITTER_VERSION );
+       writeln_dostextfile( batch, "NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
+       write_dostextfile( batch, "Original file name ->  [ ");
+       write_dostextfile( batch, original_name );
+       writeln_dostextfile( batch, " ]");
        write_dostextfile( batch, "Echo Creating " );
        writeln_dostextfile( batch, data->filename_only );
        write_dostextfile( batch, "copy /b " );
        /*End of header information*/
+
+      /*This is no longer needed.*/
+      g_free( original_name );
      }
    /*---Done with setting up the batcfhile.-------------------------------------------------------------*/
 
