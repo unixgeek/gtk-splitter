@@ -33,9 +33,9 @@ clean:
 	rm -f *.o core gtk-splitter a.out
 
 install:
-	cp gtk-splitter /usr/bin/
-	cp gtk-splitter.desktop /usr/share/gnome/apps/Utilities/
-	cp gtk-splitter.xpm /usr/share/pixmaps
+	install -s -m 755 gtk-splitter /usr/bin/
+	install -m 644 gtk-splitter.desktop /usr/share/gnome/apps/Utilities/
+	install -m 644 gtk-splitter.xpm /usr/share/pixmaps
 
 uninstall:
 	rm -f /usr/bin/gtk-splitter
