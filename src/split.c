@@ -106,6 +106,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        strcat( batchname_and_path, ".bat" ); 
      }
    
+   chunk_size = 0;
    /* Determine chunk_size (bytes). */
    switch ( data->unit )
      {
@@ -158,6 +159,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        while ( g_main_iteration( FALSE ) );
      }
 
+   batch = NULL;
    /*---Setup a batchfile if so desired.------------------------------------------------------------*/
    if ( data->create_batchfile )
      {
