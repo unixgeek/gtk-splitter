@@ -38,11 +38,6 @@ void create_progress_window(progress_window *pwindow, gchar *title)
    gtk_box_pack_start( GTK_BOX( pwindow->vbox ), pwindow->current_progress, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( pwindow->vbox ), pwindow->total_progress, TRUE, TRUE, 0 );
    gtk_box_pack_start( GTK_BOX( pwindow->vbox ), pwindow->status, TRUE, TRUE, 0 );
-
-   /*Set the progress bars to show the percent value in text in addition
-     to the colored bar.*/
-   gtk_progress_set_show_text( GTK_PROGRESS( pwindow->current_progress ), TRUE );
-   gtk_progress_set_show_text( GTK_PROGRESS( pwindow->total_progress ), TRUE );
 }
 
 void destroy_progress_window(progress_window *pwindow)

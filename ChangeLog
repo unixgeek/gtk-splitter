@@ -1,3 +1,8 @@
+2002-04-16  gunter  <techgunter@yahoo.com>
+
+	* progress.c
+   The percentage inside the progress bar is no longer displayed.
+
 2002-04-10  gunter  <techgunter@yahoo.com>
 
 	* gtk-splitter.c
