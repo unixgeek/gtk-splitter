@@ -1,7 +1,7 @@
-
 [Desktop Entry]
 Name=gtk-splitter
 Name[en_US.ISO8859-1]=gtk-splitter
+Comment=GTK+ File Splitter
 Exec=gtk-splitter
 Icon=/usr/share/pixmaps/gtk-splitter.xpm
 Terminal=false
