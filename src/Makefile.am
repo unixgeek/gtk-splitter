@@ -21,4 +21,6 @@ gtk_splitter_SOURCES =	\
   split.h				\
   globals.h				\
   md5.c				\
-  md5.h
+  md5.h				\
+  verify_dialog.c			\
+  verify_dialog.h			
