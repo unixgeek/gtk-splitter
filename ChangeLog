@@ -1,3 +1,31 @@
+2002-11-02  gunter  <techgunter@yahoo.com>
+
+	* file_selection.c, file_selection.h, gtk-splitter.c:
+	Added support for reading file names from the command-line.
+
+2002-10-20  gunter  <techgunter@yahoo.com>
+
+	* md5.c, md5.h, split.c:
+	Worked on getting md5sum working for file verification.
+
+2002-10-18  gunter  <techgunter@yahoo.com>
+
+	* callbacks.c, combine.c:
+	Fixed two bugs introduced when dynamic string allocation was dropped.
+
+	* callbacks.c, callbacks.h, combine.c, combine.h, dostextfile.c,
+	  dostextfile.h, error.c, file_selection.c, file_selection.h, globals.h, 
+	  gtk-splitter.c, progress.c, split.c, split.h:
+	Cleaned up the comments.  Changed variable names to make the code easier to
+	read.
+
+	* configure.in, callbacks.c, combine.c, file_selection.c, globals.h,
+	  gtk-splitter.c, split.c:
+	Removed mechanisms for dynamically allocating memory for strings.  Memory
+	is used more efficiently with dynamic allocation, but the code is much
+	harder to read and understand.  The strings are now a fixed size
+	determined by PATH_MAX in <limits.h>.
+
 2002-09-04  gunter  <techgunter@yahoo.com>
 
 	* globals.h, split.c, gtk-splitter.c:
@@ -6,21 +34,24 @@
 
 2002-08-30  gunter  <techgunter@yahoo.com>
 
-	* md5.c (new), md5.h (new), configure.in, src/Makefile.am, combine.c, split.c,
-	  callbacks.c, file_selection.c, globals.h, gtk-splitter.c:
+	* md5.c (new), md5.h (new), configure.in, src/Makefile.am, combine.c,
+	  split.c, callbacks.c, file_selection.c, globals.h, gtk-splitter.c:
 	Added support for verifying files via md5sum.
 
 2002-08-09  gunter  <techgunter@yahoo.com>
 
-	* Makefile.am, autogen.sh, configure.in, clean.sh, src/Makefile.am, gtk-splitter.spec.in:
- 	Added gtk-splitter.spec.in and made adjustments to the configure scripts to create and rpm
-        of gtk-splitter.  These changes were supplied to me by Panagiotis Vossos <jacbre@internet.gr>. 
+	* Makefile.am, autogen.sh, configure.in, clean.sh, src/Makefile.am,
+	  gtk-splitter.spec.in:
+ 	Added gtk-splitter.spec.in and made adjustments to the configure scripts to
+	create an rpm of gtk-splitter.  These changes were supplied to me by 
+	Panagiotis Vossos <jacbre@internet.gr>. 
 	Many thanks Panagiotis!
 
 2002-08-06  gunter  <techgunter@yahoo.com>
 
 	* src/Makefile.am:
-	Added '-lglib' flag to fix a compilation error on Solaris 8 (and maybe others).
+	Added '-lglib' flag to fix a compilation error on Solaris 8
+	(and maybe others).
 	Thanks to Emmanuel Halbwachs for the report.
 
 	* configure.in:
@@ -37,8 +68,9 @@
 2002-04-10  gunter  <techgunter@yahoo.com>
 
 	* gtk-splitter.c:
-	Enhanced the GUI a little bit:  Made 'Open' and 'Output' buttons the same size and added space
-	between the buttons and their respective text entry boxes. 
+	Enhanced the GUI a little bit:  Made 'Open' and 'Output' buttons the same
+	size and added space between the buttons and their respective text entry
+	boxes. 
 
 	* dostextfile.c:
 	Added more characters to filter out when dosifying a file name.
@@ -59,29 +91,30 @@
         Modified the GNU distribution files.
 
         * split.c:
-	When combining files using a batchfile, the original file name is now outputted.  
-        The user doesn't have to remember what the file name was before it got changed to be DOS
-        compatible.
+	When combining files using a batchfile, the original file name is now
+	outputted.  The user doesn't have to remember what the file name was before
+	it got changed to be DOS compatible.
 
 2002-03-08  gunter  <techgunter@yahoo.com>
 
-	* AUTHORS, ChangeLog, configure.in, INSTALL, install-sh, Makefile.am, missing, mkinstalldirs, 
-          NEWS, README, src/Makefile.am, TODO:
+	* AUTHORS, ChangeLog, configure.in, INSTALL, install-sh, Makefile.am, missing,
+	  mkinstalldirs, NEWS, README, src/Makefile.am, TODO:
 	First attempt at using autoconf and automake.
 
 2002-03-04  gunter  <techgunter@yahoo.com>
 
-	* dostextfile.h, error.c, error.h, file_selection.c, file_selection.h, globals.h, gtk-splitter.c,
-          progress.c, progress.h, split.c, split.h, callbacks.c, callbacks.h, 
-          combine.c, combine.h, dostextfile.c, Makefile:
+	* dostextfile.h, error.c, error.h, file_selection.c, file_selection.h,
+	  globals.h, gtk-splitter.c, progress.c, progress.h, split.c, split.h,
+	  callbacks.c, callbacks.h, combine.c, combine.h, dostextfile.c, Makefile:
 	Re-arranged the directory layout.  Source files are now in src/.
 
 2002-03-01  gunter  <techgunter@yahoo.com>
 
 	* dostextfile.c, split.c:
-	Fixed a bug in dostextfile.c where ONLY file names longer than 12 characters would have spaces
-        converted to underscores.  All file names that contain spaces should have the spaces converted
-        to underscores when dealing with batchfiles.
+	Fixed a bug in dostextfile.c where ONLY file names longer than 12 characters
+	would have spaces converted to underscores.  All file names that contain
+	spaces should have the spaces converted to underscores when dealing with
+	batchfiles.
 
 	* combine.c, split.c:
 	Cleaned up the code in split.c and added some comments.
@@ -92,29 +125,33 @@
 2002-02-27  gunter  <techgunter@yahoo.com>
 
 	* dostextfile.h, split.c, dostextfile.c:
-	Fixed a bug in dosify_filename that would mangle the file extension for file names that were
+	Fixed a bug in dosify_filename that would mangle the file extension for file
+	names that were
         between 13 and 15(?) characters long.
 
 	* dostextfile.c, dostextfile.h:
 	Fixed an oversight in the license information.
 
 	* dostextfile.c, dostextfile.h, Makefile, split.c:
-	Made the necessary adjustments to accommodate the change of batchfile to dostextfile.
+	Made the necessary adjustments to accommodate the change of batchfile to
+	dostextfile.
 
 	* batchfile.c, batchfile.h, dostextfile.c, dostextfile.h:
 	Changed the name of the batchfile module to a more fitting name:  dostextfile.
 
 	* callbacks.c, callbacks.h, combine.c, globals.h, split.c:
 	Commented code in callbacks.
-	Changed the value of UPDATE_INTERVAL from 4k to 32k; split/combine process is now much faster.
+	Changed the value of UPDATE_INTERVAL from 4k to 32k; split/combine process is
+	now much faster.
 
 2002-02-26  gunter  <techgunter@yahoo.com>
 
 	* batchfile.c, batchfile.h, split.c:
-	Removed two functions from batchfile.c and placed that functionality back into split.c.
-        batchfile.c should now be fully modularized like progress.c, error.c, and file_selection.c.
-        error.c, progress.c, and batchfile.c are written with code re-use in mind.  
-        file_selection.c is a bit more proprietary and thus not as re-usable.
+	Removed two functions from batchfile.c and placed that functionality back
+	into split.c.  batchfile.c should now be fully modularized like progress.c,
+	error.c, and file_selection.c.  error.c, progress.c, and batchfile.c are
+	written with code re-use in mind.  file_selection.c is a bit more proprietary
+	and thus not as re-usable.
 
 	* progress.c:
 	Removed an unnecessary include directive.
@@ -129,30 +166,33 @@
 	Fixed an incorrect declaration of an enumerated type.  
         Looking back, I am not sure how this even worked in the first place. :)
 
-	* callbacks.c, callbacks.h, file_selection.c, file_selection.h, globals.h, gtk-splitter.c, 
-          Makefile:
-	Pulled a few functions out of callbacks that were related to file selection and created
-        a module for them.
+	* callbacks.c, callbacks.h, file_selection.c, file_selection.h, globals.h,
+	  gtk-splitter.c, Makefile:
+	Pulled a few functions out of callbacks that were related to file selection
+	and created a module for them.
 
 2002-02-23  gunter  <techgunter@yahoo.com>
 
 	* batchfile.c, globals.h, gtk-splitter.c:
 	Cleaned up and commented code.
 
-	* callbacks.c, combine.c, error.c, gtk-splitter.c, progress.c, progress.h, split.c:
+	* callbacks.c, combine.c, error.c, gtk-splitter.c, progress.c, progress.h,
+	  split.c:
 	Removed the duplicate error data.
 	Added two new functions to progress.c
 	Cleaned up and commented code in progress.c and error.c.
 
 2002-02-22  gunter  <techgunter@yahoo.com>
 
-	* callbacks.c, combine.c, error.c, globals.h, gtk-splitter.c, Makefile, split.c:
+	* callbacks.c, combine.c, error.c, globals.h, gtk-splitter.c, Makefile,
+	  split.c:
 	Modified the Makefile for a better install.
 	Removed some no longer needed commented code.
 
 2002-02-12  gunter  <techgunter@yahoo.com>
 
-	* batchfile.h, callbacks.h, combine.h, error.c, error.h, globals.h, progress.h, split.h:
+	* batchfile.h, callbacks.h, combine.h, error.c, error.h, globals.h,
+	  progress.h, split.h:
 	Corrected some header declarations.
 
 2002-02-11  gunter  <techgunter@yahoo.com>
@@ -180,17 +220,19 @@
 	Cleaned up the code a little more.  Did some more testing.
 
 	* callbacks.c, callbacks.h, combine.c, globals.h, gtk-splitter.c, split.c:
-	Created a struct for the main window, removing the need for global variables in globals.h
+	Created a struct for the main window, removing the need for global variables
+	in globals.h
 
 2002-02-01  gunter  <techgunter@yahoo.com>
 
-	* /cvsroot/gtk-splitter/gtk-splitter/HOSTS:
+	* HOSTS:
 	List of websites where gtk-splitter can be found.
 
 2002-01-31  gunter  <techgunter@yahoo.com>
 
 	* batchfile.c, globals.h, gtk-splitter.c:
-	Fixed some typos.  Changed version declaration from an array to a preprocessor definition.
+	Fixed some typos.  Changed version declaration from an array to a preprocessor
+	definition.
 
 	* combine.c, progress.c, progress.h, split.c:
 	Changed member of progress_window from file_progress to current_progress
