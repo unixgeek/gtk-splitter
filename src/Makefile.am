@@ -17,6 +17,7 @@ gtk_splitter_SOURCES = \
   progress.c           \
   progress.h           \
   split.c              \
-  split.h      
+  split.h              \
+  globals.h     
 
 gtk_splitter_LDADD = -lgtk -lgdk -lglib

@@ -25,10 +25,8 @@ SEE INSTALL
  +gtk+
  +gtk+-devel
 
--Procedure
- + >aclocal
- + >autoconf
- + >automake
+-Procedure:
+ + >./autogen.sh
  + >./configure
  + >make
  + >make install (as root)
@@ -41,13 +39,48 @@ SEE INSTALL
  +gtk+
  +gtk+-devel
 
--Procedure
- + >tar -xzvf gtk-splitter-version.tar.gz
- + >cd gtk-splitter-version
+-Procedure:
+ + >tar -xzvf gtk-splitter-VERSION.tar.gz
+ + >cd gtk-splitter-VERSION
  + >./configure
  + >make
  + >make install (as root)
 
-[ Installing the RPM ]
+[ Building an RPM package from CVS ]
 
--Still left to do.
+-Required packages:
+ +autoconf
+ +automake
+ +make
+ +C compiler
+ +gtk+
+ +gtk+-devel
+ +rpm
+
+-Procedure:
+ + >./autogen.sh
+ + >./configure
+ + >make dist
+ + >rpmbuild -ta gtk-splitter-VERSION.tar.gz (as root)
+
+[ Building an RPM package from source ]
+
+-Required packages:
+ +make
+ +C compiler
+ +gtk+
+ +gtk+-devel
+ +rpm
+
+-Procedure:
+ + >rpmbuild -ta gtk-splitter-VERSION.tar.gz (as root)
+
+[ Installing the RPM package ]
+
+-Required packages:
+ +gtk+
+ +rpm
+
+-Procedure:
+ + >rpm -ivh gtk-splitter-VERSION.i386.rpm (as root)
+ + >rpm -ivh gtk-splitter-VERSION.src.rpm (as root; optional)

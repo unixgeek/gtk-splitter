@@ -1,0 +1,48 @@
+Summary: File Splitter
+Name: gtk-splitter
+Version: @VERSION@
+Release: 1
+Source0: %{name}-%{version}.tar.gz
+License: GPL
+Group: Applications/File
+Vendor: Gunter Wambaugh <techgunter@yahoo.com>
+URL: http://gtk-splitter.sourceforge.net/
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+
+%description
+gtk-splitter can split files into smaller pieces and combine them back
+together. It can also generate a DOS batch file so that the split
+files can be combined on DOS/Windows systems. gtk-splitter is good for
+working around file limitations with floppy disks, email attachments,
+etc. gtk-splitter is coded and tested on Linux, but should work on
+other POSIX systems.
+
+%prep
+%setup
+
+%build
+CFLAGS="$RPM_OPT_FLAGS" ./configure \
+	--prefix=%{_prefix} \
+	--disable-debug
+	
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{_prefix} \
+	install
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+
+%doc ChangeLog AUTHORS COPYING HOSTS INSTALL README TODO
+%{_bindir}/*
+%{_prefix}/share/gnome/apps/*/*
+%{_datadir}/pixmaps/*
+
+%changelog
+* Tue Aug  6 2002 Panagiotis Vossos <jacbre@internet.gr>
+- Initial build.

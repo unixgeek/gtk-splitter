@@ -22,6 +22,7 @@ AM_PATH_GTK(1.2.10)
 
 dnl -- Create the Makefiles. --
 AC_OUTPUT([ Makefile
+            gtk-splitter.spec
             src/Makefile
           ])
 
