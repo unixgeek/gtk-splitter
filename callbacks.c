@@ -30,102 +30,103 @@
 #include "combine.h"
 #include "error.h"
 
-void setfilename(GtkWidget *tmp, session_data *data)
+void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    gchar *tmp_ptr;
    gushort i=0, j=0, path_only_count=0;
 
-   tmp_ptr = gtk_file_selection_get_filename(GTK_FILE_SELECTION (file_selector) );
-   data->fp_length = strlen(tmp_ptr) + 1;  /*Add in a count for the NULL terminator.*/
+   tmp_ptr = gtk_file_selection_get_filename(GTK_FILE_SELECTION (gsw->file_selector) );
+   gsw->sdata->fp_length = strlen(tmp_ptr) + 1;  /*Add in a count for the NULL terminator.*/
 
-   g_free(data->filename_and_path);  /*Free any previous data.*/
+   g_free(gsw->sdata->filename_and_path);  /*Free any previous sdata.*/
    
-   data->filename_and_path = g_malloc( data->fp_length * sizeof(gchar) );
-   if (data->filename_and_path == NULL)
+   gsw->sdata->filename_and_path = g_malloc( gsw->sdata->fp_length * sizeof(gchar) );
+   if (gsw->sdata->filename_and_path == NULL)
      {
        fprintf(stderr, "callbacks.c:  (filename_and_path) Could not allocate any memory.\n");
        display_error("Could not allocate any memory.", TRUE);
      }
 
 #if DEBUG
-   fprintf(stderr, "callbacks.c:  Allocated %d bytes for data->filename_and_path.\n", data->fp_length);
+   fprintf(stderr, "callbacks.c:  Allocated %d bytes for sdata->filename_and_path.\n", gsw->sdata->fp_length);
 #endif
    
-   strcpy(data->filename_and_path, tmp_ptr);
-   data->filename_and_path[data->fp_length - 1] = '\0';
+   strcpy(gsw->sdata->filename_and_path, tmp_ptr);
+   gsw->sdata->filename_and_path[gsw->sdata->fp_length - 1] = '\0';
 	
    /*Find out what the file name is, without the path.*/
-   path_only_count = data->fp_length - 1;
+   path_only_count = gsw->sdata->fp_length - 1;
    j = 0;
    /*Start at the end and count backwards till we find a '/'*/
-   while (data->filename_and_path[path_only_count] != '/')
+   while (gsw->sdata->filename_and_path[path_only_count] != '/')
      path_only_count--;
 	
    path_only_count++; /*add the count of the last '/' */
 
-   data->f_length = data->fp_length - path_only_count;  /*No +1 is needed, already in fp_length.*/
+   gsw->sdata->f_length = gsw->sdata->fp_length - path_only_count;  /*No +1 is needed, already in fp_length.*/
 
-   g_free(data->filename_only);  /*Free any previous data.*/
+   g_free(gsw->sdata->filename_only);  /*Free any previous sdata.*/
 
-   data->filename_only = g_malloc( data->f_length * sizeof(gchar));
-   if (data->filename_only == NULL)
+   gsw->sdata->filename_only = g_malloc( gsw->sdata->f_length * sizeof(gchar));
+   if (gsw->sdata->filename_only == NULL)
      {
        fprintf(stderr, "callbacks.c:  (filename_only) Could not allocate any memory.\n");
        display_error("Could not allocate any memory.", TRUE);
      }
-   data->filename_only[data->f_length -1] = '\0';
+   gsw->sdata->filename_only[gsw->sdata->f_length -1] = '\0';
    
 #if DEBUG
-   fprintf(stderr, "callbacks.c:  Allocated %d bytes for data->filename_only.\n", data->f_length);
+   fprintf(stderr, "callbacks.c:  Allocated %d bytes for sdata->filename_only.\n", gsw->sdata->f_length);
 #endif   
 	
    /*Copy the filename only.*/
-   for (i = path_only_count; i != data->fp_length; i++) 
+   for (i = path_only_count; i != gsw->sdata->fp_length; i++) 
      {
-       data->filename_only[j] = data->filename_and_path[i];
+       gsw->sdata->filename_only[j] = gsw->sdata->filename_and_path[i];
        j++;
      }
-    //data->filename_only[j] = '\0';  /*Figure out why this is necessary.*/
+    //sdata->filename_only[j] = '\0';  /*Figure out why this is necessary.*/
    /*Set the filename in the entry box.*/
-   gtk_entry_set_text(GTK_ENTRY (filename_box), data->filename_only);
+   gtk_entry_set_text(GTK_ENTRY (gsw->filename_box), gsw->sdata->filename_only);
 
 
    /*Set our gui so that all of our buttons active.*/
-   gtk_widget_set_sensitive(split_button, TRUE);
-   gtk_widget_set_sensitive(combine_button, TRUE);
-   gtk_widget_set_sensitive(batch_file_button, TRUE);
-   gtk_widget_set_sensitive(size_input, TRUE);
-   gtk_widget_set_sensitive(chunk_size_units, TRUE);
-   gtk_widget_set_sensitive(start_button, TRUE);
+   gtk_widget_set_sensitive(gsw->split_button, TRUE);
+   gtk_widget_set_sensitive(gsw->combine_button, TRUE);
+   gtk_widget_set_sensitive(gsw->batch_file_button, TRUE);
+   gtk_widget_set_sensitive(gsw->size_input, TRUE);
+   gtk_widget_set_sensitive(gsw->chunk_size_units, TRUE);
+   gtk_widget_set_sensitive(gsw->start_button, TRUE);
 
 #if DEBUG 
-   fprintf(stderr, "callbacks.c:  filename_and_path: %s\n", data->filename_and_path);
+   fprintf(stderr, "callbacks.c:  filename_and_path: %s\n", gsw->sdata->filename_and_path);
    fprintf(stderr, "callbacks.c:  Entire contents of filename_and_path array:\n\n");
-   for (i = 0; i != data->fp_length; i++)
-     fprintf(stderr, "{%c}", data->filename_and_path[i]);
+   for (i = 0; i != gsw->sdata->fp_length; i++)
+     fprintf(stderr, "{%c}", gsw->sdata->filename_and_path[i]);
 
-   fprintf(stderr, "\n\ncallbacks.c:  filename_only: %s\n", data->filename_only);
+   fprintf(stderr, "\n\ncallbacks.c:  filename_only: %s\n", gsw->sdata->filename_only);
    fprintf(stderr, "callbacks.c:  Entire contents of filename_only array:\n\n");
-   for (i = 0; i != data->f_length; i++)
-     fprintf(stderr, "{%c}", data->filename_only[i]);
+   for (i = 0; i != gsw->sdata->f_length; i++)
+     fprintf(stderr, "{%c}", gsw->sdata->filename_only[i]);
    fprintf(stderr, "\n\n");
 #endif  
 }
 
-void choose_file(GtkWidget *tmp, session_data *data)
+void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
 {  
    /*Simple gtk open dialog, copied and pasted from the tutorial.*/
-   file_selector = gtk_file_selection_new("Choose a file.");	
-   gtk_file_selection_set_filename (GTK_FILE_SELECTION (file_selector), home_dir);
-   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION (file_selector)->ok_button),
-	              "clicked", GTK_SIGNAL_FUNC(setfilename), data);
-   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (file_selector)->ok_button),
+   gsw->file_selector = gtk_file_selection_new("Choose a file.");
+
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gsw->file_selector), gsw->sdata->home_dir);
+   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->ok_button),
+	              "clicked", GTK_SIGNAL_FUNC(setfilename), gsw);
+   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->ok_button),
 	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
-                             (gpointer) file_selector);	
-   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (file_selector)->cancel_button),
+                             (gpointer) gsw->file_selector);	
+   gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION (gsw->file_selector)->cancel_button),
 	                     "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
-                             (gpointer) file_selector);
-   gtk_widget_show(file_selector);
+                             (gpointer) gsw->file_selector);
+   gtk_widget_show(gsw->file_selector);
 }
 
 void set_bytes(GtkWidget *tmp, session_data *data)
@@ -143,20 +144,17 @@ void set_mbytes(GtkWidget *tmp, session_data *data)
    data->unit = MBYTES;
 }
 
-void set_data(GtkWidget *tmp, session_data *data)
+void set_data(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    /*When the value in the spin button is changed, store the value.*/
-   data->entry = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON (size_input) );
+   gsw->sdata->entry = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON (gsw->size_input) );
 }
 
-void initialize_data(session_data *data)	
+void initialize_session_data(session_data *data)	
 {
    /*Our arrays are cleared in setfilename()*/ 
    /*Split is default action.*/
    data->split = TRUE;
-
-   /*Insure that the split button is clicked.*/
-   gtk_button_clicked(GTK_BUTTON (split_button) );
    
    /*Initialize dynamic array information.*/
    data->filename_and_path = NULL;
@@ -167,40 +165,47 @@ void initialize_data(session_data *data)
    /*Set the default chunk_size. (1.44MB)*/
    data->entry = 1457664;
    data->chunk_size = 1457664; 
-   gtk_adjustment_set_value(size_input_adj , 1457664);
+   
+}
+
+void initialize_splitter_window(gtk_splitter_window *gsw)
+{
+   /*Insure that the split button is clicked.*/
+   gtk_button_clicked(GTK_BUTTON (gsw->split_button) );
+   gtk_adjustment_set_value(gsw->size_input_adj , 1457664);
 
    /*Disable all buttons, except for the open button.
      This is so that nothing is done until a file is selected.*/
 
    /*Don't create a dos batch file by default.*/
-   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (batch_file_button), FALSE);
-   data->create_batchfile = FALSE;
-   gtk_widget_set_sensitive(split_button, FALSE);
-   gtk_widget_set_sensitive(combine_button, FALSE);
-   gtk_widget_set_sensitive(batch_file_button, FALSE);
-   gtk_widget_set_sensitive(size_input, FALSE);
-   gtk_widget_set_sensitive(chunk_size_units, FALSE);
-   gtk_widget_set_sensitive(start_button, FALSE);
+   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (gsw->batch_file_button), FALSE);
+   gsw->sdata->create_batchfile = FALSE;
+   gtk_widget_set_sensitive(gsw->split_button, FALSE);
+   gtk_widget_set_sensitive(gsw->combine_button, FALSE);
+   gtk_widget_set_sensitive(gsw->batch_file_button, FALSE);
+   gtk_widget_set_sensitive(gsw->size_input, FALSE);
+   gtk_widget_set_sensitive(gsw->chunk_size_units, FALSE);
+   gtk_widget_set_sensitive(gsw->start_button, FALSE);
    /*Clear the filename in the entry box.*/
-   gtk_entry_set_text(GTK_ENTRY(filename_box), "");
+   gtk_entry_set_text(GTK_ENTRY(gsw->filename_box), "");
 }
 
-void toggle_split(GtkWidget *tmp, session_data *data)
+void toggle_split(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
-   data->split = TRUE;
+   gsw->sdata->split = TRUE;
    /*Enable buttons related to the split action.*/
-   gtk_widget_set_sensitive(batch_file_button, TRUE);
-   gtk_widget_set_sensitive(size_input, TRUE);
-   gtk_widget_set_sensitive(chunk_size_units, TRUE);
+   gtk_widget_set_sensitive(gsw->batch_file_button, TRUE);
+   gtk_widget_set_sensitive(gsw->size_input, TRUE);
+   gtk_widget_set_sensitive(gsw->chunk_size_units, TRUE);
 }
 
-void toggle_combine(GtkWidget *tmp, session_data *data)
+void toggle_combine(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
-   data->split = FALSE;
+   gsw->sdata->split = FALSE;
    /*Disable buttons not related to the combine action.*/
-   gtk_widget_set_sensitive(batch_file_button, FALSE);
-   gtk_widget_set_sensitive(size_input, FALSE);
-   gtk_widget_set_sensitive(chunk_size_units, FALSE);
+   gtk_widget_set_sensitive(gsw->batch_file_button, FALSE);
+   gtk_widget_set_sensitive(gsw->size_input, FALSE);
+   gtk_widget_set_sensitive(gsw->chunk_size_units, FALSE);
 }
 
 void toggle_batch(GtkWidget *tmp, session_data *data)
@@ -208,20 +213,26 @@ void toggle_batch(GtkWidget *tmp, session_data *data)
    data->create_batchfile = !data->create_batchfile;
 }
 
-void start(GtkWidget *tmp, session_data *data)
+void start(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    gboolean stable;
 
-   if (data->split)
-     stable = split(tmp, data);
+   gtk_widget_hide_all(gsw->base_window);
+
+   if (gsw->sdata->split)
+     stable = split(tmp, gsw->sdata);
    else
-     stable = combine(tmp, data);
+     stable = combine(tmp, gsw->sdata);
+
+   /*Reset the data.*/
+   initialize_session_data(gsw->sdata);
+   initialize_splitter_window(gsw);
+   gtk_widget_show_all(gsw->base_window);
+
 #if DEBUG
    if (stable)
      fprintf(stderr, "callbacks.c:  split/combine returned stable.\n");
    else
      fprintf(stderr, "callbacks.c:  split/combine returned unstable.\n");
 #endif
-   /*if (!stable)
-     gtk_main_quit();*/
 }

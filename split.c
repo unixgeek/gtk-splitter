@@ -133,7 +133,6 @@ gboolean split(GtkWidget *tmp, session_data *data)
      {
        progress = g_malloc(sizeof(progress_window));
        create_progress_window(progress, "Split Progress");
-       gtk_widget_hide_all(data->window);
      }
    
    /*BATCH FILE FOR DOS*/
@@ -160,7 +159,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
        strcpy(outfile_only, data->filename_only);
        /*Reserve four spaces for the extension; it will change later.*/
        strcat(outfile_only, ".ext");
-       bp_length = data->f_length + strlen(home_dir) + 4;  /*f_length includes space for '\0'.*/
+       bp_length = data->f_length + strlen(data->home_dir) + 4;  /*f_length includes space for '\0'.*/
        batchname_and_path = g_malloc( bp_length * sizeof(gchar));  
        if (batchname_and_path == NULL)
          {
@@ -172,7 +171,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
 #if DEBUG
        fprintf(stderr, "split.c:  Allocated %d bytes for batchname_and_path.\n", bp_length);
 #endif
-       strcpy(batchname_and_path, home_dir);
+       strcpy(batchname_and_path, data->home_dir);
        strcat(batchname_and_path, data->filename_only);
        strcat(batchname_and_path, ".bat");
 #if DEBUG 
@@ -202,7 +201,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
    /*END OF BATCH FILE*/
    
    /*Setup the outfile.*/
-   outfile_length = data->f_length + strlen(home_dir) + 4 ;  /*f_length includes space for '\0'.*/
+   outfile_length = data->f_length + strlen(data->home_dir) + 4 ;  /*f_length includes space for '\0'.*/
    outfile = g_malloc( outfile_length * sizeof(char) );
    if (outfile == NULL)
      {
@@ -214,7 +213,7 @@ gboolean split(GtkWidget *tmp, session_data *data)
 #if DEBUG
    fprintf(stderr, "split.c:  Allocated %d bytes for outfile.\n", outfile_length);
 #endif
-   strcpy(outfile, home_dir);
+   strcpy(outfile, data->home_dir);
    strcat(outfile, data->filename_only);
    strcat(outfile, ".");
    strcat(outfile, ext);
@@ -386,16 +385,12 @@ gboolean split(GtkWidget *tmp, session_data *data)
      }
    
    g_free(outfile);
-
-   /*Reset the data.*/
-   initialize_data(data);
 	
    /*Hide the status window and unhide our gui.*/
    if (do_progress) 
      {
        destroy_progress_window(progress);
        g_free(progress);
-       gtk_widget_show_all(data->window);
      }
 
    return TRUE;

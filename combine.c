@@ -51,7 +51,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    stat(data->filename_and_path, &file_info);  /*Not necessary?*/
 
    /*Setup the outfile.*/
-   outfile_length = (strlen(home_dir) + data->f_length);  /*f_length includes space for '\0'.*/
+   outfile_length = (strlen(data->home_dir) + data->f_length);  /*f_length includes space for '\0'.*/
    outfile = g_malloc( outfile_length  * sizeof(gchar) );
    if (outfile == NULL)
      {
@@ -75,7 +75,7 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    fprintf(stderr, "combine.c:  Allocated %d bytes for infile.\n", infile_length);
    fprintf(stderr, "combine.c:  Allocated %d bytes for outfile.\n", outfile_length);
 #endif
-   strcpy(outfile, home_dir);
+   strcpy(outfile, data->home_dir);
    strcat(outfile, data->filename_only);
    outfile[outfile_length - 5] = '\0';
  
@@ -172,7 +172,6 @@ gboolean combine(GtkWidget *tmp, session_data *data)
      {
        progress = g_malloc(sizeof(progress_window));
        create_progress_window(progress, "Combine Progress");
-       gtk_widget_hide_all(data->window);
      }
 
    /*Now DO the combine.*/
@@ -235,13 +234,10 @@ gboolean combine(GtkWidget *tmp, session_data *data)
    g_free(infile);
    g_free(outfile);
 
-   /*Reset the data.*/
-   initialize_data(data);
    if (do_progress) 
      {
        destroy_progress_window(progress);
        g_free(progress);
-       gtk_widget_show_all(data->window);
      }
    
 #if DEBUG 

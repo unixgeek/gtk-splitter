@@ -23,10 +23,10 @@
 #include "globals.h"
 
 /*Sets the filename in session_data.*/
-void setfilename(GtkWidget *, session_data *);
+void setfilename(GtkWidget *, gtk_splitter_window *);
 
 /*For choosing a file with the gtk open dialog.*/
-void choose_file(GtkWidget *, session_data *);
+void choose_file(GtkWidget *, gtk_splitter_window *);
 
 /*Tell our program which units to use: bytes, kilobytes, or megabytes.*/
 void set_bytes(GtkWidget *, session_data *);
@@ -36,19 +36,21 @@ void set_kbytes(GtkWidget *, session_data *);
 void set_mbytes(GtkWidget *, session_data *);
 
 /*Reads the chunksize inputed in the spin box.*/
-void set_data(GtkWidget *, session_data *);
+void set_data(GtkWidget *, gtk_splitter_window *);
 
 /*Tell our program to split the selected file.*/
-void toggle_split(GtkWidget *, session_data *);
+void toggle_split(GtkWidget *, gtk_splitter_window *);
 
 /*Tell our program to combine the selected file.*/
-void toggle_combine(GtkWidget *, session_data *);
+void toggle_combine(GtkWidget *, gtk_splitter_window *);
 
 /*Toggle whether or not we will create a dos batch file.*/
 void toggle_batch(GtkWidget *, session_data *);
 
 /*Initialize our data.*/
-void initialize_data(session_data *);
+void initialize_session_data(session_data *);
+
+void initialize_splitter_window(gtk_splitter_window *);
 
 /*Start the split/combine process.*/
-void start(GtkWidget *, session_data *);
+void start(GtkWidget *, gtk_splitter_window *);
