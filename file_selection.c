@@ -26,6 +26,7 @@
 #include "file_selection.h"
 #include "error.h"
 
+/*A dialog for getting a file from the user.*/
 void choose_file(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    /*Set up a simple gtk file selection dialog.*/
@@ -127,6 +128,7 @@ void setfilename(GtkWidget *tmp, gtk_splitter_window *gsw)
    gtk_widget_set_sensitive( gsw->start_button, TRUE );
 }
 
+/*A dialog for getting the output directory from the user.*/
 void choose_directory(GtkWidget *tmp, gtk_splitter_window *gsw)
 {
    /*Set up a simple gtk file selection dialog.*/

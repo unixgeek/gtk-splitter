@@ -39,7 +39,6 @@ typedef struct
     gushort f_length;
     gfloat entry;
     gulong chunk_size;
-    //gushort unit;
     enum {BYTES, KBYTES, MBYTES} unit;
     gboolean split;
     gboolean create_batchfile;
