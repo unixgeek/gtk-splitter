@@ -30,7 +30,7 @@ project.type=GENERIC
 project.target.type=EXECUTABLE
 project.version=1.0b
 project.author=techgunter
-project.source.target=unknown
+project.source.target=gtk-splitter
 
 project.excluded.modules=\
 	intl
@@ -99,9 +99,10 @@ module.help.files=
 
 module.doc.name=.
 module.doc.type=
-module.doc.expanded=0
+module.doc.expanded=1
 module.doc.files=\
 	COPYING\
+	HOSTS\
 	README\
 	TODO
 
