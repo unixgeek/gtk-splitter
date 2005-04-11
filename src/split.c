@@ -30,7 +30,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "interface.h"
-#include "globals.h"
+#include "session.h"
+#include "window.h"
 #include "progress.h"
 #include "dostextfile.h"
 
@@ -234,7 +235,7 @@ gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
      {
        if ( do_progress )  /* Display the file name we are creating. */
          gtk_label_set_text( GTK_LABEL( progress_window->message ), outfile );
-while ( g_main_iteration( FALSE ) );       
+   while ( g_main_iteration( FALSE ) );       
        /* The leftover file. (?) */
        if ( ( size_of_leftover_file != 0 ) && ( file_count  == ( number_of_parts ) ) )
          {

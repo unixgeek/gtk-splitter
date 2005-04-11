@@ -23,7 +23,7 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "globals.h"
+#include "window.h"
 
 GtkSplitterWindow* gtk_splitter_main_window_new( );
 

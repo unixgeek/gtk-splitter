@@ -1,5 +1,5 @@
 /*
- * globals.h
+ * $Id$
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -20,30 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* This file contains global definitions. */
-
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #include <gtk/gtk.h>
-#include <limits.h>
-
-/* Update the progress bar every 32k. */
-#define UPDATE_INTERVAL 32768  
-
-/* session_data is a struct containing information related to a selected file. */
-typedef struct
-  {
-    gfloat entry;
-    enum {BYTES, KILOBYTES, MEGABYTES} unit;
-    gchar file_name_and_path[PATH_MAX];
-    gchar file_name_only[PATH_MAX];
-    gchar home_directory[PATH_MAX];
-    gchar output_directory[PATH_MAX];
-    gboolean verify;
-    gboolean split;
-    gboolean create_batchfile;    
-  } GtkSplitterSessionData;
+#include "session.h"
 
 /* gtk_splitter_window is a struct for storing widgets related to the main
    window of gtk-splitter. */
@@ -80,5 +61,5 @@ typedef struct
     GdkPixbuf *icon;
     GtkSplitterSessionData *session_data;
   } GtkSplitterWindow;
-
-#endif /* GLOBALS_H */
+  
+#endif /* WINDOW_H */

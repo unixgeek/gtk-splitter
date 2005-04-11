@@ -27,7 +27,8 @@
 #include "callbacks.h"
 #include "split.h"
 #include "combine.h"
-#include "globals.h"
+#include "session.h"
+#include "window.h"
 #include "interface.h"
 
 /* Set the units to 'bytes'. */

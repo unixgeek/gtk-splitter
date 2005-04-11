@@ -22,7 +22,8 @@
 
 #include <glib.h>
 #include <stdlib.h>
-#include "globals.h"
+#include "window.h"
+#include "session.h"
 #include "callbacks.h"
 #include "file_selection.h"
 #include "interface.h"

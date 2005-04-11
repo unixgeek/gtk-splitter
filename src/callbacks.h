@@ -24,7 +24,8 @@
 #define CALLBACKS_H
 
 #include <gtk/gtk.h>
-#include "globals.h"
+#include "session.h"
+#include "window.h"
 
 /* Tell our program which units to use: bytes, kilobytes, or megabytes. */
 void set_unit_bytes( GtkWidget *widget, GtkSplitterSessionData *gssd );

@@ -24,7 +24,7 @@
 #define FILE_SELECTION_H
 
 #include <gtk/gtk.h>
-#include "globals.h"
+#include "window.h"
 
 /* For choosing a file with the gtk open dialog. */
 void get_file_name_dialog( GtkWidget *, GtkSplitterWindow *gsw );

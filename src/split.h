@@ -24,7 +24,7 @@
 #define SPLIT_H
 
 #include <gtk/gtk.h>
-#include "globals.h"
+#include "session.h"
 
 /* Split the selected file. */
 gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd );

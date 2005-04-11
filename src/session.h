@@ -1,5 +1,5 @@
-/* 
- * combine.h
+/*
+ * $Id$
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -19,14 +19,23 @@
  * along with gtk-splitter; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+#ifndef SESSION_H
+#define SESSION_H
 
-#ifndef COMBINE_H
-#define COMBINE_H
+#define UPDATE_INTERVAL 32768 
 
-#include <gtk/gtk.h>
-#include "session.h"
+typedef struct
+  {
+    gfloat entry;
+    enum {BYTES, KILOBYTES, MEGABYTES} unit;
+    gchar file_name_and_path[PATH_MAX];
+    gchar file_name_only[PATH_MAX];
+    gchar home_directory[PATH_MAX];
+    gchar output_directory[PATH_MAX];
+    gboolean verify;
+    gboolean split;
+    gboolean create_batchfile;    
+  } GtkSplitterSessionData;
 
-/* Combine the selected file. */
-gboolean gtk_splitter_combine_files( GtkSplitterSessionData * );
-
-#endif /* COMBINE_H */
+#endif /* SESSION_H */

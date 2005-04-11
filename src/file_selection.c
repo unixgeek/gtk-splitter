@@ -24,7 +24,8 @@
 #include <gtk/gtk.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "globals.h"
+#include "window.h"
+#include "session.h"
 #include "interface.h"
 #include "file_selection.h"
 
