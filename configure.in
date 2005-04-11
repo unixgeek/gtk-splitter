@@ -28,14 +28,8 @@ AC_SUBST(GTK_LIBS)
 dnl -- Check for MHASH
 AC_CHECK_LIB(mhash, mhash_init, , [have_mhash="no"])
 
-dnl -- Create package building scripts. --
-AC_CONFIG_FILES(build_rpm.sh, chmod +x build_rpm.sh)
-AC_CONFIG_FILES(build_tgz.sh, chmod +x build_tgz.sh)
-AC_CONFIG_FILES(build_deb.sh, chmod +x build_deb.sh)
-
 dnl -- Create the Makefiles. --
 AC_OUTPUT([ Makefile
-            gtk-splitter.spec
             src/Makefile
           ])
 
