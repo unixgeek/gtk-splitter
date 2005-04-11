@@ -25,7 +25,8 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-#include "globals.h"
+#include "window.h"
+#include "session.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "file_selection.h"
@@ -48,8 +49,6 @@ int main( int argc, char *argv[] )
    /* Initialize session data. */
    initialize_session_data( main_window->session_data );
    initialize_splitter_window( main_window );
-    
-   g_print( "%s-%s Gunter Wambaugh\n", PACKAGE, VERSION );
 
    /* Display the gui on the screen. */
    gtk_widget_show_all( main_window->base_window );
