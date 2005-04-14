@@ -29,14 +29,14 @@
    is opened for writing in BINARY mode and the array is NULL terminated. */
 
 /* Write text to a file without the eoln characters. */
-void write_dostextfile(FILE *, char *);
+void write_dostextfile (FILE *, char *);
 
 /* Write text to a file with the eoln characters. */
-void writeln_dostextfile(FILE *, char *);
+void writeln_dostextfile (FILE *, char *);
 
 /* Convert a file name to a dos file name.
    This function assumes that the array is NULL terminated and at least 13 characters
    long--12 characters for the file name and 1 character for the NULL terminator. */
-void dosify_file_name(char *);
+void dosify_file_name (char *);
 
 #endif /* DOSTEXTFILE_H */

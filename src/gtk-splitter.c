@@ -31,59 +31,61 @@
 #include "interface.h"
 #include "file_selection.h"
 
-int main( int argc, char *argv[] )
+int
+main (int argc, char *argv[])
 {
-   /* Used to automatically detect whether a file name read from
-      the command-line should be split or combined. */
-   char ext[4];
-   char *ptr;
-   char resolved_name[PATH_MAX];
-   
-   GtkSplitterWindow *main_window;
+  /* Used to automatically detect whether a file name read from
+     the command-line should be split or combined. */
+  char ext[4];
+  char *ptr;
+  char resolved_name[PATH_MAX];
 
-   /* Initialize gtk. */
-   gtk_init( &argc, &argv );
+  GtkSplitterWindow *main_window;
 
-   main_window = gtk_splitter_main_window_new( );
+  /* Initialize gtk. */
+  gtk_init (&argc, &argv);
 
-   /* Initialize session data. */
-   initialize_session_data( main_window->session_data );
-   initialize_splitter_window( main_window );
+  main_window = gtk_splitter_main_window_new ();
 
-   /* Display the gui on the screen. */
-   gtk_widget_show_all( main_window->base_window );
-   
-   /* Determine whether a file name read from
-      the command-line should be split or combined. */
-   if ( argc == 2 )
-     { 
-       ptr = realpath( argv[1], resolved_name );
-        
-       if ( ptr != NULL )
-         {
-           set_file_name( main_window, resolved_name );
+  /* Initialize session data. */
+  initialize_session_data (main_window->session_data);
+  initialize_splitter_window (main_window);
 
-           if ( strlen( resolved_name ) >= 3 )
-             {
-               /* Copy the file's extension. */
-               ext[0] = resolved_name[strlen( resolved_name ) - 3];
-               ext[1] = resolved_name[strlen( resolved_name ) - 2];
-               ext[2] = resolved_name[strlen( resolved_name ) - 1];
-               ext[3] = '\0';
-               /* Check to see if the extension is '001'. */
-               if ( strcmp( ext, "001" ) == 0 )
-                 {
-                   /* Start with the combine button selected. */
-                   gtk_button_clicked( GTK_BUTTON( main_window->combine_button ) );
-                 } 
-             }
-         }
-     }
+  /* Display the gui on the screen. */
+  gtk_widget_show_all (main_window->base_window);
 
-   /* Run the main loop of gtk. */
-   gtk_main( );
+  /* Determine whether a file name read from
+     the command-line should be split or combined. */
+  if (argc == 2)
+    {
+      ptr = realpath (argv[1], resolved_name);
 
-   gtk_splitter_main_window_destroy( main_window );
-   
-   return 0;
+      if (ptr != NULL)
+	{
+	  set_file_name (main_window, resolved_name);
+
+	  if (strlen (resolved_name) >= 3)
+	    {
+	      /* Copy the file's extension. */
+	      ext[0] = resolved_name[strlen (resolved_name) - 3];
+	      ext[1] = resolved_name[strlen (resolved_name) - 2];
+	      ext[2] = resolved_name[strlen (resolved_name) - 1];
+	      ext[3] = '\0';
+	      /* Check to see if the extension is '001'. */
+	      if (strcmp (ext, "001") == 0)
+		{
+		  /* Start with the combine button selected. */
+		  gtk_button_clicked (GTK_BUTTON
+				      (main_window->combine_button));
+		}
+	    }
+	}
+    }
+
+  /* Run the main loop of gtk. */
+  gtk_main ();
+
+  gtk_splitter_main_window_destroy (main_window);
+
+  return 0;
 }

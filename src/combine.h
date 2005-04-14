@@ -27,6 +27,6 @@
 #include "session.h"
 
 /* Combine the selected file. */
-gboolean gtk_splitter_combine_files( GtkSplitterSessionData * );
+gboolean gtk_splitter_combine_files (GtkSplitterSessionData *);
 
 #endif /* COMBINE_H */

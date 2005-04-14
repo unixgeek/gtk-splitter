@@ -27,6 +27,6 @@
 #include "session.h"
 
 /* Split the selected file. */
-gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd );
+gboolean gtk_splitter_split_file (GtkSplitterSessionData * gssd);
 
 #endif /* SPLIT_H */

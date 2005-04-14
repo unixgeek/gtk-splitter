@@ -19,18 +19,18 @@
  * along with gtk-splitter; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
 #include "window.h"
 
-GtkSplitterWindow* gtk_splitter_main_window_new( );
+GtkSplitterWindow *gtk_splitter_main_window_new ();
 
-void gtk_splitter_main_window_destroy( GtkSplitterWindow *gsw );
+void gtk_splitter_main_window_destroy (GtkSplitterWindow * gsw);
 
-void display_error( gchar *error );
+void display_error (gchar * error);
 
-void display_verification( gboolean verified );
+void display_verification (gboolean verified);
 
 #endif /* INTERFACE_H */

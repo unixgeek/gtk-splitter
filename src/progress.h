@@ -26,20 +26,20 @@
 #include <gtk/gtk.h>
 
 typedef struct
-  {
-    GtkWidget *base_window;
-    GtkWidget *table;
-    GtkWidget *current_progress;
-    GtkWidget *total_progress;
-    GtkWidget *file_label;
-    GtkWidget *current_progress_label;
-    GtkWidget *total_progress_label;
-    GtkWidget *message;
-    GtkWidget *separator;
-  } ProgressWindow;
+{
+  GtkWidget *base_window;
+  GtkWidget *table;
+  GtkWidget *current_progress;
+  GtkWidget *total_progress;
+  GtkWidget *file_label;
+  GtkWidget *current_progress_label;
+  GtkWidget *total_progress_label;
+  GtkWidget *message;
+  GtkWidget *separator;
+} ProgressWindow;
 
-ProgressWindow* progress_window_new( );
+ProgressWindow *progress_window_new ();
 
-void progress_window_destroy( ProgressWindow *pw );
+void progress_window_destroy (ProgressWindow * pw);
 
 #endif /* PROGRESS_H */

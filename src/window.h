@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: window.h,v 1.1 2005/04/11 23:28:18 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -29,37 +29,37 @@
 /* gtk_splitter_window is a struct for storing widgets related to the main
    window of gtk-splitter. */
 typedef struct
-  {
-    GtkWidget *base_window;
-    GtkWidget *base_box;
-    GtkWidget *box1;
-    GtkWidget *box2;
-    GtkWidget *box3;
-    GtkWidget *box4;
-    GtkWidget *box5;
-    GtkWidget *custom_start_button;
-    GtkWidget *custom_start_button_box;
-    GtkWidget *custom_start_button_alignment;
-    GtkWidget *custom_start_button_image;
-    GtkWidget *custom_start_button_label;
-    GtkWidget *open_button;
-    GtkWidget *output_button;
-    GtkWidget *batch_file_button;
-    GtkWidget *split_button;
-    GtkWidget *combine_button;
-    GtkWidget *verify_button;
-    GtkWidget *chunk_size_units;
-    GtkWidget *units_menu;
-    GtkWidget *unit_bytes;
-    GtkWidget *unit_kilobytes;
-    GtkWidget *unit_megabytes;
-    GtkWidget *file_name_box;
-    GtkWidget *output_box;
-    GtkAdjustment *size_input_adj;
-    GtkWidget *size_input;
-    GtkWidget *file_selection_dialog;
-    GdkPixbuf *icon;
-    GtkSplitterSessionData *session_data;
-  } GtkSplitterWindow;
-  
+{
+  GtkWidget *base_window;
+  GtkWidget *base_box;
+  GtkWidget *box1;
+  GtkWidget *box2;
+  GtkWidget *box3;
+  GtkWidget *box4;
+  GtkWidget *box5;
+  GtkWidget *custom_start_button;
+  GtkWidget *custom_start_button_box;
+  GtkWidget *custom_start_button_alignment;
+  GtkWidget *custom_start_button_image;
+  GtkWidget *custom_start_button_label;
+  GtkWidget *open_button;
+  GtkWidget *output_button;
+  GtkWidget *batch_file_button;
+  GtkWidget *split_button;
+  GtkWidget *combine_button;
+  GtkWidget *verify_button;
+  GtkWidget *chunk_size_units;
+  GtkWidget *units_menu;
+  GtkWidget *unit_bytes;
+  GtkWidget *unit_kilobytes;
+  GtkWidget *unit_megabytes;
+  GtkWidget *file_name_box;
+  GtkWidget *output_box;
+  GtkAdjustment *size_input_adj;
+  GtkWidget *size_input;
+  GtkWidget *file_selection_dialog;
+  GdkPixbuf *icon;
+  GtkSplitterSessionData *session_data;
+} GtkSplitterWindow;
+
 #endif /* WINDOW_H */
