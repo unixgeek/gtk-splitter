@@ -80,7 +80,7 @@ initialize_session_data (GtkSplitterSessionData * gssd)
   if (home == NULL)
     {
       display_error ("Could not determine home directory.\n"
-		     "Check environment variables for $HOME.");
+                     "Check environment variables for $HOME.");
 
       /* Default to '/' as the user's home directory. */
       sprintf (gssd->home_directory, "/");
@@ -109,11 +109,11 @@ initialize_splitter_window (GtkSplitterWindow * gsw)
 
   /* Show the defauult output_directory. */
   gtk_entry_set_text (GTK_ENTRY (gsw->output_box),
-		      gsw->session_data->home_directory);
+                      gsw->session_data->home_directory);
 
   /* Don't create a dos batch file by default. */
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsw->batch_file_button),
-				FALSE);
+                                FALSE);
 
 #ifdef HAVE_LIBMHASH
   /* Verify file by default. */

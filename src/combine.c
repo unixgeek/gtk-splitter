@@ -92,34 +92,34 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       /* If the file cannot be opened, assume it does not exist.
          Iterate through the extensions.  (.001, .002, .003, ...) */
       if (in == NULL)
-	done = TRUE;
+        done = TRUE;
       else
-	{
-	  files_to_combine++;
+        {
+          files_to_combine++;
 
-	  stat (infile, &file_info);
-	  combined_file_size += file_info.st_size;
+          stat (infile, &file_info);
+          combined_file_size += file_info.st_size;
 
-	  /* Increment the extension. */
-	  if (ext[2] != '9')
-	    ext[2]++;
-	  else
-	    {
-	      ext[2] = '0';
-	      if (ext[1] != '9')
-		ext[1]++;
-	      else
-		{
-		  ext[1] = '0';
-		  ext[0]++;
-		}
-	    }
+          /* Increment the extension. */
+          if (ext[2] != '9')
+            ext[2]++;
+          else
+            {
+              ext[2] = '0';
+              if (ext[1] != '9')
+                ext[1]++;
+              else
+                {
+                  ext[1] = '0';
+                  ext[0]++;
+                }
+            }
 
-	  /* Move on to the next file. */
-	  fclose (in);
-	  infile[strlen (infile) - 3] = '\0';
-	  strcat (infile, ext);
-	}
+          /* Move on to the next file. */
+          fclose (in);
+          infile[strlen (infile) - 3] = '\0';
+          strcat (infile, ext);
+        }
 
     }
   while (!done);
@@ -155,14 +155,14 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       do_progress = TRUE;
       progress_window = progress_window_new ();
       if (progress_window == NULL)
-	do_progress = FALSE;
+        do_progress = FALSE;
       else
-	{
-	  gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
-				"Combine Progress");
-	  gtk_widget_show_all (progress_window->base_window);
-	  while (g_main_iteration (FALSE));
-	}
+        {
+          gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
+                                "Combine Progress");
+          gtk_widget_show_all (progress_window->base_window);
+          while (g_main_iteration (FALSE));
+        }
     }
 
   /* Now DO the combine. */
@@ -170,67 +170,67 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   for (file_count = 0; file_count != files_to_combine; file_count++)
     {
       if (do_progress)
-	gtk_label_set_text (GTK_LABEL (progress_window->message), infile);
+        gtk_label_set_text (GTK_LABEL (progress_window->message), infile);
       in = fopen (infile, "rb");
       if (in == NULL)
-	{
-	  display_error
-	    ("combine.c:  Could not open one of the files to be combined.");
-	  if (do_progress)
-	    progress_window_destroy (progress_window);
-	  fclose (out);
-	  return FALSE;
-	}
+        {
+          display_error
+            ("combine.c:  Could not open one of the files to be combined.");
+          if (do_progress)
+            progress_window_destroy (progress_window);
+          fclose (out);
+          return FALSE;
+        }
       stat (infile, &file_info);
       for (byte_count = 0; byte_count != file_info.st_size; byte_count++)
-	{
-	  bytes_read++;
-	  temp = fgetc (in);
-	  fputc (temp, out);
-	  if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
-	    {
-	      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-					     (progress_window->
-					      current_progress),
-					     ((gfloat) byte_count) /
-					     ((gfloat) file_info.st_size));
-	      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-					     (progress_window->
-					      total_progress),
-					     ((gfloat) bytes_read) /
-					     ((gfloat) combined_file_size));
-	      while (g_main_iteration (FALSE));
-	    }
-	}
+        {
+          bytes_read++;
+          temp = fgetc (in);
+          fputc (temp, out);
+          if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
+            {
+              gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                             (progress_window->
+                                              current_progress),
+                                             ((gfloat) byte_count) /
+                                             ((gfloat) file_info.st_size));
+              gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                             (progress_window->
+                                              total_progress),
+                                             ((gfloat) bytes_read) /
+                                             ((gfloat) combined_file_size));
+              while (g_main_iteration (FALSE));
+            }
+        }
 
       /* Insure that all data is written to disk before we close. */
       fflush (out);
 
       /* Increment the extension. */
       if (ext[2] != '9')
-	ext[2]++;
+        ext[2]++;
       else
-	{
-	  ext[2] = '0';
-	  if (ext[1] != '9')
-	    ext[1]++;
-	  else
-	    {
-	      ext[1] = '0';
-	      ext[0]++;
-	    }
-	}
+        {
+          ext[2] = '0';
+          if (ext[1] != '9')
+            ext[1]++;
+          else
+            {
+              ext[1] = '0';
+              ext[0]++;
+            }
+        }
 
       /* Move on to the next file. */
       if (fclose (in) == EOF)
-	{
-	  display_error
-	    ("combine.c:  Could not open one of the files to be combined.");
-	  if (do_progress)
-	    progress_window_destroy (progress_window);
-	  fclose (out);
-	  return FALSE;
-	}
+        {
+          display_error
+            ("combine.c:  Could not open one of the files to be combined.");
+          if (do_progress)
+            progress_window_destroy (progress_window);
+          fclose (out);
+          return FALSE;
+        }
 
       infile[strlen (infile) - 3] = '\0';
       strcat (infile, ext);
@@ -244,69 +244,69 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       verified = TRUE;
       hashchar = '\0';
       if (do_progress)
-	gtk_label_set_text (GTK_LABEL (progress_window->message),
-			    "Verifying file...");
+        gtk_label_set_text (GTK_LABEL (progress_window->message),
+                            "Verifying file...");
 
       thread = mhash_init (MHASH_MD5);
 
       if (thread == MHASH_FAILED)
-	display_error ("combine.c:  Error generating md5 sum.");
+        display_error ("combine.c:  Error generating md5 sum.");
       else
-	{
-	  bytes_read = 0;
-	  fseek (out, 0, SEEK_SET);
-	  while (fread (&temp, 1, 1, out) == 1)
-	    {
-	      mhash (thread, &temp, 1);
-	      bytes_read++;
-	      if ((do_progress) && ((bytes_read % UPDATE_INTERVAL) == 0))
-		{
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  current_progress),
-						 ((gfloat) bytes_read) /
-						 ((gfloat)
-						  combined_file_size));
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  total_progress),
-						 ((gfloat) bytes_read) /
-						 ((gfloat)
-						  combined_file_size));
-		  while (g_main_iteration (FALSE));
-		}
-	    }
+        {
+          bytes_read = 0;
+          fseek (out, 0, SEEK_SET);
+          while (fread (&temp, 1, 1, out) == 1)
+            {
+              mhash (thread, &temp, 1);
+              bytes_read++;
+              if ((do_progress) && ((bytes_read % UPDATE_INTERVAL) == 0))
+                {
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  current_progress),
+                                                 ((gfloat) bytes_read) /
+                                                 ((gfloat)
+                                                  combined_file_size));
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  total_progress),
+                                                 ((gfloat) bytes_read) /
+                                                 ((gfloat)
+                                                  combined_file_size));
+                  while (g_main_iteration (FALSE));
+                }
+            }
 
-	  mhash_deinit (thread, hash);
-	  for (i = 0; i < mhash_get_block_size (MHASH_MD5); i++)
-	    {
-	      sprintf (hashtemp, "%.2x", hash[i]);
-	      strcat (new_hash, hashtemp);
-	    }
+          mhash_deinit (thread, hash);
+          for (i = 0; i < mhash_get_block_size (MHASH_MD5); i++)
+            {
+              sprintf (hashtemp, "%.2x", hash[i]);
+              strcat (new_hash, hashtemp);
+            }
 
-	  infile[strlen (infile) - 4] = '\0';
-	  sprintf (md5_file, "%s.md5", infile);
-	  md5 = fopen (md5_file, "r");
+          infile[strlen (infile) - 4] = '\0';
+          sprintf (md5_file, "%s.md5", infile);
+          md5 = fopen (md5_file, "r");
 
-	  if (md5 != NULL)
-	    {
-	      while (hashchar != EOF)
-		{
-		  hashchar = fgetc (md5);
-		  if (hashchar != EOF)
-		    strcat (given_hash, (char *) &hashchar);
-		}
-	      fclose (md5);
+          if (md5 != NULL)
+            {
+              while (hashchar != EOF)
+                {
+                  hashchar = fgetc (md5);
+                  if (hashchar != EOF)
+                    strcat (given_hash, (char *) &hashchar);
+                }
+              fclose (md5);
 
-	      if (strcmp (new_hash, given_hash) != 0)
-		verified = FALSE;
-	      display_verification (verified);
-	    }
-	  else
-	    {
-	      display_error ("split.c:  Error reading md5 sum from file.");
-	    }
-	}
+              if (strcmp (new_hash, given_hash) != 0)
+                verified = FALSE;
+              display_verification (verified);
+            }
+          else
+            {
+              display_error ("split.c:  Error reading md5 sum from file.");
+            }
+        }
     }
 #endif
   
@@ -315,7 +315,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
     {
       display_error ("combine.c:  Could not close the combined file.");
       if (do_progress)
-	progress_window_destroy (progress_window);
+        progress_window_destroy (progress_window);
       return TRUE;
     }
 

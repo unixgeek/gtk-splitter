@@ -76,15 +76,15 @@ dosify_file_name (char *file_name)
 
   /* Convert some characters to underscores. */
   for (i = 0; i <= 7; i++)
-    {				/* {'*' '+' ' ' '|' '\' '=' '?' '[' ']' ';' ':' '"' '<' '>' ','} */
+    {                           /* {'*' '+' ' ' '|' '\' '=' '?' '[' ']' ';' ':' '"' '<' '>' ','} */
       if ((file_name[i] == '*') || (file_name[i] == '+')
-	  || (file_name[i] == ' ') || (file_name[i] == '|')
-	  || (file_name[i] == '\\') || (file_name[i] == '=')
-	  || (file_name[i] == '?') || (file_name[i] == '[')
-	  || (file_name[i] == ']') || (file_name[i] == ';')
-	  || (file_name[i] == ':') || (file_name[i] == '"')
-	  || (file_name[i] == '<') || (file_name[i] == '>')
-	  || (file_name[i] == ','))
-	file_name[i] = '_';
+          || (file_name[i] == ' ') || (file_name[i] == '|')
+          || (file_name[i] == '\\') || (file_name[i] == '=')
+          || (file_name[i] == '?') || (file_name[i] == '[')
+          || (file_name[i] == ']') || (file_name[i] == ';')
+          || (file_name[i] == ':') || (file_name[i] == '"')
+          || (file_name[i] == '<') || (file_name[i] == '>')
+          || (file_name[i] == ','))
+        file_name[i] = '_';
     }
 }

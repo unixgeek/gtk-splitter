@@ -90,7 +90,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
 
   /* Setup the outfile string. */
   sprintf (outfile, "%s%s.%s", gssd->output_directory, gssd->file_name_only,
-	   ext);
+           ext);
 
   /* Setup strings used when creating a batch file. */
   if (gssd->create_batchfile)
@@ -106,7 +106,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
 
       /* Setup the batchname_and_path string. */
       sprintf (batchname_and_path, "%s%s.bat", gssd->output_directory,
-	       outfile_only);
+               outfile_only);
     }
 
   /* Determine chunk_size (bytes). */
@@ -145,7 +145,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
   if (chunk_size >= file_size)
     {
       display_error
-	("split.c:  Chunk size is greater than or equal to the file size.");
+        ("split.c:  Chunk size is greater than or equal to the file size.");
       return FALSE;
     }
 
@@ -165,14 +165,14 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
       do_progress = TRUE;
       progress_window = progress_window_new ();
       if (progress_window == NULL)
-	do_progress = FALSE;
+        do_progress = FALSE;
       else
-	{
-	  gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
-				"Split Progress");
-	  gtk_widget_show_all (progress_window->base_window);
-	  while (g_main_iteration (FALSE));
-	}
+        {
+          gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
+                                "Split Progress");
+          gtk_widget_show_all (progress_window->base_window);
+          while (g_main_iteration (FALSE));
+        }
     }
 
   batch = NULL;
@@ -182,12 +182,12 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
 
       batch = fopen (batchname_and_path, "wb+");
       if (batch == NULL)
-	{
-	  display_error ("split.c:  Could not create the batch file.");
-	  if (do_progress)
-	    progress_window_destroy (progress_window);
-	  return FALSE;
-	}
+        {
+          display_error ("split.c:  Could not create the batch file.");
+          if (do_progress)
+            progress_window_destroy (progress_window);
+          return FALSE;
+        }
       /* Write some header information to the batchfile. */
       writeln_dostextfile (batch, "@Echo Off");
       write_dostextfile (batch, "Echo ");
@@ -196,7 +196,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
       write_dostextfile (batch, VERSION);
       writeln_dostextfile (batch, " Gunter Wambaugh");
       writeln_dostextfile (batch,
-			   "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
+                           "Echo NOTE:  The file name may have been modified to ensure compatibility with the DOS copy utility.");
       write_dostextfile (batch, "Echo Original File Name:  ");
       writeln_dostextfile (batch, gssd->file_name_only);
       write_dostextfile (batch, "Echo Creating ");
@@ -204,7 +204,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
       write_dostextfile (batch, "copy /b ");
       /* End of header information */
 
-      strcat (outfile_only, ".ext");	/* Potential BUG. */
+      strcat (outfile_only, ".ext");    /* Potential BUG. */
 
     }
    /*---Done with setting up the batcfhile.-------------------------------------------------------------*/
@@ -216,11 +216,11 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
     {
       display_error ("split.c:  Could not open the selected file.");
       if (gssd->create_batchfile)
-	{
-	  fclose (batch);
-	}
+        {
+          fclose (batch);
+        }
       if (do_progress)
-	progress_window_destroy (progress_window);
+        progress_window_destroy (progress_window);
       return FALSE;
     }
 
@@ -231,11 +231,11 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
       display_error ("split.c:  Could not create an output file.");
       fclose (in);
       if (gssd->create_batchfile)
-	{
-	  fclose (batch);
-	}
+        {
+          fclose (batch);
+        }
       if (do_progress)
-	progress_window_destroy (progress_window);
+        progress_window_destroy (progress_window);
       return FALSE;
     }
 
@@ -243,123 +243,123 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
   /* The actual split process. */
   for (file_count = 1; file_count <= number_of_parts; file_count++)
     {
-      if (do_progress)		/* Display the file name we are creating. */
-	gtk_label_set_text (GTK_LABEL (progress_window->message), outfile);
+      if (do_progress)          /* Display the file name we are creating. */
+        gtk_label_set_text (GTK_LABEL (progress_window->message), outfile);
       while (g_main_iteration (FALSE));
       /* The leftover file. (?) */
       if ((size_of_leftover_file != 0) && (file_count == (number_of_parts)))
-	{
-	  for (byte_count = 1; (byte_count <= size_of_leftover_file);
-	       byte_count++)
-	    {
-	      temp = fgetc (in);
-	      fputc (temp, out);
-	      bytes_read++;
-	      if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
-		{
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  current_progress),
-						 ((gfloat) byte_count) /
-						 ((gfloat)
-						  size_of_leftover_file));
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  total_progress),
-						 ((gfloat) bytes_read) /
-						 ((gfloat) file_size));
-		  while (g_main_iteration (FALSE));
-		}
-	    }
-	}
-      else			/* Even files. (?) */
-	{
-	  for (byte_count = 1; (byte_count <= chunk_size); byte_count++)
-	    {
-	      temp = fgetc (in);
-	      fputc (temp, out);
-	      bytes_read++;
-	      if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
-		{
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  current_progress),
-						 ((gfloat) byte_count) /
-						 ((gfloat) chunk_size));
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  total_progress),
-						 ((gfloat) bytes_read) /
-						 ((gfloat) file_size));
-		  while (g_main_iteration (FALSE));
-		}
-	    }
-	}
+        {
+          for (byte_count = 1; (byte_count <= size_of_leftover_file);
+               byte_count++)
+            {
+              temp = fgetc (in);
+              fputc (temp, out);
+              bytes_read++;
+              if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
+                {
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  current_progress),
+                                                 ((gfloat) byte_count) /
+                                                 ((gfloat)
+                                                  size_of_leftover_file));
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  total_progress),
+                                                 ((gfloat) bytes_read) /
+                                                 ((gfloat) file_size));
+                  while (g_main_iteration (FALSE));
+                }
+            }
+        }
+      else                      /* Even files. (?) */
+        {
+          for (byte_count = 1; (byte_count <= chunk_size); byte_count++)
+            {
+              temp = fgetc (in);
+              fputc (temp, out);
+              bytes_read++;
+              if ((do_progress) && ((byte_count % UPDATE_INTERVAL) == 0))
+                {
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  current_progress),
+                                                 ((gfloat) byte_count) /
+                                                 ((gfloat) chunk_size));
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  total_progress),
+                                                 ((gfloat) bytes_read) /
+                                                 ((gfloat) file_size));
+                  while (g_main_iteration (FALSE));
+                }
+            }
+        }
 
       /* Copy the outfile name to the batch file. */
       if (gssd->create_batchfile)
-	{
-	  if (strcmp (ext, "001") != 0)
-	    write_dostextfile (batch, "+");
+        {
+          if (strcmp (ext, "001") != 0)
+            write_dostextfile (batch, "+");
 
-	  outfile_only[strlen (outfile_only) - 3] = '\0';
-	  strcat (outfile_only, ext);
-	  write_dostextfile (batch, outfile_only);
-	}
+          outfile_only[strlen (outfile_only) - 3] = '\0';
+          strcat (outfile_only, ext);
+          write_dostextfile (batch, outfile_only);
+        }
 
       /* Increment the extension.
          Remember, the extension looks like this: [.] [0] [1] [2] */
       if (ext[2] != '9')
-	ext[2]++;
+        ext[2]++;
       else
-	{
-	  ext[2] = '0';
-	  if (ext[1] != '9')
-	    ext[1]++;
-	  else
-	    {
-	      ext[1] = '0';
-	      ext[0]++;
-	    }
-	}
+        {
+          ext[2] = '0';
+          if (ext[1] != '9')
+            ext[1]++;
+          else
+            {
+              ext[1] = '0';
+              ext[0]++;
+            }
+        }
 
       /* Insure that all data is written to disk before we quit. */
       fflush (out);
       /* Close the split file. */
       if (fclose (out) == EOF)
-	{
-	  display_error ("split.c:  Could not close an output file.");
-	  fclose (in);
-	  if (gssd->create_batchfile)
-	    {
-	      fclose (batch);
-	    }
-	  if (do_progress)
-	    progress_window_destroy (progress_window);
-	  return FALSE;
-	}
+        {
+          display_error ("split.c:  Could not close an output file.");
+          fclose (in);
+          if (gssd->create_batchfile)
+            {
+              fclose (batch);
+            }
+          if (do_progress)
+            progress_window_destroy (progress_window);
+          return FALSE;
+        }
 
       /* Start a new outfile. */
       if (bytes_read != file_size)
-	{
-	  /* Setup a new outfile. */
-	  outfile[strlen (outfile) - 3] = '\0';
-	  strcat (outfile, ext);
+        {
+          /* Setup a new outfile. */
+          outfile[strlen (outfile) - 3] = '\0';
+          strcat (outfile, ext);
 
-	  out = fopen (outfile, "wb+");
-	  if (out == NULL)
-	    {
-	      display_error ("split.c:  Could not create an output file.");
-	      fclose (in);
-	      if (gssd->create_batchfile)
-		{
-		  fclose (batch);
-		}
-	      if (do_progress)
-		progress_window_destroy (progress_window);
-	      return FALSE;
-	    }
-	}
+          out = fopen (outfile, "wb+");
+          if (out == NULL)
+            {
+              display_error ("split.c:  Could not create an output file.");
+              fclose (in);
+              if (gssd->create_batchfile)
+                {
+                  fclose (batch);
+                }
+              if (do_progress)
+                progress_window_destroy (progress_window);
+              return FALSE;
+            }
+        }
     }
   /* End of split process. */
 
@@ -368,55 +368,55 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
   if (gssd->verify)
     {
       if (do_progress)
-	gtk_label_set_text (GTK_LABEL (progress_window->message),
-			    "Generating md5 sum...");
+        gtk_label_set_text (GTK_LABEL (progress_window->message),
+                            "Generating md5 sum...");
 
       thread = mhash_init (MHASH_MD5);
 
       if (thread == MHASH_FAILED)
-	display_error ("split.c:  Error generating md5 sum.");
+        display_error ("split.c:  Error generating md5 sum.");
       else
-	{
-	  bytes_read = 0;
-	  fseek (in, 0, SEEK_SET);
-	  while (fread (&temp, 1, 1, in) == 1)
-	    {
-	      mhash (thread, &temp, 1);
-	      bytes_read++;
-	      if ((do_progress) && ((bytes_read % UPDATE_INTERVAL) == 0))
-		{
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  current_progress),
-						 ((gfloat) bytes_read) /
-						 ((gfloat) file_size));
-		  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
-						 (progress_window->
-						  total_progress),
-						 ((gfloat) bytes_read) /
-						 ((gfloat) file_size));
-		  while (g_main_iteration (FALSE));
-		}
-	    }
+        {
+          bytes_read = 0;
+          fseek (in, 0, SEEK_SET);
+          while (fread (&temp, 1, 1, in) == 1)
+            {
+              mhash (thread, &temp, 1);
+              bytes_read++;
+              if ((do_progress) && ((bytes_read % UPDATE_INTERVAL) == 0))
+                {
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  current_progress),
+                                                 ((gfloat) bytes_read) /
+                                                 ((gfloat) file_size));
+                  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR
+                                                 (progress_window->
+                                                  total_progress),
+                                                 ((gfloat) bytes_read) /
+                                                 ((gfloat) file_size));
+                  while (g_main_iteration (FALSE));
+                }
+            }
 
-	  mhash_deinit (thread, hash);
-	  outfile[strlen (outfile) - 4] = '\0';
-	  sprintf (md5_file, "%s.md5", outfile);
-	  md5 = fopen (md5_file, "w+");
+          mhash_deinit (thread, hash);
+          outfile[strlen (outfile) - 4] = '\0';
+          sprintf (md5_file, "%s.md5", outfile);
+          md5 = fopen (md5_file, "w+");
 
-	  if (md5 != NULL)
-	    {
-	      //fwrite( hash, sizeof( gchar ), mhash_get_block_size( MHASH_MD5 ), md5 );
-	      for (i = 0; i < mhash_get_block_size (MHASH_MD5); i++)
-		fprintf (md5, "%.2x", hash[i]);
-	      fflush (md5);
-	      fclose (md5);
-	    }
-	  else
-	    {
-	      display_error ("split.c:  Error writing md5 sum to file.");
-	    }
-	}
+          if (md5 != NULL)
+            {
+              //fwrite( hash, sizeof( gchar ), mhash_get_block_size( MHASH_MD5 ), md5 );
+              for (i = 0; i < mhash_get_block_size (MHASH_MD5); i++)
+                fprintf (md5, "%.2x", hash[i]);
+              fflush (md5);
+              fclose (md5);
+            }
+          else
+            {
+              display_error ("split.c:  Error writing md5 sum to file.");
+            }
+        }
     }
 #endif
 
@@ -425,11 +425,11 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
     {
       display_error ("split.c:  Could not close the selected file.");
       if (gssd->create_batchfile)
-	{
-	  fclose (batch);
-	}
+        {
+          fclose (batch);
+        }
       if (do_progress)
-	progress_window_destroy (progress_window);
+        progress_window_destroy (progress_window);
       return TRUE;
     }
 
@@ -447,12 +447,12 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
       /* End of footer information. */
 
       if (fclose (batch) == EOF)
-	{
-	  display_error ("split.c:  Could not close the batch file.");
-	  if (do_progress)
-	    progress_window_destroy (progress_window);
-	  return TRUE;
-	}
+        {
+          display_error ("split.c:  Could not close the batch file.");
+          if (do_progress)
+            progress_window_destroy (progress_window);
+          return TRUE;
+        }
     }
 
   /* Free the progress window. */

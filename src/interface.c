@@ -40,7 +40,7 @@ gtk_splitter_main_window_new ()
   if ((gsw == NULL) || (gsw->session_data == NULL))
     {
       display_error
-	("interface.c:  Couldn't allocate memory for GtkSplitterWindow");
+        ("interface.c:  Couldn't allocate memory for GtkSplitterWindow");
       exit (1);
     }
 
@@ -76,8 +76,8 @@ gtk_splitter_main_window_new ()
   gsw->split_button = gtk_radio_button_new_with_label (NULL, "Split");
   gsw->combine_button =
     gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON
-						 (gsw->split_button),
-						 "Combine");
+                                                 (gsw->split_button),
+                                                 "Combine");
 
   /* Toggle button for the DOS batch file option. */
   gsw->batch_file_button =
@@ -107,7 +107,7 @@ gtk_splitter_main_window_new ()
   gtk_menu_append (GTK_MENU (gsw->units_menu), gsw->unit_kilobytes);
   gtk_menu_append (GTK_MENU (gsw->units_menu), gsw->unit_megabytes);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (gsw->chunk_size_units),
-			    gsw->units_menu);
+                            gsw->units_menu);
 
   /* The button that starts the split or combine process. */
   gsw->custom_start_button = gtk_button_new ();
@@ -117,15 +117,15 @@ gtk_splitter_main_window_new ()
     gtk_image_new_from_stock (GTK_STOCK_JUMP_TO, GTK_ICON_SIZE_BUTTON);
   gsw->custom_start_button_label = gtk_label_new_with_mnemonic ("S_tart");
   gtk_container_add (GTK_CONTAINER (gsw->custom_start_button),
-		     gsw->custom_start_button_alignment);
+                     gsw->custom_start_button_alignment);
   gtk_container_add (GTK_CONTAINER (gsw->custom_start_button_alignment),
-		     gsw->custom_start_button_box);
+                     gsw->custom_start_button_box);
   gtk_box_pack_start (GTK_BOX (gsw->custom_start_button_box),
-		      gsw->custom_start_button_image, FALSE, FALSE, 0);
+                      gsw->custom_start_button_image, FALSE, FALSE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->custom_start_button_box),
-		      gsw->custom_start_button_label, FALSE, FALSE, 0);
+                      gsw->custom_start_button_label, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (gsw->custom_start_button_label),
-			 GTK_JUSTIFY_LEFT);
+                         GTK_JUSTIFY_LEFT);
 
   gtk_window_set_title (GTK_WINDOW (gsw->base_window), "gtk-splitter");
   gtk_container_set_border_width (GTK_CONTAINER (gsw->base_window), 5);
@@ -139,15 +139,15 @@ gtk_splitter_main_window_new ()
 
 #ifdef HAVE_LIBMHASH
   gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->verify_button, TRUE, TRUE,
-		      0);
+                      0);
 #endif
 
   gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->batch_file_button, TRUE,
-		      TRUE, 0);
+                      TRUE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->box4, TRUE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->box1), gsw->open_button, TRUE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->box1), gsw->file_name_box, FALSE, TRUE,
-		      0);
+                      0);
   gtk_box_set_spacing (GTK_BOX (gsw->box1), 5);
 
   gtk_box_pack_start (GTK_BOX (gsw->box5), gsw->output_button, TRUE, TRUE, 0);
@@ -156,61 +156,61 @@ gtk_splitter_main_window_new ()
 
   gtk_box_pack_start (GTK_BOX (gsw->box2), gsw->split_button, TRUE, TRUE, 10);
   gtk_box_pack_start (GTK_BOX (gsw->box2), gsw->combine_button, TRUE, TRUE,
-		      10);
+                      10);
 
   gtk_box_pack_start (GTK_BOX (gsw->box3), gsw->size_input, TRUE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->box3), gsw->chunk_size_units, TRUE, TRUE,
-		      0);
+                      0);
 
   gtk_box_pack_start (GTK_BOX (gsw->box4), gsw->custom_start_button, TRUE,
-		      TRUE, 20);
+                      TRUE, 20);
   /* The end of putting the gui together. */
 
   /* Different signals the gui listens for. */
   /* Most callbacks listed here are defined in callbacks.h */
   g_signal_connect (GTK_OBJECT (gsw->base_window), "destroy",
-		    G_CALLBACK (gtk_widget_destroyed), &gsw->base_window);
+                    G_CALLBACK (gtk_widget_destroyed), &gsw->base_window);
 
   g_signal_connect (GTK_OBJECT (gsw->base_window), "destroy",
-		    G_CALLBACK (gtk_main_quit), NULL);
+                    G_CALLBACK (gtk_main_quit), NULL);
 
   g_signal_connect (GTK_OBJECT (gsw->split_button), "clicked",
-		    G_CALLBACK (toggle_split), (gpointer) gsw);
+                    G_CALLBACK (toggle_split), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->combine_button), "clicked",
-		    G_CALLBACK (toggle_combine), (gpointer) gsw);
+                    G_CALLBACK (toggle_combine), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->size_input_adj), "value_changed",
-		    G_CALLBACK (set_data), (gpointer) gsw);
+                    G_CALLBACK (set_data), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->custom_start_button), "clicked",
-		    G_CALLBACK (start_split_or_combine), (gpointer) gsw);
+                    G_CALLBACK (start_split_or_combine), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->open_button), "clicked",
-		    G_CALLBACK (get_file_name_dialog), (gpointer) gsw);
+                    G_CALLBACK (get_file_name_dialog), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->output_button), "clicked",
-		    G_CALLBACK (get_directory_name_dialog), (gpointer) gsw);
+                    G_CALLBACK (get_directory_name_dialog), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->batch_file_button), "toggled",
-		    G_CALLBACK (toggle_batch), (gpointer) gsw->session_data);
+                    G_CALLBACK (toggle_batch), (gpointer) gsw->session_data);
 
 #ifdef HAVE_LIBMHASH
   g_signal_connect (GTK_OBJECT (gsw->verify_button), "toggled",
-		    G_CALLBACK (toggle_verify), (gpointer) gsw->session_data);
+                    G_CALLBACK (toggle_verify), (gpointer) gsw->session_data);
 #endif
 
   g_signal_connect (GTK_OBJECT (gsw->unit_bytes), "activate",
-		    G_CALLBACK (set_unit_bytes),
-		    (gpointer) gsw->session_data);
+                    G_CALLBACK (set_unit_bytes),
+                    (gpointer) gsw->session_data);
 
   g_signal_connect (GTK_OBJECT (gsw->unit_kilobytes), "activate",
-		    G_CALLBACK (set_unit_kilobytes),
-		    (gpointer) gsw->session_data);
+                    G_CALLBACK (set_unit_kilobytes),
+                    (gpointer) gsw->session_data);
 
   g_signal_connect (GTK_OBJECT (gsw->unit_megabytes), "activate",
-		    G_CALLBACK (set_unit_megabytes),
-		    (gpointer) gsw->session_data);
+                    G_CALLBACK (set_unit_megabytes),
+                    (gpointer) gsw->session_data);
   /* End of callbacks. */
 
   return gsw;
@@ -238,9 +238,9 @@ display_error (gchar * error)
 
   /* Use a stock message dialog. */
   dialog = gtk_message_dialog_new (NULL,
-				   GTK_DIALOG_MODAL,
-				   GTK_MESSAGE_ERROR,
-				   GTK_BUTTONS_CLOSE, error);
+                                   GTK_DIALOG_MODAL,
+                                   GTK_MESSAGE_ERROR,
+                                   GTK_BUTTONS_CLOSE, error);
 
   /* Display the error dialog. */
   gtk_dialog_run (GTK_DIALOG (dialog));
@@ -255,16 +255,16 @@ display_verification (gboolean verified)
   /* Use a stock message dialog. */
   if (verified)
     dialog = gtk_message_dialog_new (NULL,
-				     GTK_DIALOG_MODAL,
-				     GTK_MESSAGE_INFO,
-				     GTK_BUTTONS_CLOSE,
-				     "File verification successful");
+                                     GTK_DIALOG_MODAL,
+                                     GTK_MESSAGE_INFO,
+                                     GTK_BUTTONS_CLOSE,
+                                     "File verification successful");
   else
     dialog = gtk_message_dialog_new (NULL,
-				     GTK_DIALOG_MODAL,
-				     GTK_MESSAGE_WARNING,
-				     GTK_BUTTONS_CLOSE,
-				     "File verification unsuccessful");
+                                     GTK_DIALOG_MODAL,
+                                     GTK_MESSAGE_WARNING,
+                                     GTK_BUTTONS_CLOSE,
+                                     "File verification unsuccessful");
 
   /* Display the error dialog. */
   gtk_dialog_run (GTK_DIALOG (dialog));

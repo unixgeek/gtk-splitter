@@ -43,6 +43,6 @@ void get_directory_name (GtkWidget * widget, GtkSplitterWindow * gsw);
 
 /* Sets the directory name in the GUI and session_data struct. */
 void set_directory_name (GtkSplitterWindow * gsw,
-			 gchar * directory_name_to_set);
+                         gchar * directory_name_to_set);
 
 #endif /* FILE_SELECTION_H */

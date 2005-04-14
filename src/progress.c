@@ -67,25 +67,25 @@ progress_window_new ()
   gtk_container_add (GTK_CONTAINER (pw->base_window), pw->table);
   /* Row 0 */
   gtk_table_attach (GTK_TABLE (pw->table), pw->file_label, 0, 1, 0, 1,
-		    GTK_FILL, GTK_FILL, 0, 0);
+                    GTK_FILL, GTK_FILL, 0, 0);
   gtk_table_attach (GTK_TABLE (pw->table), pw->message, 1, 2, 0, 1, GTK_FILL,
-		    GTK_FILL, 0, 0);
+                    GTK_FILL, 0, 0);
   /* Row 1 */
   gtk_table_attach (GTK_TABLE (pw->table), pw->current_progress_label, 0, 1,
-		    1, 2, GTK_FILL, GTK_FILL, 0, 0);
+                    1, 2, GTK_FILL, GTK_FILL, 0, 0);
   gtk_table_attach (GTK_TABLE (pw->table), pw->current_progress, 1, 2, 1, 2,
-		    GTK_FILL, GTK_FILL, 0, 0);
+                    GTK_FILL, GTK_FILL, 0, 0);
   /* Row 2 */
   gtk_table_attach (GTK_TABLE (pw->table), pw->separator, 0, 2, 2, 3,
-		    GTK_FILL, GTK_FILL, 0, 0);
+                    GTK_FILL, GTK_FILL, 0, 0);
   /* Row 3 */
   gtk_table_attach (GTK_TABLE (pw->table), pw->total_progress_label, 0, 1, 3,
-		    4, GTK_FILL, GTK_FILL, 0, 0);
+                    4, GTK_FILL, GTK_FILL, 0, 0);
   gtk_table_attach (GTK_TABLE (pw->table), pw->total_progress, 1, 2, 3, 4,
-		    GTK_FILL, GTK_FILL, 0, 0);
+                    GTK_FILL, GTK_FILL, 0, 0);
 
   g_signal_connect (GTK_OBJECT (pw->base_window), "destroy",
-		    G_CALLBACK (gtk_widget_destroyed), &pw->base_window);
+                    G_CALLBACK (gtk_widget_destroyed), &pw->base_window);
 
   return pw;
 }

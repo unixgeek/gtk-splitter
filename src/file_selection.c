@@ -29,7 +29,7 @@
 #include "interface.h"
 #include "file_selection.h"
 
-						    /* For choosing a file with the gtk open dialog. *///remove file_selection_dialog
+                                                                                                       /* For choosing a file with the gtk open dialog. *///remove file_selection_dialog
 void
 get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
 {
@@ -38,30 +38,30 @@ get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
 
   /* Default the dialog to the user's home directory. */
   gtk_file_selection_set_filename (GTK_FILE_SELECTION
-				   (gsw->file_selection_dialog),
-				   gsw->session_data->home_directory);
+                                   (gsw->file_selection_dialog),
+                                   gsw->session_data->home_directory);
 
   /* Hide the create, delete, and rename buttons. */
   gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION
-					  (gsw->file_selection_dialog));
+                                          (gsw->file_selection_dialog));
 
   /* Connect some signals to the dialog. */
   g_signal_connect (GTK_OBJECT
-		    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-		     ok_button), "clicked", G_CALLBACK (get_file_name),
-		    (gpointer) gsw);
+                    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
+                     ok_button), "clicked", G_CALLBACK (get_file_name),
+                    (gpointer) gsw);
 
   g_signal_connect_swapped (GTK_OBJECT
-			    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-			     ok_button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    (gpointer) gsw->file_selection_dialog);
+                            (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
+                             ok_button), "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            (gpointer) gsw->file_selection_dialog);
 
   g_signal_connect_swapped (GTK_OBJECT
-			    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-			     cancel_button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    (gpointer) gsw->file_selection_dialog);
+                            (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
+                             cancel_button), "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            (gpointer) gsw->file_selection_dialog);
 
   /* Display the dialog. */
   gtk_widget_show (gsw->file_selection_dialog);
@@ -77,7 +77,7 @@ get_file_name (GtkWidget * widget, GtkSplitterWindow * gsw)
   selected_file =
     (gchar *)
     gtk_file_selection_get_filename (GTK_FILE_SELECTION
-				     (gsw->file_selection_dialog));
+                                     (gsw->file_selection_dialog));
 
   set_file_name (gsw, selected_file);
 }
@@ -105,11 +105,11 @@ set_file_name (GtkSplitterWindow * gsw, gchar * file_name_to_set)
     g_stpcpy (gsw->session_data->file_name_only, pos);
   else
     g_stpcpy (gsw->session_data->file_name_only,
-	      gsw->session_data->file_name_and_path);
+              gsw->session_data->file_name_and_path);
 
   /* Set the filename in the entry box. */
   gtk_entry_set_text (GTK_ENTRY (gsw->file_name_box),
-		      gsw->session_data->file_name_only);
+                      gsw->session_data->file_name_only);
 
   /* Set the gui so that all of the buttons active. */
   gtk_widget_set_sensitive (gsw->split_button, TRUE);
@@ -134,34 +134,34 @@ get_directory_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
   /* Default the dialog to the last chosen output directory.
      (On first run, output_directory is set to the user's home directory.) */
   gtk_file_selection_set_filename (GTK_FILE_SELECTION
-				   (gsw->file_selection_dialog),
-				   gsw->session_data->output_directory);
+                                   (gsw->file_selection_dialog),
+                                   gsw->session_data->output_directory);
 
   /* Hide the create, delete, and rename buttons. */
   gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION
-					  (gsw->file_selection_dialog));
+                                          (gsw->file_selection_dialog));
 
   /* Disable the ability to select files. */
   gtk_widget_set_sensitive (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-			    file_list, FALSE);
+                            file_list, FALSE);
 
   /* Connect some signals to the dialog. */
   g_signal_connect (GTK_OBJECT
-		    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-		     ok_button), "clicked", G_CALLBACK (get_directory_name),
-		    (gpointer) gsw);
+                    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
+                     ok_button), "clicked", G_CALLBACK (get_directory_name),
+                    (gpointer) gsw);
 
   g_signal_connect_swapped (GTK_OBJECT
-			    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-			     ok_button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    (gpointer) gsw->file_selection_dialog);
+                            (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
+                             ok_button), "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            (gpointer) gsw->file_selection_dialog);
 
   g_signal_connect_swapped (GTK_OBJECT
-			    (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
-			     cancel_button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    (gpointer) gsw->file_selection_dialog);
+                            (GTK_FILE_SELECTION (gsw->file_selection_dialog)->
+                             cancel_button), "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            (gpointer) gsw->file_selection_dialog);
 
   /* Display the dialog. */
   gtk_widget_show (gsw->file_selection_dialog);
@@ -177,7 +177,7 @@ get_directory_name (GtkWidget * widget, GtkSplitterWindow * gsw)
   selected_directory =
     (gchar *)
     gtk_file_selection_get_filename (GTK_FILE_SELECTION
-				     (gsw->file_selection_dialog));
+                                     (gsw->file_selection_dialog));
 
   set_directory_name (gsw, selected_directory);
 }
@@ -191,5 +191,5 @@ set_directory_name (GtkSplitterWindow * gsw, gchar * directory_name_to_set)
 
   /* Display the new directory in the main window. */
   gtk_entry_set_text (GTK_ENTRY (gsw->output_box),
-		      gsw->session_data->output_directory);
+                      gsw->session_data->output_directory);
 }

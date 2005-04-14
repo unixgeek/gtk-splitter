@@ -61,25 +61,25 @@ main (int argc, char *argv[])
       ptr = realpath (argv[1], resolved_name);
 
       if (ptr != NULL)
-	{
-	  set_file_name (main_window, resolved_name);
+        {
+          set_file_name (main_window, resolved_name);
 
-	  if (strlen (resolved_name) >= 3)
-	    {
-	      /* Copy the file's extension. */
-	      ext[0] = resolved_name[strlen (resolved_name) - 3];
-	      ext[1] = resolved_name[strlen (resolved_name) - 2];
-	      ext[2] = resolved_name[strlen (resolved_name) - 1];
-	      ext[3] = '\0';
-	      /* Check to see if the extension is '001'. */
-	      if (strcmp (ext, "001") == 0)
-		{
-		  /* Start with the combine button selected. */
-		  gtk_button_clicked (GTK_BUTTON
-				      (main_window->combine_button));
-		}
-	    }
-	}
+          if (strlen (resolved_name) >= 3)
+            {
+              /* Copy the file's extension. */
+              ext[0] = resolved_name[strlen (resolved_name) - 3];
+              ext[1] = resolved_name[strlen (resolved_name) - 2];
+              ext[2] = resolved_name[strlen (resolved_name) - 1];
+              ext[3] = '\0';
+              /* Check to see if the extension is '001'. */
+              if (strcmp (ext, "001") == 0)
+                {
+                  /* Start with the combine button selected. */
+                  gtk_button_clicked (GTK_BUTTON
+                                      (main_window->combine_button));
+                }
+            }
+        }
     }
 
   /* Run the main loop of gtk. */
