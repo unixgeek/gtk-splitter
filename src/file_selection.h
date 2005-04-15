@@ -1,5 +1,5 @@
 /*
- * file_selection.h
+ * $Id$
  *
  * Copyright 2001 Gunter Wambaugh
  *

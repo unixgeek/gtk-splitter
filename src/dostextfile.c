@@ -1,5 +1,5 @@
 /*
- * dostextfile.c
+ * $Id$
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -85,6 +85,6 @@ dosify_file_name (char *file_name)
           || (file_name[i] == ':') || (file_name[i] == '"')
           || (file_name[i] == '<') || (file_name[i] == '>')
           || (file_name[i] == ','))
-        file_name[i] = '_';
+        file_name[i] = '_';
     }
 }

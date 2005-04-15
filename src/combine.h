@@ -1,5 +1,5 @@
 /* 
- * combine.h
+ * $Id$
  *
  * Copyright 2001 Gunter Wambaugh
  *
