@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: file_selection.h,v 1.8 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -29,20 +29,7 @@
 /* For choosing a file with the gtk open dialog. */
 void get_file_name_dialog (GtkWidget *, GtkSplitterWindow * gsw);
 
-/* Gets the file name from get_file_name_dialog(). */
-void get_file_name (GtkWidget * widget, GtkSplitterWindow * gsw);
-
-/* Sets the file name in the GUI and session_data struct. */
-void set_file_name (GtkSplitterWindow * gsw, gchar * file_name_to_set);
-
 /* For choosing a directory with the gtk open dialog. */
 void get_directory_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw);
-
-/* Gets the directory name from get_file_name_dialog(). */
-void get_directory_name (GtkWidget * widget, GtkSplitterWindow * gsw);
-
-/* Sets the directory name in the GUI and session_data struct. */
-void set_directory_name (GtkSplitterWindow * gsw,
-                         gchar * directory_name_to_set);
 
 #endif /* FILE_SELECTION_H */
