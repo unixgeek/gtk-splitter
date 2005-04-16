@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: split.c,v 1.30 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -171,7 +171,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
           gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
                                 "Split Progress");
           gtk_widget_show_all (progress_window->base_window);
-          while (g_main_iteration (FALSE));
+          while (g_main_context_iteration (NULL, FALSE));
         }
     }
 
@@ -245,7 +245,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
     {
       if (do_progress)          /* Display the file name we are creating. */
         gtk_label_set_text (GTK_LABEL (progress_window->message), outfile);
-      while (g_main_iteration (FALSE));
+      while (g_main_context_iteration (NULL, FALSE));
       /* The leftover file. (?) */
       if ((size_of_leftover_file != 0) && (file_count == (number_of_parts)))
         {
@@ -268,7 +268,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
                                                   total_progress),
                                                  ((gfloat) bytes_read) /
                                                  ((gfloat) file_size));
-                  while (g_main_iteration (FALSE));
+                  while (g_main_context_iteration (NULL, FALSE));
                 }
             }
         }
@@ -291,7 +291,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
                                                   total_progress),
                                                  ((gfloat) bytes_read) /
                                                  ((gfloat) file_size));
-                  while (g_main_iteration (FALSE));
+                  while (g_main_context_iteration (NULL, FALSE));
                 }
             }
         }
