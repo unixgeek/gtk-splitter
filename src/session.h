@@ -1,5 +1,5 @@
 /*
- * $Id: session.h,v 1.1 2005/04/11 23:28:18 techgunter Exp $
+ * $Id: session.h,v 1.2 2005/04/14 01:04:53 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -27,13 +27,13 @@
 
 typedef struct
 {
-  gfloat entry;
+  gdouble entry;
   enum
   { BYTES, KILOBYTES, MEGABYTES } unit;
-  gchar file_name_and_path[PATH_MAX];
-  gchar file_name_only[PATH_MAX];
-  gchar home_directory[PATH_MAX];
-  gchar output_directory[PATH_MAX];
+  gchar *file_name_and_path;
+  gchar *file_name_only;
+  gchar *home_directory;
+  gchar *output_directory;
   gboolean verify;
   gboolean split;
   gboolean create_batchfile;
