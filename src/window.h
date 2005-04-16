@@ -1,5 +1,5 @@
 /*
- * $Id: window.h,v 1.1 2005/04/11 23:28:18 techgunter Exp $
+ * $Id: window.h,v 1.2 2005/04/14 01:04:53 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -37,18 +37,14 @@ typedef struct
   GtkWidget *box3;
   GtkWidget *box4;
   GtkWidget *box5;
-  GtkWidget *custom_start_button;
-  GtkWidget *custom_start_button_box;
-  GtkWidget *custom_start_button_alignment;
-  GtkWidget *custom_start_button_image;
-  GtkWidget *custom_start_button_label;
+  GtkWidget *start_button;
+  GtkWidget *start_button_box;
   GtkWidget *open_button;
   GtkWidget *output_button;
   GtkWidget *batch_file_button;
   GtkWidget *split_button;
   GtkWidget *combine_button;
   GtkWidget *verify_button;
-  GtkWidget *chunk_size_units;
   GtkWidget *units_menu;
   GtkWidget *unit_bytes;
   GtkWidget *unit_kilobytes;
