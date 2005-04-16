@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: combine.c,v 1.25 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -161,7 +161,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
           gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
                                 "Combine Progress");
           gtk_widget_show_all (progress_window->base_window);
-          while (g_main_iteration (FALSE));
+          while (g_main_context_iteration (NULL, FALSE));
         }
     }
 
@@ -199,7 +199,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
                                               total_progress),
                                              ((gfloat) bytes_read) /
                                              ((gfloat) combined_file_size));
-              while (g_main_iteration (FALSE));
+              while (g_main_context_iteration (NULL, FALSE));
             }
         }
 
