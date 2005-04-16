@@ -1,5 +1,5 @@
 /* 
- * $Id$
+ * $Id: interface.c,v 1.6 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -47,8 +47,7 @@ gtk_splitter_main_window_new ()
   /* Create a new top-level window. */
   gsw->base_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-  /* Set the window so its dimensions are program controlled and not user controlled. */
-  gtk_window_set_policy (GTK_WINDOW (gsw->base_window), FALSE, FALSE, TRUE);
+  gtk_window_set_resizable (GTK_WINDOW (gsw->base_window), FALSE);
 
   /* Set the window icon. */
   gsw->icon = gdk_pixbuf_new_from_file (ICON_AND_PATH, NULL);
@@ -59,9 +58,9 @@ gtk_splitter_main_window_new ()
   gsw->base_box = gtk_vbox_new (FALSE, 0);
   gsw->box1 = gtk_hbox_new (FALSE, 0);
   gsw->box5 = gtk_hbox_new (FALSE, 0);
-  gsw->box2 = gtk_hbox_new (TRUE, 0);
-  gsw->box3 = gtk_hbox_new (TRUE, 0);
-  gsw->box4 = gtk_hbox_new (TRUE, 0);
+  gsw->box2 = gtk_hbox_new (FALSE, 0);
+  gsw->box3 = gtk_hbox_new (FALSE, 0);
+  gsw->box4 = gtk_hbox_new (FALSE, 0);
 
   /* Setup widgets for inputing and displaying the selected
      file and selected output directory. */
@@ -69,8 +68,8 @@ gtk_splitter_main_window_new ()
   gsw->output_button = gtk_button_new_from_stock (GTK_STOCK_SAVE);
   gsw->file_name_box = gtk_entry_new ();
   gsw->output_box = gtk_entry_new ();
-  gtk_entry_set_editable (GTK_ENTRY (gsw->file_name_box), FALSE);
-  gtk_entry_set_editable (GTK_ENTRY (gsw->output_box), FALSE);
+  gtk_editable_set_editable (GTK_EDITABLE (gsw->file_name_box), FALSE);
+  gtk_editable_set_editable (GTK_EDITABLE (gsw->output_box), FALSE);
 
   /* Radio buttons for the split and combine options. */
   gsw->split_button = gtk_radio_button_new_with_label (NULL, "Split");
@@ -98,34 +97,16 @@ gtk_splitter_main_window_new ()
 
   /* Widgets for inputing the chunk size. */
   gsw->size_input = gtk_spin_button_new (gsw->size_input_adj, 1.0, 2);
-  gsw->chunk_size_units = gtk_option_menu_new ();
-  gsw->units_menu = gtk_menu_new ();
+  gsw->units_menu = gtk_combo_box_new_text ();
   gsw->unit_bytes = gtk_menu_item_new_with_label ("Bytes");
   gsw->unit_kilobytes = gtk_menu_item_new_with_label ("Kilobytes");
   gsw->unit_megabytes = gtk_menu_item_new_with_label ("Megabytes");
-  gtk_menu_append (GTK_MENU (gsw->units_menu), gsw->unit_bytes);
-  gtk_menu_append (GTK_MENU (gsw->units_menu), gsw->unit_kilobytes);
-  gtk_menu_append (GTK_MENU (gsw->units_menu), gsw->unit_megabytes);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (gsw->chunk_size_units),
-                            gsw->units_menu);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (gsw->units_menu), "Bytes");
+  gtk_combo_box_append_text (GTK_COMBO_BOX (gsw->units_menu), "Kilobytes");
+  gtk_combo_box_append_text (GTK_COMBO_BOX (gsw->units_menu), "Megabytes");
 
   /* The button that starts the split or combine process. */
-  gsw->custom_start_button = gtk_button_new ();
-  gsw->custom_start_button_alignment = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gsw->custom_start_button_box = gtk_hbox_new (FALSE, 2);
-  gsw->custom_start_button_image =
-    gtk_image_new_from_stock (GTK_STOCK_JUMP_TO, GTK_ICON_SIZE_BUTTON);
-  gsw->custom_start_button_label = gtk_label_new_with_mnemonic ("S_tart");
-  gtk_container_add (GTK_CONTAINER (gsw->custom_start_button),
-                     gsw->custom_start_button_alignment);
-  gtk_container_add (GTK_CONTAINER (gsw->custom_start_button_alignment),
-                     gsw->custom_start_button_box);
-  gtk_box_pack_start (GTK_BOX (gsw->custom_start_button_box),
-                      gsw->custom_start_button_image, FALSE, FALSE, 0);
-  gtk_box_pack_start (GTK_BOX (gsw->custom_start_button_box),
-                      gsw->custom_start_button_label, FALSE, FALSE, 0);
-  gtk_label_set_justify (GTK_LABEL (gsw->custom_start_button_label),
-                         GTK_JUSTIFY_LEFT);
+  gsw->start_button = gtk_button_new_from_stock (GTK_STOCK_OK);
 
   gtk_window_set_title (GTK_WINDOW (gsw->base_window), "gtk-splitter");
   gtk_container_set_border_width (GTK_CONTAINER (gsw->base_window), 5);
@@ -159,11 +140,10 @@ gtk_splitter_main_window_new ()
                       10);
 
   gtk_box_pack_start (GTK_BOX (gsw->box3), gsw->size_input, TRUE, TRUE, 0);
-  gtk_box_pack_start (GTK_BOX (gsw->box3), gsw->chunk_size_units, TRUE, TRUE,
+  gtk_box_pack_start (GTK_BOX (gsw->box3), gsw->units_menu, TRUE, TRUE,
                       0);
 
-  gtk_box_pack_start (GTK_BOX (gsw->box4), gsw->custom_start_button, TRUE,
-                      TRUE, 20);
+  gtk_box_pack_end (GTK_BOX (gsw->box4), gsw->start_button, FALSE, FALSE, 0);
   /* The end of putting the gui together. */
 
   /* Different signals the gui listens for. */
@@ -183,7 +163,7 @@ gtk_splitter_main_window_new ()
   g_signal_connect (GTK_OBJECT (gsw->size_input_adj), "value_changed",
                     G_CALLBACK (set_data), (gpointer) gsw);
 
-  g_signal_connect (GTK_OBJECT (gsw->custom_start_button), "clicked",
+  g_signal_connect (GTK_OBJECT (gsw->start_button), "clicked",
                     G_CALLBACK (start_split_or_combine), (gpointer) gsw);
 
   g_signal_connect (GTK_OBJECT (gsw->open_button), "clicked",
@@ -200,17 +180,9 @@ gtk_splitter_main_window_new ()
                     G_CALLBACK (toggle_verify), (gpointer) gsw->session_data);
 #endif
 
-  g_signal_connect (GTK_OBJECT (gsw->unit_bytes), "activate",
-                    G_CALLBACK (set_unit_bytes),
-                    (gpointer) gsw->session_data);
-
-  g_signal_connect (GTK_OBJECT (gsw->unit_kilobytes), "activate",
-                    G_CALLBACK (set_unit_kilobytes),
-                    (gpointer) gsw->session_data);
-
-  g_signal_connect (GTK_OBJECT (gsw->unit_megabytes), "activate",
-                    G_CALLBACK (set_unit_megabytes),
-                    (gpointer) gsw->session_data);
+  g_signal_connect (GTK_OBJECT (gsw->units_menu), "changed",
+                    G_CALLBACK (set_unit),
+                    (gpointer) gsw);
   /* End of callbacks. */
 
   return gsw;
