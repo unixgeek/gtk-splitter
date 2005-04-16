@@ -1,5 +1,5 @@
 /* 
- * $Id$
+ * $Id: callbacks.h,v 1.8 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -28,11 +28,7 @@
 #include "window.h"
 
 /* Tell our program which units to use: bytes, kilobytes, or megabytes. */
-void set_unit_bytes (GtkWidget * widget, GtkSplitterSessionData * gssd);
-
-void set_unit_kilobytes (GtkWidget * widget, GtkSplitterSessionData * gssd);
-
-void set_unit_megabytes (GtkWidget * widget, GtkSplitterSessionData * gssd);
+void set_unit (GtkWidget * widget, GtkSplitterWindow * gsw);
 
 /* Reads the chunksize inputed in the spin box. */
 void set_data (GtkWidget * widget, GtkSplitterWindow * gsw);
