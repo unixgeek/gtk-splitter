@@ -1,5 +1,5 @@
 /*
- * $Id: file_selection.c,v 1.19 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: file_selection.c,v 1.20 2005/04/16 22:59:19 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -34,10 +34,11 @@ get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
 {
   gchar *selected_file;
   struct stat file_information;
+  GtkWidget *file_selection_dialog;
   
   /* Set up a simple gtk file selection dialog. */
-  gsw->file_selection_dialog = gtk_file_chooser_dialog_new (
-    "Choose a file to split.",
+  file_selection_dialog = gtk_file_chooser_dialog_new (
+    "Choose a file",
     GTK_WINDOW (gsw->base_window),
     GTK_FILE_CHOOSER_ACTION_OPEN,
     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -45,14 +46,14 @@ get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
     NULL);
 
   gtk_file_chooser_set_current_folder (
-    GTK_FILE_CHOOSER (gsw->file_selection_dialog),
+    GTK_FILE_CHOOSER (file_selection_dialog),
     gsw->session_data->home_directory);
     
-  if (gtk_dialog_run (GTK_DIALOG (gsw->file_selection_dialog))
+  if (gtk_dialog_run (GTK_DIALOG (file_selection_dialog))
       == GTK_RESPONSE_ACCEPT)
   {
     selected_file = gtk_file_chooser_get_filename (
-      GTK_FILE_CHOOSER (gsw->file_selection_dialog));
+      GTK_FILE_CHOOSER (file_selection_dialog));
     
     if (stat (selected_file, &file_information) == -1)
       {
@@ -83,15 +84,17 @@ get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
 #endif
   }
   
-  gtk_widget_destroy (gsw->file_selection_dialog);
+  gtk_widget_destroy (file_selection_dialog);
 }
 
 void
 get_directory_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
 {
+   GtkWidget *file_selection_dialog;
+   
   /* Set up a simple gtk file selection dialog. */
-  gsw->file_selection_dialog = gtk_file_chooser_dialog_new (
-    "Choose the destination directory.",
+  file_selection_dialog = gtk_file_chooser_dialog_new (
+    "Choose a directory",
     GTK_WINDOW (gsw->base_window),
     GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -99,22 +102,22 @@ get_directory_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
     NULL);
 
   gtk_file_chooser_set_current_folder (
-    GTK_FILE_CHOOSER (gsw->file_selection_dialog),
+    GTK_FILE_CHOOSER (file_selection_dialog),
     gsw->session_data->output_directory);
     
-  if (gtk_dialog_run (GTK_DIALOG (gsw->file_selection_dialog))
+  if (gtk_dialog_run (GTK_DIALOG (file_selection_dialog))
       == GTK_RESPONSE_ACCEPT)
   {
     g_free(gsw->session_data->output_directory);
     
     gsw->session_data->output_directory = gtk_file_chooser_get_filename (
-      GTK_FILE_CHOOSER (gsw->file_selection_dialog));
+      GTK_FILE_CHOOSER (file_selection_dialog));
     
     /* Display the new directory in the main window. */
     gtk_entry_set_text (GTK_ENTRY (gsw->output_box), 
                         gsw->session_data->output_directory);
   }
   
-  gtk_widget_destroy (gsw->file_selection_dialog);
+  gtk_widget_destroy (file_selection_dialog);
 }
 

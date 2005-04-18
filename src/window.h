@@ -1,5 +1,5 @@
 /*
- * $Id: window.h,v 1.2 2005/04/14 01:04:53 techgunter Exp $
+ * $Id: window.h,v 1.3 2005/04/16 23:03:39 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -53,7 +53,6 @@ typedef struct
   GtkWidget *output_box;
   GtkAdjustment *size_input_adj;
   GtkWidget *size_input;
-  GtkWidget *file_selection_dialog;
   GdkPixbuf *icon;
   GtkSplitterSessionData *session_data;
 } GtkSplitterWindow;
