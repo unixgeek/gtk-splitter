@@ -1,5 +1,5 @@
 /* 
- * $Id$
+ * $Id: combine.h,v 1.7 2005/04/15 02:24:08 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -26,7 +26,23 @@
 #include <gtk/gtk.h>
 #include "session.h"
 
-/* Combine the selected file. */
-gboolean gtk_splitter_combine_files (GtkSplitterSessionData *);
+typedef struct
+{
+  guint number_of_source_files;
+  gulong destination_file_size;
+  GString *destination_file;
+  GArray *source_file_sizes;
+  GArray *source_files;
+  guint block_size;
+} combine_info;
+
+gboolean 
+gtk_splitter_combine_files (GtkSplitterSessionData *);
+
+gboolean
+get_info (combine_info *, GtkSplitterSessionData *);
+
+void
+destroy_info (combine_info * info);
 
 #endif /* COMBINE_H */
