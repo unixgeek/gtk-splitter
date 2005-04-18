@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.30 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: split.c,v 1.31 2005/04/16 23:02:57 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -89,7 +89,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
   g_stpcpy (infile, gssd->file_name_and_path);
 
   /* Setup the outfile string. */
-  sprintf (outfile, "%s%s.%s", gssd->output_directory, gssd->file_name_only,
+  sprintf (outfile, "%s/%s.%s", gssd->output_directory, gssd->file_name_only,
            ext);
 
   /* Setup strings used when creating a batch file. */
@@ -102,10 +102,10 @@ gtk_splitter_split_file (GtkSplitterSessionData * gssd)
       dosify_file_name (outfile_only);
 
       /* Re-setup the outfile string. */
-      sprintf (outfile, "%s%s.%s", gssd->output_directory, outfile_only, ext);
+      sprintf (outfile, "%s/%s.%s", gssd->output_directory, outfile_only, ext);
 
       /* Setup the batchname_and_path string. */
-      sprintf (batchname_and_path, "%s%s.bat", gssd->output_directory,
+      sprintf (batchname_and_path, "%s/%s.bat", gssd->output_directory,
                outfile_only);
     }
 
