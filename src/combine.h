@@ -1,5 +1,5 @@
 /* 
- * $Id: combine.h,v 1.7 2005/04/15 02:24:08 techgunter Exp $
+ * $Id: combine.h,v 1.8 2005/04/18 04:40:22 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -40,9 +40,9 @@ gboolean
 gtk_splitter_combine_files (GtkSplitterSessionData *);
 
 gboolean
-get_info (combine_info *, GtkSplitterSessionData *);
+gtk_splitter_get_combine_info (combine_info *, GtkSplitterSessionData *);
 
 void
-destroy_info (combine_info * info);
+gtk_splitter_destroy_combine_info (combine_info *);
 
 #endif /* COMBINE_H */

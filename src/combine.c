@@ -1,5 +1,5 @@
 /*
- * $Id: combine.c,v 1.26 2005/04/16 22:57:11 techgunter Exp $
+ * $Id: combine.c,v 1.27 2005/04/18 04:40:31 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -29,21 +29,19 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <sys/stat.h>
+#include <sys/vfs.h>
 #include "session.h"
 #include "window.h"
 #include "progress.h"
 #include "interface.h"
 #include "combine.h"
 
-gboolean
-gtk_splitter_combine_files_test (GtkSplitterSessionData * data)
+void
+gtk_splitter_combine_files_test (combine_info info)
 {
-  combine_info info;
   GString *source;
   gulong size;
   int i;
-  
-  get_info(&info, data);
   
   g_print ("blocksize: %d\n", info.block_size);
   g_print ("%i->%s (%li)\n", info.number_of_source_files, 
@@ -57,10 +55,6 @@ gtk_splitter_combine_files_test (GtkSplitterSessionData * data)
        
       g_print ("%d) %s (%ld)\n", i + 1, source->str, size);
     }
-  
-  destroy_info (&info);
-  
-  return FALSE;
 }
 
 gboolean
@@ -79,7 +73,9 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   int i;
   FILE *in, *out;
   
-  get_info(&info, data);
+  gtk_splitter_get_combine_info(&info, data);
+  
+  gtk_splitter_combine_files_test (info);
   
   /* Make sure the files don't exceed our limit. */
   if (info.number_of_source_files > 999)
@@ -177,15 +173,17 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
 
   gtk_widget_hide_all (progress_window->base_window);
   progress_window_destroy (progress_window);
-  destroy_info (&info);
+  gtk_splitter_destroy_combine_info (&info);
   
   return TRUE;
 }
 
 gboolean
-get_info (combine_info * info, GtkSplitterSessionData * data)
+gtk_splitter_get_combine_info (combine_info * info, 
+  GtkSplitterSessionData * data)
 {
   struct stat file_info;
+  struct statfs file_fs_info;
   GString *source;
   GString *current_file;
   GString *extension;
@@ -216,7 +214,12 @@ get_info (combine_info * info, GtkSplitterSessionData * data)
   info->number_of_source_files = 0;
   info->destination_file_size = 0;
   
-  info->block_size = -1;
+  if (statfs (source->str, &file_fs_info) == -1)
+    {
+      display_error ("combine.c:  Could not stat file.");
+      return FALSE;
+    }
+  info->block_size = file_fs_info.f_bsize;
   
   while ((test = fopen (source->str, "rb")) != NULL)
     {
@@ -235,14 +238,7 @@ get_info (combine_info * info, GtkSplitterSessionData * data)
         }
       
       info->destination_file_size += file_info.st_size;
-      
-      if (info->block_size == -1)
-        {
-          // Always 0?
-          //info->block_size = file_info.st_blksize;
-          info->block_size = 131072;
-        }
-      
+            
       /* Add to the array of source file sizes. */
       g_array_append_val (info->source_file_sizes, file_info.st_size);
       
@@ -270,7 +266,7 @@ get_info (combine_info * info, GtkSplitterSessionData * data)
 }
 
 void
-destroy_info (combine_info * info)
+gtk_splitter_destroy_combine_info (combine_info * info)
 {
   GString *source;
   int i;
