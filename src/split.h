@@ -1,5 +1,5 @@
 /* 
- * $Id$
+ * $Id: split.h,v 1.7 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -26,7 +26,24 @@
 #include <gtk/gtk.h>
 #include "session.h"
 
+typedef struct
+{
+  guint number_of_destination_files;
+  gulong source_file_size;
+  GString *source_file;
+  GArray *destination_file_sizes;
+  GArray *destination_files;
+  guint block_size;
+} split_info;
+
 /* Split the selected file. */
-gboolean gtk_splitter_split_file (GtkSplitterSessionData * gssd);
+gboolean
+gtk_splitter_split_file (GtkSplitterSessionData *);
+
+gboolean
+gtk_splitter_get_split_info (split_info *, GtkSplitterSessionData *);
+
+void
+gtk_splitter_destroy_split_info (split_info *);
 
 #endif /* SPLIT_H */
