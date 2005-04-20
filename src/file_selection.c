@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <string.h>
 #include "globals.h"
 #include "interface.h"
 #include "file_selection.h"
@@ -31,12 +32,16 @@
 /* For choosing a file with the gtk open dialog. */ //remove file_selection_dialog
 void get_file_name_dialog( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
+   gchar *dir;
+   dir = g_malloc( strlen (gsw->session_data->home_directory) * sizeof(gchar) + 1 );
+   g_stpcpy( dir, gsw->session_data->home_directory );
+   strcat(dir, "/");
+   
    /* Set up a simple gtk file selection dialog. */
    gsw->file_selection_dialog = gtk_file_selection_new( "Select a file." );
 
    /* Default the dialog to the user's home directory. */
-   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
-                                    gsw->session_data->home_directory );
+   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ), dir );
    
    /* Hide the create, delete, and rename buttons. */
    gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
@@ -55,6 +60,8 @@ void get_file_name_dialog( GtkWidget *widget, GtkSplitterWindow *gsw )
 
    /* Display the dialog. */
    gtk_widget_show( gsw->file_selection_dialog );
+
+   g_free( dir );
 }
 
 /* Gets the file name from get_file_name_dialog(). */
@@ -109,13 +116,17 @@ void set_file_name( GtkSplitterWindow *gsw, gchar *file_name_to_set )
 /* For choosing a directory with the gtk open dialog. */
 void get_directory_name_dialog( GtkWidget *widget, GtkSplitterWindow *gsw )
 {
+   gchar *dir;
+   dir = g_malloc( strlen (gsw->session_data->output_directory) * sizeof(gchar) + 1 );
+   g_stpcpy( dir, gsw->session_data->output_directory );
+   strcat(dir, "/");
+
    /* Set up a simple gtk file selection dialog. */
    gsw->file_selection_dialog = gtk_file_selection_new( "Select the output directory." );
    
    /* Default the dialog to the last chosen output directory.
       (On first run, output_directory is set to the user's home directory.) */
-   gtk_file_selection_set_filename( GTK_FILE_SELECTION( gsw->file_selection_dialog ),
-                                    gsw->session_data->output_directory );
+   gtk_file_selection_set_filename ( GTK_FILE_SELECTION( gsw->file_selection_dialog ), dir );
    
    /* Hide the create, delete, and rename buttons. */
    gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION( gsw->file_selection_dialog ) );
@@ -137,6 +148,8 @@ void get_directory_name_dialog( GtkWidget *widget, GtkSplitterWindow *gsw )
 
    /* Display the dialog. */
    gtk_widget_show( gsw->file_selection_dialog );
+
+   g_free( dir );
 }
 
 /* Gets the directory name from get_file_name_dialog(). */

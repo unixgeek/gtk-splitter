@@ -87,7 +87,7 @@ gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
    g_stpcpy( infile, gssd->file_name_and_path );
    
    /* Setup the outfile string. */
-   sprintf( outfile, "%s%s.%s", gssd->output_directory, gssd->file_name_only, ext );
+   sprintf( outfile, "%s/%s.%s", gssd->output_directory, gssd->file_name_only, ext );
   
    /* Setup strings used when creating a batch file. */
    if ( gssd->create_batchfile )
@@ -99,10 +99,10 @@ gboolean gtk_splitter_split_file( GtkSplitterSessionData *gssd )
        dosify_file_name( outfile_only );
                 
       /* Re-setup the outfile string. */
-       sprintf( outfile, "%s%s.%s", gssd->output_directory, outfile_only, ext );
+       sprintf( outfile, "%s/%s.%s", gssd->output_directory, outfile_only, ext );
 
        /* Setup the batchname_and_path string. */ 
-       sprintf( batchname_and_path, "%s%s.bat", gssd->output_directory, outfile_only ); 
+       sprintf( batchname_and_path, "%s/%s.bat", gssd->output_directory, outfile_only ); 
      }
 
    /* Determine chunk_size (bytes). */

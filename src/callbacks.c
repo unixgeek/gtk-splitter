@@ -80,7 +80,7 @@ void initialize_session_data( GtkSplitterSessionData *gssd )
      }
    else
      {
-       sprintf( gssd->home_directory, "%s/", home );
+       sprintf( gssd->home_directory, "%s", home );
      }
 
    /* Set the default output directory to the user's home directory. */
