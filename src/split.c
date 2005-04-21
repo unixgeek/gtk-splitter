@@ -415,8 +415,7 @@ while ( g_main_iteration( FALSE ) );
        write_dostextfile( batch, outfile_only );
 		 
 	   /* Write some footer information to the batchfile. */
-       writeln_dostextfile( batch, " > ~combine.tmp" );
-       writeln_dostextfile( batch, "erase ~combine.tmp" );
+       writeln_dostextfile( batch, " > nil" );
        writeln_dostextfile( batch, "Echo Finished." );
        /* End of footer information. */
        
