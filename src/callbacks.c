@@ -1,5 +1,5 @@
 /*
- * $Id: callbacks.c,v 1.17 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: callbacks.c,v 1.18 2005/04/16 22:56:06 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -179,9 +179,6 @@ start_split_or_combine (GtkWidget * widget, GtkSplitterWindow * gsw)
 {
   gboolean do_initialization;
 
-  /* Hide the main window. */
-  gtk_widget_hide_all (gsw->base_window);
-
   /* split() and combine() return a boolean value.
      This is used to recover from non-critical errors that may occur in split() or combine(). */
   if (gsw->session_data->split)
@@ -195,7 +192,4 @@ start_split_or_combine (GtkWidget * widget, GtkSplitterWindow * gsw)
       initialize_splitter_window (gsw);
       initialize_session_data (gsw->session_data);
     }
-
-  /* Show the main window. */
-  gtk_widget_show_all (gsw->base_window);
 }
