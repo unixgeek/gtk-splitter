@@ -3,20 +3,24 @@ gtk_splitter_LDADD = @GTK_LIBS@
 
 bin_PROGRAMS = gtk-splitter
 
-gtk_splitter_SOURCES =		\
-  gtk-splitter.c		\
-  callbacks.c			\
-  callbacks.h			\
-  combine.c			\
-  combine.h			\
-  dostextfile.c			\
-  dostextfile.h			\
-  file_selection.c		\
-  file_selection.h		\
-  progress.c			\
-  progress.h			\
-  split.c			\
-  split.h			\
-  globals.h			\
-  interface.c			\
-  interface.h
+gtk_splitter_SOURCES =  \
+batch.c                 \
+batch.h                 \
+callbacks.c             \
+callbacks.h             \
+combine.c               \
+combine.h               \
+dostextfile.c           \
+dostextfile.h           \
+file_selection.c        \
+file_selection.h        \
+gtk-splitter.c          \
+interface.c             \
+interface.h             \
+progress.c              \
+progress.h              \
+session.h               \
+shell.c                 \
+split.c                 \
+split.h                 \
+window.h
