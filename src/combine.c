@@ -1,5 +1,5 @@
 /*
- * $Id: combine.c,v 1.30 2005/04/22 16:53:12 techgunter Exp $
+ * $Id: combine.c,v 1.31 2005/04/22 17:00:46 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -299,7 +299,9 @@ gtk_splitter_destroy_combine_info (combine_info * info)
       
       g_string_free (source, TRUE);
     }
-    
+  
+  g_string_free (info->destination_file, TRUE);
+  
   /* Free the GArrays. */
   g_array_free (info->source_file_sizes, TRUE);
   g_array_free (info->source_files, TRUE);
