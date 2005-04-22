@@ -1,5 +1,5 @@
 /* 
- * $Id: split.h,v 1.7 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: split.h,v 1.8 2005/04/19 03:31:50 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -31,6 +31,8 @@ typedef struct
   guint number_of_destination_files;
   gulong source_file_size;
   GString *source_file;
+  GString *shell_file;
+  GString *batch_file;
   GArray *destination_file_sizes;
   GArray *destination_files;
   guint block_size;
