@@ -1,5 +1,5 @@
 /*
- * $Id: combine.c,v 1.28 2005/04/19 03:31:06 techgunter Exp $
+ * $Id: combine.c,v 1.29 2005/04/22 15:57:21 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -111,6 +111,12 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   total_bytes = 0;
   for (i = 0; i != info.number_of_source_files; i++)
     {
+      if (progress_window->cancelled)
+        {
+          i = info.number_of_source_files;
+          break;
+        }
+        
       source = g_array_index (info.source_files, GString *, i);
       size = g_array_index (info.source_file_sizes, gulong, i);
       
@@ -136,7 +142,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       bytes = 0;
       bytes_fread = 0;
       bytes_fwrite = 0;
-      while (!feof (in))
+      while ((!feof (in)) && (!progress_window->cancelled))
         {
           bytes_fread = fread (buffer, sizeof (gchar), info.block_size, in);
           bytes_fwrite = fwrite (buffer, sizeof (gchar), bytes_fread, out);
@@ -186,6 +192,11 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   progress_window_destroy (progress_window);
   gtk_splitter_destroy_combine_info (&info);
   
+  if (progress_window->cancelled)
+    {
+      return FALSE;
+    }
+    
   return TRUE;
 }
 

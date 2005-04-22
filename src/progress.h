@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: progress.h,v 1.5 2005/04/15 02:24:08 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -36,9 +36,14 @@ typedef struct
   GtkWidget *total_progress_label;
   GtkWidget *message;
   GtkWidget *separator;
+  GtkWidget *cancel_button;
+  gboolean cancelled;
 } ProgressWindow;
 
 ProgressWindow *progress_window_new ();
+
+void
+cancelled (GtkWidget *widget, ProgressWindow *pw);
 
 void progress_window_destroy (ProgressWindow * pw);
 

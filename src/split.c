@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.37 2005/04/22 15:53:40 techgunter Exp $
+ * $Id: split.c,v 1.38 2005/04/22 16:47:45 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -80,8 +80,6 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   gtk_splitter_get_split_info(&info, data);
   
   gtk_splitter_split_file_test (info);
-  
-  return FALSE;
   
   /* Make sure the files don't exceed our limit. */
   if (info.number_of_destination_files > 999)

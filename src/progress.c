@@ -1,5 +1,5 @@
 /*
- * $Id: progress.c,v 1.16 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: progress.c,v 1.17 2005/04/22 16:17:21 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -37,13 +37,15 @@ progress_window_new ()
       return pw;
     }
 
+  pw->cancelled = FALSE;
+  
   /* Set up the window. */
   pw->base_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_resizable (GTK_WINDOW (pw->base_window), FALSE);
   gtk_window_set_modal (GTK_WINDOW (pw->base_window), TRUE);
 
   /* Set up the table. */
-  pw->table = gtk_table_new (4, 2, FALSE);
+  pw->table = gtk_table_new (5, 2, FALSE);
 
   /* Set up the progress bars. */
   pw->current_progress = gtk_progress_bar_new ();
@@ -63,6 +65,9 @@ progress_window_new ()
 
   /* Set up a separator. */
   pw->separator = gtk_hseparator_new ();
+  
+  /* Cancel button. */
+  pw->cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 
   /* Add the widgets to the dialog. */
   gtk_container_add (GTK_CONTAINER (pw->base_window), pw->table);
@@ -84,11 +89,24 @@ progress_window_new ()
                     4, GTK_FILL, GTK_FILL, 0, 0);
   gtk_table_attach (GTK_TABLE (pw->table), pw->total_progress, 1, 2, 3, 4,
                     GTK_FILL, GTK_FILL, 0, 0);
+                    
+  /* Row 4 */
+  gtk_table_attach (GTK_TABLE (pw->table), pw->cancel_button, 1, 2, 4, 5,
+                    GTK_SHRINK, GTK_SHRINK, 0, 0);
 
   g_signal_connect (GTK_OBJECT (pw->base_window), "destroy",
                     G_CALLBACK (gtk_widget_destroyed), &pw->base_window);
 
+  g_signal_connect (GTK_OBJECT (pw->cancel_button), "clicked",
+                    G_CALLBACK (cancelled), pw);
+
   return pw;
+}
+
+void
+cancelled (GtkWidget *widget, ProgressWindow *pw)
+{
+  pw->cancelled = TRUE;
 }
 
 void
