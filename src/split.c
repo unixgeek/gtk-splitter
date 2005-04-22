@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.35 2005/04/22 13:52:12 techgunter Exp $
+ * $Id: split.c,v 1.36 2005/04/22 14:35:14 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -66,7 +66,8 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   ProgressWindow *progress_window = NULL;
   split_info info;
   GString *destination;
-  gchar *buffer;
+  gchar *buffer = NULL;
+  gchar *basename = NULL;
   gulong size;
   gulong bytes;
   gulong total_bytes;
@@ -99,6 +100,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   if (progress_window == NULL)
     {
       display_error ("split.c:  Could not create a progress window.");
+      fclose (in);
       return FALSE;
     }
     
@@ -108,21 +110,36 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   while (g_main_context_iteration (NULL, FALSE));
 
   buffer = g_malloc (info.block_size * sizeof (gchar));
-  
+  if (buffer == NULL)
+    {
+      display_error ("Could not allocate buffer.");
+      progress_window_destroy (progress_window);
+      fclose (in);
+      return FALSE;
+    }
+    
   total_bytes = 0;
   for (i = 0; i != info.number_of_destination_files; i++)
     {
       destination = g_array_index (info.destination_files, GString *, i);
       size = g_array_index (info.destination_file_sizes, gulong, i);
       
-      gtk_label_set_text (GTK_LABEL (progress_window->message), 
-                          g_path_get_basename (destination->str)); // needs free ?
+      /* Free the prior instance. */
+      g_free (basename);
+      
+      /* Set the text to the basename of the current file. */
+      basename = g_path_get_basename (destination->str);
+      gtk_label_set_text (GTK_LABEL (progress_window->message), basename);
       
       /* Open the split file. */
       out = fopen (destination->str, "wb+");
       if (out == NULL)
         {
           display_error ("split.c:  Could not create an output file.");
+          g_free (buffer);
+          g_free (basename);
+          progress_window_destroy (progress_window);
+          fclose (in);
           return FALSE;
         }
       
@@ -141,10 +158,8 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
                 total_bytes += bytes_fread;
                 
                 /* Re-position the file pointer. */
-                printf ("tell: %ld\n", ftell (in));
                 //fseek (in, - (size - bytes), SEEK_CUR);
-                printf ("seek: %d\n", fseek (in, total_bytes, SEEK_SET));
-                printf ("tell: %ld\n", ftell (in));
+                fseek (in, total_bytes, SEEK_SET);
             }
           else
             {
@@ -172,13 +187,16 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
         {
           display_error
             ("split.c:  Could not open one of the files to be combined.");
+          g_free (buffer);
+          g_free (basename);
           progress_window_destroy (progress_window);
-          fclose (out);
+          fclose (in);
           return FALSE;
         }
     }
     
   g_free (buffer);
+  g_free (basename);
   
   if (fclose (in) == EOF)
     {

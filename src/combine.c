@@ -1,5 +1,5 @@
 /*
- * $Id: combine.c,v 1.27 2005/04/18 04:40:31 techgunter Exp $
+ * $Id: combine.c,v 1.28 2005/04/19 03:31:06 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -63,7 +63,8 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   ProgressWindow *progress_window = NULL;
   combine_info info;
   GString *source;
-  gchar *buffer;
+  gchar *buffer = NULL;
+  gchar *basename = NULL;
   gulong size;
   gulong bytes;
   gulong total_bytes;
@@ -96,6 +97,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   if (progress_window == NULL)
     {
       display_error ("combine.c:  Could not create a progress window.");
+      fclose (out);
       return FALSE;
     }
 
@@ -112,14 +114,20 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       source = g_array_index (info.source_files, GString *, i);
       size = g_array_index (info.source_file_sizes, gulong, i);
       
-      gtk_label_set_text (GTK_LABEL (progress_window->message), 
-                          g_path_get_basename (source->str)); // needs free ?
+      /* Free the prior instance. */
+      g_free (basename);
+      
+      /* Set the text to the basename of the current file. */
+      basename = g_path_get_basename (source->str);
+      gtk_label_set_text (GTK_LABEL (progress_window->message), basename);
       
       in = fopen (source->str, "rb");
       if (in == NULL)
         {
           display_error
             ("combine.c:  Could not open one of the files to be combined.");
+          g_free (buffer);
+          g_free (basename);
           progress_window_destroy (progress_window);
           fclose (out);
           return FALSE;
@@ -154,6 +162,8 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
         {
           display_error
             ("combine.c:  Could not open one of the files to be combined.");
+          g_free (buffer);
+          g_free (basename);
           progress_window_destroy (progress_window);
           fclose (out);
           return FALSE;
@@ -162,6 +172,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   /* End of the combine process. */
 
   g_free (buffer);
+  g_free (basename);
   
     /* Close our newly combined file. */
   if (fclose (out) == EOF)
