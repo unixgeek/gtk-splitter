@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.34 2005/04/22 03:42:25 techgunter Exp $
+ * $Id: split.c,v 1.35 2005/04/22 13:52:12 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -133,13 +133,18 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
           
           if ((bytes_fread + bytes) > size)
             {
+                bytes_fread = size - bytes;
+                
                 bytes_fwrite = fwrite (buffer, sizeof (gchar),
-                    (size - bytes), out);
-                bytes += (size - bytes);
-                total_bytes += (size - bytes);
+                    bytes_fread, out);
+                bytes += bytes_fread;
+                total_bytes += bytes_fread;
                 
                 /* Re-position the file pointer. */
-                fseek (in, - (size - bytes), SEEK_CUR);
+                printf ("tell: %ld\n", ftell (in));
+                //fseek (in, - (size - bytes), SEEK_CUR);
+                printf ("seek: %d\n", fseek (in, total_bytes, SEEK_SET));
+                printf ("tell: %ld\n", ftell (in));
             }
           else
             {
