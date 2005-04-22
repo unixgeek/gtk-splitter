@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.36 2005/04/22 14:35:14 techgunter Exp $
+ * $Id: split.c,v 1.37 2005/04/22 15:53:40 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -81,6 +81,8 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   
   gtk_splitter_split_file_test (info);
   
+  return FALSE;
+  
   /* Make sure the files don't exceed our limit. */
   if (info.number_of_destination_files > 999)
     {
@@ -121,6 +123,13 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   total_bytes = 0;
   for (i = 0; i != info.number_of_destination_files; i++)
     {
+      
+      if (progress_window->cancelled)
+        {
+          i = info.number_of_destination_files;
+          break;
+        }
+        
       destination = g_array_index (info.destination_files, GString *, i);
       size = g_array_index (info.destination_file_sizes, gulong, i);
       
@@ -144,7 +153,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
         }
       
       bytes = 0;
-      while (bytes != size)
+      while ((bytes != size) && (!progress_window->cancelled))
         {
           bytes_fread = fread (buffer, sizeof (gchar), info.block_size, in);
           
@@ -194,7 +203,7 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
           return FALSE;
         }
     }
-    
+  
   g_free (buffer);
   g_free (basename);
   
@@ -209,7 +218,12 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
   progress_window_destroy (progress_window);
   gtk_splitter_destroy_split_info (&info);
   
-  return FALSE;
+  if (progress_window->cancelled)
+    {
+      return FALSE;
+    }
+     
+  return TRUE;
 }
 
 gboolean
@@ -273,7 +287,9 @@ gtk_splitter_get_split_info (split_info * info,
     
   extension = g_string_new ("001");
   
-  destination = g_string_new (info->source_file->str);
+  destination = g_string_new (data->output_directory);
+  destination = g_string_append (destination, G_DIR_SEPARATOR_S);
+  destination = g_string_append (destination, data->file_name_only);
   destination = g_string_append (destination, ".");
   destination = g_string_append (destination, extension->str);
   
