@@ -1,5 +1,5 @@
 /*
- * $Id: session.h,v 1.2 2005/04/14 01:04:53 techgunter Exp $
+ * $Id: session.h,v 1.3 2005/04/16 23:02:37 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -36,7 +36,8 @@ typedef struct
   gchar *output_directory;
   gboolean verify;
   gboolean split;
-  gboolean create_batchfile;
+  gboolean create_batch_script;
+  gboolean create_shell_script;
 } GtkSplitterSessionData;
 
 #endif /* SESSION_H */

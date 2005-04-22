@@ -1,5 +1,5 @@
 /*
- * $Id: file_selection.c,v 1.21 2005/04/18 04:38:46 techgunter Exp $
+ * $Id: file_selection.c,v 1.22 2005/04/22 16:59:32 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -69,7 +69,8 @@ get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
     /* Set the gui so that all of the buttons active. */
     gtk_widget_set_sensitive (gsw->split_button, TRUE);
     gtk_widget_set_sensitive (gsw->combine_button, TRUE);
-    gtk_widget_set_sensitive (gsw->batch_file_button, TRUE);
+    gtk_widget_set_sensitive (gsw->shell_script_button, TRUE);
+    gtk_widget_set_sensitive (gsw->batch_script_button, TRUE);
     gtk_widget_set_sensitive (gsw->size_input, TRUE);
     gtk_widget_set_sensitive (gsw->units_menu, TRUE);
     gtk_widget_set_sensitive (gsw->start_button, TRUE);

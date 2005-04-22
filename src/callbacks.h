@@ -1,5 +1,5 @@
 /* 
- * $Id: callbacks.h,v 1.8 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: callbacks.h,v 1.9 2005/04/16 22:56:30 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -39,7 +39,10 @@ void toggle_split (GtkWidget * widget, GtkSplitterWindow * gsw);
 /* Tell our program to combine the selected file. */
 void toggle_combine (GtkWidget * widget, GtkSplitterWindow * gsw);
 
-/* Toggle whether or not we will create a dos batch file. */
+/* Toggle whether or not we will create a shell script. */
+void toggle_shell (GtkWidget * widget, GtkSplitterSessionData * gssd);
+
+/* Toggle whether or not we will create a batch script. */
 void toggle_batch (GtkWidget * widget, GtkSplitterSessionData * gssd);
 
 /* Toggle whether or not we will verify the file. */

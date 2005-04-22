@@ -1,5 +1,5 @@
 /*
- * $Id: window.h,v 1.3 2005/04/16 23:03:39 techgunter Exp $
+ * $Id: window.h,v 1.4 2005/04/18 04:36:53 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -41,7 +41,8 @@ typedef struct
   GtkWidget *start_button_box;
   GtkWidget *open_button;
   GtkWidget *output_button;
-  GtkWidget *batch_file_button;
+  GtkWidget *shell_script_button;
+  GtkWidget *batch_script_button;
   GtkWidget *split_button;
   GtkWidget *combine_button;
   GtkWidget *verify_button;

@@ -1,5 +1,5 @@
 /* 
- * $Id: interface.c,v 1.7 2005/04/16 23:01:06 techgunter Exp $
+ * $Id: interface.c,v 1.8 2005/04/22 17:00:57 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -77,9 +77,11 @@ gtk_splitter_main_window_new ()
                                                  (gsw->split_button),
                                                  "Combine");
 
-  /* Toggle button for the DOS batch file option. */
-  gsw->batch_file_button =
-    gtk_check_button_new_with_label ("Create DOS batch file");
+  gsw->shell_script_button =
+    gtk_check_button_new_with_label ("Create a Shell Script");
+    
+  gsw->batch_script_button =
+    gtk_check_button_new_with_label ("Create a Batch File");
 
 #ifdef HAVE_LIBMHASH
   /* Toggle button for the verfiy file option. */
@@ -121,8 +123,9 @@ gtk_splitter_main_window_new ()
   gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->verify_button, TRUE, TRUE,
                       0);
 #endif
-
-  gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->batch_file_button, TRUE,
+  gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->shell_script_button, TRUE,
+                      TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->batch_script_button, TRUE,
                       TRUE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->base_box), gsw->box4, TRUE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (gsw->box1), gsw->open_button, TRUE, TRUE, 0);
@@ -171,7 +174,10 @@ gtk_splitter_main_window_new ()
   g_signal_connect (GTK_OBJECT (gsw->output_button), "clicked",
                     G_CALLBACK (get_directory_name_dialog), (gpointer) gsw);
 
-  g_signal_connect (GTK_OBJECT (gsw->batch_file_button), "toggled",
+  g_signal_connect (GTK_OBJECT (gsw->shell_script_button), "toggled",
+                    G_CALLBACK (toggle_shell), (gpointer) gsw->session_data);
+                    
+  g_signal_connect (GTK_OBJECT (gsw->batch_script_button), "toggled",
                     G_CALLBACK (toggle_batch), (gpointer) gsw->session_data);
 
 #ifdef HAVE_LIBMHASH

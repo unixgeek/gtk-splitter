@@ -1,5 +1,5 @@
 /*
- * $Id: callbacks.c,v 1.18 2005/04/16 22:56:06 techgunter Exp $
+ * $Id: callbacks.c,v 1.19 2005/04/22 16:17:35 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -88,8 +88,11 @@ initialize_session_data (GtkSplitterSessionData * gssd)
   /* Split is the default action. */
   gssd->split = TRUE;
 
-  /* Don't create a dos batch file by default. */
-  gssd->create_batchfile = FALSE;
+  /* Don't create a shell script by default. */
+  gssd->create_shell_script = FALSE;
+  
+  /* Don't create a batch script by default. */
+  gssd->create_batch_script = FALSE;
 }
 
 /* Initial settings for the main window.*/
@@ -102,9 +105,12 @@ initialize_splitter_window (GtkSplitterWindow * gsw)
   /* Show the defauult output_directory. */
   gtk_entry_set_text (GTK_ENTRY (gsw->output_box),
                       gsw->session_data->home_directory);
-
-  /* Don't create a dos batch file by default. */
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsw->batch_file_button),
+                      
+  /* Don't create a shell script by default. */
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsw->shell_script_button),
+                                FALSE);
+  /* Don't create a batch script by default. */
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsw->batch_script_button),
                                 FALSE);
 
   gtk_combo_box_set_active (GTK_COMBO_BOX (gsw->units_menu), 0);
@@ -121,7 +127,8 @@ initialize_splitter_window (GtkSplitterWindow * gsw)
      This is so that nothing is done until a file is selected. */
   gtk_widget_set_sensitive (gsw->split_button, FALSE);
   gtk_widget_set_sensitive (gsw->combine_button, FALSE);
-  gtk_widget_set_sensitive (gsw->batch_file_button, FALSE);
+  gtk_widget_set_sensitive (gsw->shell_script_button, FALSE);
+  gtk_widget_set_sensitive (gsw->batch_script_button, FALSE);
   gtk_widget_set_sensitive (gsw->size_input, FALSE);
   gtk_widget_set_sensitive (gsw->units_menu, FALSE);
   gtk_widget_set_sensitive (gsw->start_button, FALSE);
@@ -140,7 +147,8 @@ toggle_split (GtkWidget * widget, GtkSplitterWindow * gsw)
   gsw->session_data->split = TRUE;
 
   /* Enable buttons related to the split action. */
-  gtk_widget_set_sensitive (gsw->batch_file_button, TRUE);
+  gtk_widget_set_sensitive (gsw->shell_script_button, TRUE);
+  gtk_widget_set_sensitive (gsw->batch_script_button, TRUE);
   gtk_widget_set_sensitive (gsw->size_input, TRUE);
   gtk_widget_set_sensitive (gsw->units_menu, TRUE);
 }
@@ -152,16 +160,24 @@ toggle_combine (GtkWidget * widget, GtkSplitterWindow * gsw)
   gsw->session_data->split = FALSE;
 
   /* Disable buttons not related to the combine action. */
-  gtk_widget_set_sensitive (gsw->batch_file_button, FALSE);
+  gtk_widget_set_sensitive (gsw->shell_script_button, FALSE);
+  gtk_widget_set_sensitive (gsw->batch_script_button, FALSE);
   gtk_widget_set_sensitive (gsw->size_input, FALSE);
   gtk_widget_set_sensitive (gsw->units_menu, FALSE);
 }
 
-/* Set the batcfile option. */
+/* Toggle whether or not we will create a shell script. */
+void 
+toggle_shell (GtkWidget * widget, GtkSplitterSessionData * gssd)
+{
+  gssd->create_shell_script = !gssd->create_shell_script;
+}
+
+/* Toggle whether or not we will create a batch script. */
 void
 toggle_batch (GtkWidget * widget, GtkSplitterSessionData * gssd)
 {
-  gssd->create_batchfile = !gssd->create_batchfile;
+  gssd->create_batch_script = !gssd->create_batch_script;
 }
 
 #ifdef HAVE_LIBMHASH
