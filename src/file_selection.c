@@ -1,5 +1,5 @@
 /*
- * $Id: file_selection.c,v 1.20 2005/04/16 22:59:19 techgunter Exp $
+ * $Id: file_selection.c,v 1.21 2005/04/18 04:38:46 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -22,7 +22,6 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 #include "window.h"
 #include "session.h"
@@ -33,7 +32,6 @@ void
 get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
 {
   gchar *selected_file;
-  struct stat file_information;
   GtkWidget *file_selection_dialog;
   
   /* Set up a simple gtk file selection dialog. */
@@ -55,10 +53,6 @@ get_file_name_dialog (GtkWidget * widget, GtkSplitterWindow * gsw)
     selected_file = gtk_file_chooser_get_filename (
       GTK_FILE_CHOOSER (file_selection_dialog));
     
-    if (stat (selected_file, &file_information) == -1)
-      {
-        display_error ("file_selection.c:  Could not stat file.");
-      }
     g_free (gsw->session_data->file_name_and_path);
     g_free (gsw->session_data->file_name_only);
     
