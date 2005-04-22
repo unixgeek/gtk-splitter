@@ -1,5 +1,5 @@
 /*
- * $Id: combine.c,v 1.29 2005/04/22 15:57:21 techgunter Exp $
+ * $Id: combine.c,v 1.30 2005/04/22 16:53:12 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -81,7 +81,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   /* Make sure the files don't exceed our limit. */
   if (info.number_of_source_files > 999)
     {
-      display_error ("combine.c:  Exceeded maximum number of files (999).");
+      display_error ("Exceeded maximum number of files (999).");
       return FALSE;
     }
 
@@ -89,14 +89,14 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
   out = fopen (info.destination_file->str, "wb+");
   if (out == NULL)
     {
-      display_error ("combine.c:  Could not create an output file.");
+      display_error ("Could not create an output file.");
       return FALSE;
     }
 
   progress_window = progress_window_new ();
   if (progress_window == NULL)
     {
-      display_error ("combine.c:  Could not create a progress window.");
+      display_error ("Could not create a progress window.");
       fclose (out);
       return FALSE;
     }
@@ -130,8 +130,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       in = fopen (source->str, "rb");
       if (in == NULL)
         {
-          display_error
-            ("combine.c:  Could not open one of the files to be combined.");
+          display_error ("Could not open one of the files to be combined.");
           g_free (buffer);
           g_free (basename);
           progress_window_destroy (progress_window);
@@ -167,7 +166,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
       if (fclose (in) == EOF)
         {
           display_error
-            ("combine.c:  Could not open one of the files to be combined.");
+            ("Could not open one of the files to be combined.");
           g_free (buffer);
           g_free (basename);
           progress_window_destroy (progress_window);
@@ -183,7 +182,7 @@ gtk_splitter_combine_files (GtkSplitterSessionData * data)
     /* Close our newly combined file. */
   if (fclose (out) == EOF)
     {
-      display_error ("combine.c:  Could not close the combined file.");
+      display_error ("Could not close the combined file.");
       progress_window_destroy (progress_window);
       return TRUE;
     }
@@ -238,7 +237,7 @@ gtk_splitter_get_combine_info (combine_info * info,
   
   if (statfs (source->str, &file_fs_info) == -1)
     {
-      display_error ("combine.c:  Could not stat file.");
+      display_error ("Could not stat file.");
       return FALSE;
     }
   info->block_size = file_fs_info.f_bsize;
@@ -255,7 +254,7 @@ gtk_splitter_get_combine_info (combine_info * info,
       
       if (g_stat (source->str, &file_info) == -1)
         {
-          display_error ("combine.c:  Could not stat file.");
+          display_error ("Could not stat file.");
           return FALSE;
         }
       

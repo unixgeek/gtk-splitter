@@ -1,5 +1,5 @@
 /* 
- * $Id: interface.c,v 1.6 2005/04/15 02:24:09 techgunter Exp $
+ * $Id: interface.c,v 1.7 2005/04/16 23:01:06 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -39,8 +39,7 @@ gtk_splitter_main_window_new ()
 
   if ((gsw == NULL) || (gsw->session_data == NULL))
     {
-      display_error
-        ("interface.c:  Couldn't allocate memory for GtkSplitterWindow");
+      display_error ("Couldn't allocate memory for GtkSplitterWindow");
       exit (1);
     }
 
