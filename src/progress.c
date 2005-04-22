@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: progress.c,v 1.16 2005/04/15 02:24:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -40,6 +40,7 @@ progress_window_new ()
   /* Set up the window. */
   pw->base_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_resizable (GTK_WINDOW (pw->base_window), FALSE);
+  gtk_window_set_modal (GTK_WINDOW (pw->base_window), TRUE);
 
   /* Set up the table. */
   pw->table = gtk_table_new (4, 2, FALSE);
