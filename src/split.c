@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.39 2005/04/22 16:53:12 techgunter Exp $
+ * $Id: split.c,v 1.40 2005/04/22 17:01:09 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -38,6 +38,8 @@
 #include "progress.h"
 #include "dostextfile.h"
 #include "split.h"
+#include "shell.h"
+#include "batch.h"
 
 void
 gtk_splitter_split_file_test (split_info info)
@@ -50,6 +52,9 @@ gtk_splitter_split_file_test (split_info info)
   g_print ("%s (%li) -> %i\n", info.source_file->str, 
            info.source_file_size,
            info.number_of_destination_files);
+  
+  g_print ("shell script: %s\n", info.shell_file->str);
+  g_print ("batch script: %s\n", info.batch_file->str);
   
   for (i = 0; i != info.number_of_destination_files; i++)
     {
@@ -87,7 +92,13 @@ gtk_splitter_split_file (GtkSplitterSessionData * data)
       display_error ("Exceeded maximum number of files (999).");
       return FALSE;
     }
-
+  
+  if (data->create_shell_script)
+    create_shell_script (&info);
+  
+  if (data->create_batch_script)
+    create_batch_script (&info);
+  
   /* Open the source file. */
   in = fopen (info.source_file->str, "rb");
   if (in == NULL)
@@ -276,6 +287,18 @@ gtk_splitter_get_split_info (split_info * info,
       break;
   }
   
+  /* Set the shell script filename. */
+  info->shell_file = g_string_new (data->output_directory);
+  info->shell_file = g_string_append (info->shell_file, G_DIR_SEPARATOR_S);
+  info->shell_file = g_string_append (info->shell_file, data->file_name_only);
+  info->shell_file = g_string_append (info->shell_file, ".sh");
+  
+  /* Set the batch script filename. */
+  info->batch_file = g_string_new (data->output_directory);
+  info->batch_file = g_string_append (info->batch_file, G_DIR_SEPARATOR_S);
+  info->batch_file = g_string_append (info->batch_file, data->file_name_only);
+  info->batch_file = g_string_append (info->batch_file, ".bat");
+  
   /* Determine the number of destination files. */
   info->number_of_destination_files = info->source_file_size / target_size;;
   
@@ -347,7 +370,11 @@ gtk_splitter_destroy_split_info (split_info * info)
       
       g_string_free (destination, TRUE);
     }
-    
+  
+  g_string_free (info->source_file, TRUE);
+  g_string_free (info->shell_file, TRUE);
+  g_string_free (info->batch_file, TRUE);
+  
   /* Free the GArrays. */
   g_array_free (info->destination_file_sizes, TRUE);
   g_array_free (info->destination_files, TRUE);
