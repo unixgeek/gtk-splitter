@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.33 2005/04/19 03:31:50 techgunter Exp $
+ * $Id: split.c,v 1.34 2005/04/22 03:42:25 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -40,7 +40,7 @@
 #include "split.h"
 
 void
-gtk_splitter_split_files_test (split_info info)
+gtk_splitter_split_file_test (split_info info)
 {
   GString *destination;
   gulong size;
@@ -61,16 +61,132 @@ gtk_splitter_split_files_test (split_info info)
 }
 
 gboolean
-gtk_splitter_split_file (GtkSplitterSessionData * gssd)
+gtk_splitter_split_file (GtkSplitterSessionData * data)
 {
-    split_info info;
+  ProgressWindow *progress_window = NULL;
+  split_info info;
+  GString *destination;
+  gchar *buffer;
+  gulong size;
+  gulong bytes;
+  gulong total_bytes;
+  gulong bytes_fread;
+  gulong bytes_fwrite;
+  
+  int i;
+  FILE *in, *out;
+  
+  gtk_splitter_get_split_info(&info, data);
+  
+  gtk_splitter_split_file_test (info);
+  
+  /* Make sure the files don't exceed our limit. */
+  if (info.number_of_destination_files > 999)
+    {
+      display_error ("split.c:  Exceeded maximum number of files (999).");
+      return FALSE;
+    }
+
+  /* Open the source file. */
+  in = fopen (info.source_file->str, "rb");
+  if (in == NULL)
+    {
+      display_error ("split.c:  Could not create an output file.");
+      return FALSE;
+    }
     
-    gtk_splitter_get_split_info (&info, gssd);
+  progress_window = progress_window_new ();
+  if (progress_window == NULL)
+    {
+      display_error ("split.c:  Could not create a progress window.");
+      return FALSE;
+    }
     
-    gtk_splitter_split_files_test (info);
+  gtk_window_set_title (GTK_WINDOW (progress_window->base_window),
+                        "Split Progress");
+  gtk_widget_show_all (progress_window->base_window);
+  while (g_main_context_iteration (NULL, FALSE));
+
+  buffer = g_malloc (info.block_size * sizeof (gchar));
+  
+  total_bytes = 0;
+  for (i = 0; i != info.number_of_destination_files; i++)
+    {
+      destination = g_array_index (info.destination_files, GString *, i);
+      size = g_array_index (info.destination_file_sizes, gulong, i);
+      
+      gtk_label_set_text (GTK_LABEL (progress_window->message), 
+                          g_path_get_basename (destination->str)); // needs free ?
+      
+      /* Open the split file. */
+      out = fopen (destination->str, "wb+");
+      if (out == NULL)
+        {
+          display_error ("split.c:  Could not create an output file.");
+          return FALSE;
+        }
+      
+      bytes = 0;
+      while (bytes != size)
+        {
+          bytes_fread = fread (buffer, sizeof (gchar), info.block_size, in);
+          
+          if ((bytes_fread + bytes) > size)
+            {
+                bytes_fwrite = fwrite (buffer, sizeof (gchar),
+                    (size - bytes), out);
+                bytes += (size - bytes);
+                total_bytes += (size - bytes);
+                
+                /* Re-position the file pointer. */
+                fseek (in, - (size - bytes), SEEK_CUR);
+            }
+          else
+            {
+              bytes_fwrite = fwrite (buffer, sizeof (gchar), bytes_fread, out);
+              bytes += bytes_fread;
+              total_bytes += bytes_fread;
+            }
+            
+          gtk_progress_bar_set_fraction (
+              GTK_PROGRESS_BAR (progress_window->current_progress),
+              ((gfloat) bytes) / ((gfloat) size));
+              
+          gtk_progress_bar_set_fraction (
+              GTK_PROGRESS_BAR (progress_window->total_progress),
+              ((gfloat) total_bytes) / ((gfloat) info.source_file_size));
+              
+          while (g_main_context_iteration (NULL, FALSE));
+        }
+        
+      /* Insure that all data is written to disk before we close. */
+      fflush (out);
+
+      /* Move on to the next file. */
+      if (fclose (out) == EOF)
+        {
+          display_error
+            ("split.c:  Could not open one of the files to be combined.");
+          progress_window_destroy (progress_window);
+          fclose (out);
+          return FALSE;
+        }
+    }
     
-    gtk_splitter_destroy_split_info (&info);
-    return FALSE;
+  g_free (buffer);
+  
+  if (fclose (in) == EOF)
+    {
+      display_error ("split.c:  Could not close the combined file.");
+      progress_window_destroy (progress_window);
+      return TRUE;
+    }
+  
+  gtk_widget_hide_all (progress_window->base_window);
+  progress_window_destroy (progress_window);
+  gtk_splitter_destroy_split_info (&info);
+  
+  return FALSE;
 }
 
 gboolean
