@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: batch.c,v 1.1 2005/04/22 19:41:12 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -27,20 +27,25 @@
 /*
  * @echo off
  * rem
- * rem gtk-splitter PACKAGE VERSION
+ * rem gtk-splitter-2.2
  * rem
- * echo "Creating DESTINATION..."
- * type SOURCE1 SOURCE2 SOURCE3 ... 2> nil > DESTINATION
- * if errorlevel 0 goto quit
+ * rem Tested on Windows 2000.  
+ * rem 
+ * rem If this works on other versions, or if you have a patch to make this work
+ * rem on other versions, then send email to techgunter@yahoo.com.
+ * rem
+ * echo Creating DESTINATION...
+ * copy /b +"SOURCE.001"+"SOURCE.002"+"SOURCE.003" DESTINATION > NUL
+ * if %errorlevel% equ 0 goto okay
  * 
  * :error
- * echo "Failed"
- * exit 1
+ * echo Failed
+ * goto quit
  * 
  * :okay
- * echo "Ok"
- * exit 0
+ * echo Ok
  * 
+ * :quit
  */
 
 void
@@ -61,11 +66,19 @@ create_batch_script (split_info * info)
   
   source = g_path_get_basename (info->source_file->str);
     
+  fprintf (batch, "@echo off\n");
   fprintf (batch, "rem\n");
   fprintf (batch, "rem %s-%s\n", PACKAGE, VERSION);
   fprintf (batch, "rem\n");
-  fprintf (batch, "echo \"Creating %s...\"\n", source);
-  fprintf (batch, "type ");
+  fprintf (batch, "rem Tested on Windows 2000\n");
+  fprintf (batch, "rem\n");
+  fprintf (batch, "rem If this works on other versions, or if you have a "
+                  "patch to make this work\n");
+  fprintf (batch, "rem on other versions, then send email to "
+                  "techgunter@yahoo.com.\n");
+  fprintf (batch, "rem\n");
+  fprintf (batch, "echo Creating %s...\n", source);
+  fprintf (batch, "copy /b ");
   for (i = 0; i != info->number_of_destination_files; i++)
     {
       g_free (destination);
@@ -74,16 +87,19 @@ create_batch_script (split_info * info)
                                           GString *, i);
       destination = g_path_get_basename (destination_string->str);
       
-      fprintf (batch, "%s ", destination);
+      if (i != 0)
+        fprintf (batch, "+\"%s\"", destination);
+      else
+        fprintf (batch, "\"%s\"", destination);
     }
-  fprintf (batch, "2> nil > %s\n", source);
-  fprintf (batch, "if errorlevel 0 goto quit\n\n");
+  fprintf (batch, " \"%s\" > NUL\n", source);
+  fprintf (batch, "if %%errorlevel%% equ 0 goto okay\n\n");
   fprintf (batch, ":error\n");
-  fprintf (batch, "echo \"Failed\"\n");
-  fprintf (batch, "exit 1\n\n");
+  fprintf (batch, "echo Failed\n");
+  fprintf (batch, "goto quit\n\n");
+  fprintf (batch, ":okay\n");
+  fprintf (batch, "echo Ok\n\n");
   fprintf (batch, ":quit\n");
-  fprintf (batch, "echo \"Ok\"\n");
-  fprintf (batch, "exit 0\n\n");
   
   fflush (batch);
   fclose (batch);
