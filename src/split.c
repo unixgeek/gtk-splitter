@@ -1,5 +1,5 @@
 /*
- * $Id: split.c,v 1.40 2005/04/22 17:01:09 techgunter Exp $
+ * $Id: split.c,v 1.41 2005/04/22 19:48:51 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -36,7 +36,6 @@
 #include "session.h"
 #include "window.h"
 #include "progress.h"
-#include "dostextfile.h"
 #include "split.h"
 #include "shell.h"
 #include "batch.h"

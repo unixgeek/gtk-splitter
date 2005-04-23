@@ -10,8 +10,6 @@ callbacks.c             \
 callbacks.h             \
 combine.c               \
 combine.h               \
-dostextfile.c           \
-dostextfile.h           \
 file_selection.c        \
 file_selection.h        \
 gtk-splitter.c          \
