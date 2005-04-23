@@ -75,6 +75,7 @@ gboolean gtk_splitter_combine_files( GtkSplitterSessionData *data )
    
    /* Setup the outfile string. */
    strcpy( outfile, data->output_directory );
+   strcat( outfile, "/");
    strcat( outfile, data->file_name_only );
    
    /* The outfile to be created is the file_name_only minus the '.00x' extension.
