@@ -1,5 +1,5 @@
 /*
- * $Id: batch.c,v 1.1 2005/04/22 19:41:12 techgunter Exp $
+ * $Id: batch.c,v 1.2 2005/04/23 14:20:26 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -27,25 +27,10 @@
 /*
  * @echo off
  * rem
- * rem gtk-splitter-2.2
- * rem
- * rem Tested on Windows 2000.  
- * rem 
- * rem If this works on other versions, or if you have a patch to make this work
- * rem on other versions, then send email to techgunter@yahoo.com.
+ * rem PACKAGE-VERSION
  * rem
  * echo Creating DESTINATION...
- * copy /b +"SOURCE.001"+"SOURCE.002"+"SOURCE.003" DESTINATION > NUL
- * if %errorlevel% equ 0 goto okay
- * 
- * :error
- * echo Failed
- * goto quit
- * 
- * :okay
- * echo Ok
- * 
- * :quit
+ * copy /b +"SOURCE.001"+"SOURCE.002"+"SOURCE.003" DESTINATION
  */
 
 void
@@ -66,18 +51,11 @@ create_batch_script (split_info * info)
   
   source = g_path_get_basename (info->source_file->str);
     
-  fprintf (batch, "@echo off\n");
-  fprintf (batch, "rem\n");
-  fprintf (batch, "rem %s-%s\n", PACKAGE, VERSION);
-  fprintf (batch, "rem\n");
-  fprintf (batch, "rem Tested on Windows 2000\n");
-  fprintf (batch, "rem\n");
-  fprintf (batch, "rem If this works on other versions, or if you have a "
-                  "patch to make this work\n");
-  fprintf (batch, "rem on other versions, then send email to "
-                  "techgunter@yahoo.com.\n");
-  fprintf (batch, "rem\n");
-  fprintf (batch, "echo Creating %s...\n", source);
+  fprintf (batch, "@echo off\r\n");
+  fprintf (batch, "rem\r\n");
+  fprintf (batch, "rem %s-%s\r\n", PACKAGE, VERSION);
+  fprintf (batch, "rem\r\n");
+  fprintf (batch, "echo Creating %s...\r\n", source);
   fprintf (batch, "copy /b ");
   for (i = 0; i != info->number_of_destination_files; i++)
     {
@@ -92,14 +70,7 @@ create_batch_script (split_info * info)
       else
         fprintf (batch, "\"%s\"", destination);
     }
-  fprintf (batch, " \"%s\" > NUL\n", source);
-  fprintf (batch, "if %%errorlevel%% equ 0 goto okay\n\n");
-  fprintf (batch, ":error\n");
-  fprintf (batch, "echo Failed\n");
-  fprintf (batch, "goto quit\n\n");
-  fprintf (batch, ":okay\n");
-  fprintf (batch, "echo Ok\n\n");
-  fprintf (batch, ":quit\n");
+  fprintf (batch, " \"%s\"\r\n", source);
   
   fflush (batch);
   fclose (batch);
