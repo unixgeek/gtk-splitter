@@ -1,5 +1,5 @@
 /*
- * $Id: callbacks.c,v 1.20 2005/04/22 19:44:54 techgunter Exp $
+ * $Id: callbacks.c,v 1.21 2005/04/23 14:57:54 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -102,9 +102,9 @@ initialize_splitter_window (GtkSplitterWindow * gsw)
   /* Insure that the split button is clicked. */
   gtk_button_clicked (GTK_BUTTON (gsw->split_button));
 
-  /* Show the defauult output_directory. */
+  /* Show the default output_directory. */
   gtk_entry_set_text (GTK_ENTRY (gsw->output_box),
-                      gsw->session_data->home_directory);
+                      gsw->session_data->output_directory);
                       
   /* Don't create a shell script by default. */
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsw->shell_script_button),
