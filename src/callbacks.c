@@ -1,5 +1,5 @@
 /*
- * $Id: callbacks.c,v 1.19 2005/04/22 16:17:35 techgunter Exp $
+ * $Id: callbacks.c,v 1.20 2005/04/22 19:44:54 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -113,9 +113,10 @@ initialize_splitter_window (GtkSplitterWindow * gsw)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsw->batch_script_button),
                                 FALSE);
 
-  gtk_combo_box_set_active (GTK_COMBO_BOX (gsw->units_menu), 0);
+  gtk_combo_box_set_active (GTK_COMBO_BOX (gsw->units_menu), 2);
   
-  gtk_spin_button_set_digits(GTK_SPIN_BUTTON (gsw->size_input), 0);
+  gtk_spin_button_set_digits (GTK_SPIN_BUTTON (gsw->size_input), 1);
+  gtk_spin_button_set_value (GTK_SPIN_BUTTON (gsw->size_input), 1.3);
   
 #ifdef HAVE_LIBMHASH
   /* Verify file by default. */

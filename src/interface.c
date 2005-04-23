@@ -1,5 +1,5 @@
 /* 
- * $Id: interface.c,v 1.8 2005/04/22 17:00:57 techgunter Exp $
+ * $Id: interface.c,v 1.9 2005/04/22 19:46:56 techgunter Exp $
  *
  * Copyright 2001 Gunter Wambaugh
  *
@@ -91,9 +91,9 @@ gtk_splitter_main_window_new ()
   /* 1 mb = (2^23)/8 = 1048576.  A floppy holds approximately 1.4
      (or so they say--depends on the FS) so (1.39 * 1048576) = 1457664. */
   gsw->size_input_adj =
-    GTK_ADJUSTMENT (gtk_adjustment_new (1457664, 1, G_MAXFLOAT, 1, 5, 5));
-  gsw->session_data->entry = 1457664;
-  gsw->session_data->unit = BYTES;
+    GTK_ADJUSTMENT (gtk_adjustment_new (1.3, 1, G_MAXFLOAT, 1, 5, 5));
+  gsw->session_data->entry = 1.3;
+  gsw->session_data->unit = MEGABYTES;
   /* We can split up to 4 GB max? 4294967296-1 */
 
   /* Widgets for inputing the chunk size. */
